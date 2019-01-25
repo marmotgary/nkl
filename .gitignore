@@ -1,0 +1,7 @@
+*.pyc
+*.sqlite3
+*.swp
+*~
+venv*
+*.log
+static_files
