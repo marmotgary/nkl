@@ -23,15 +23,15 @@ Start the development server
 First install Nodejs from:
 https://nodejs.org/en/download/
 
-After that go to the root of the project and install requirements
+After that go to the root of the vue project where package.json resides
+
+`cd frontend`
+
+and install requirements
 
 `npm install`
 
-This will install all the packages listed in "devDependencies" of frontend/package.json.
-
-After the installation is completed go to the frontend from root
-
-`cd frontend`
+This will install all the packages listed in "devDependencies" of package.json.
 
 And start up the vue server
 
