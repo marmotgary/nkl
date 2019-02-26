@@ -21,4 +21,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+v-content {
+    padding-top: 0;
+}
+</style>
