@@ -8,12 +8,12 @@
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td class="text-xs-center">{{ props.item.ottelut }}</td>
-        <td class="text-xs-center">{{ props.item.voitot }}</td>
-        <td class="text-xs-center">{{ props.item.tasapelit }}</td>
-        <td class="text-xs-center">{{ props.item.häviöt }}</td>
-        <td class="text-xs-center">{{ props.item.pisteet }}</td>
-        <td class="text-xs-center">{{ props.item.piste_ero }}</td>
+        <td class="text-xs-left">{{ props.item.ottelut }}</td>
+        <td class="text-xs-left">{{ props.item.voitot }}</td>
+        <td class="text-xs-left">{{ props.item.tasapelit }}</td>
+        <td class="text-xs-left">{{ props.item.häviöt }}</td>
+        <td class="text-xs-left">{{ props.item.pisteet }}</td>
+        <td class="text-xs-left">{{ props.item.piste_ero }}</td>
       </template>
       <v-alert
         slot="no-results"
@@ -35,8 +35,7 @@ export default {
                     text: 'Joukkue',
                     align: 'left',
                     sortable: false,
-                    value: 'name',
-                    align: 'center'
+                    value: 'name'
                 },
                 { text: 'O', value: 'ottelut' },
                 { text: 'V', value: 'voitot' },
