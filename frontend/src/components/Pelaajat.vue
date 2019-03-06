@@ -1,9 +1,10 @@
 <template>
   <v-card>
-    <v-card-title>Joukkueet
+    <v-card-title>Pelaajat
       <v-spacer></v-spacer>
+      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="teams" hide-actions>
+    <v-data-table :headers="headers" :items="teams" :search="search" hide-actions>
       <template slot="headers" class="text-xs-left"></template>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
@@ -15,6 +16,12 @@
         <td class="text-xs-left">{{ props.item.piste_ero }}</td>
         <td class="text-xs-left"></td>
       </template>
+      <v-alert
+        slot="no-results"
+        :value="true"
+        color="error"
+        icon="warning"
+      >Your search for "{{ search }}" found no results.</v-alert>
     </v-data-table>
   </v-card>
 </template>

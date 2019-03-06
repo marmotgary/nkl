@@ -1,30 +1,26 @@
 <template>
-  <v-layout>
+  <v-layout class="pt-5">
     <v-flex xs10>
-      <lorem-ipsum></lorem-ipsum>
+      <pelaajat></pelaajat>
     </v-flex>
-    <v-flex xs5 class="right">
+    <v-flex xs5 class="pl-3">
       <data-table></data-table>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import LoremIpsum from '@/components/LoremIpsum';
 import DataTable from '@/components/DataTable';
+import Pelaajat from '@/components/Pelaajat';
 
 export default {
     name: 'home',
     components: {
-        LoremIpsum,
+        Pelaajat,
         DataTable
     }
 };
 </script>
 
 <style scoped>
-.right {
-    padding-right: 3em;
-    padding-top: 6em;
-}
 </style>

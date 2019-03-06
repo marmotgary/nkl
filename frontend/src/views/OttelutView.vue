@@ -1,7 +1,9 @@
 <template>
-  <v-layout>
-    <v-flex xs10></v-flex>
-    <v-flex xs5 class="right">
+  <v-layout class="pt-5">
+    <v-flex xs10>
+      <ottelut></ottelut>
+    </v-flex>
+    <v-flex xs5 class="pl-3">
       <data-table></data-table>
     </v-flex>
   </v-layout>
@@ -9,18 +11,16 @@
 
 <script>
 import DataTable from '@/components/DataTable';
+import Ottelut from '@/components/Ottelut';
 
 export default {
-    name: 'home',
+    name: 'ottelutview',
     components: {
-        DataTable
+        DataTable,
+        Ottelut
     }
 };
 </script>
 
 <style scoped>
-.right {
-    padding-right: 3em;
-    padding-top: 6em;
-}
 </style>

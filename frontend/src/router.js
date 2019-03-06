@@ -30,7 +30,7 @@ export default new Router({
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: function() {
-                return import(/* webpackChunkName: "ottelut" */ './views/Ottelut.vue');
+                return import(/* webpackChunkName: "ottelut" */ './views/OttelutView.vue');
             }
         },
         {
@@ -50,7 +50,7 @@ export default new Router({
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: function() {
-                return import(/* webpackChunkName: "pelaajat" */ './views/Pelaajat.vue');
+                return import(/* webpackChunkName: "pelaajat" */ './views/PelaajatView.vue');
             }
         }
     ]
