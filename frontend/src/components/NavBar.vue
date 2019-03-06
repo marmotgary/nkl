@@ -14,22 +14,21 @@
     </v-navigation-drawer>
     <v-toolbar app color="black darken-4" dark>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-spacer class="hidden-md-and-up"></v-spacer>
+      <v-spacer></v-spacer>
       <router-link
         to="/"
         style="text-decoration: none; color:white; padding-right:2em; padding-left:1em;"
       >
         <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
       </router-link>
-      <v-btn flat class="hidden-sm-and-down">Tulokset</v-btn>
-      <v-btn flat class="hidden-sm-and-down">Ottelut</v-btn>
-      <v-btn flat class="hidden-sm-and-down">Joukkueet</v-btn>
-      <v-btn flat class="hidden-sm-and-down">Pelaajat</v-btn>
-      <v-btn flat class="hidden-sm-and-down">Säännöt</v-btn>
-      <v-btn flat class="hidden-sm-and-down" to="/about">Info</v-btn>
+      <v-btn flat class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
+      <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
+      <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
+      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <log-in class="hidden-sm-and-down"></log-in>
       <register class="hidden-sm-and-down"></register>
+      <v-spacer></v-spacer>
     </v-toolbar>
   </span>
 </template>
@@ -49,11 +48,9 @@ export default {
             appTitle: 'NKL',
             drawer: false,
             items: [
-                { title: 'Tulokset' },
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
                 { title: 'Pelaajat' },
-                { title: 'Säännöt' },
                 { title: 'Info' }
             ]
         };

@@ -1,28 +1,25 @@
 <template>
   <v-app>
-    <carousel></carousel>
     <nav-bar></nav-bar>
-    <v-content transition="slide-x-transition">
+    <v-content transition="slide-x-transition" class="content pa-0 mx-auto">
       <router-view></router-view>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import Carousel from '@/components/Carousel';
 import NavBar from '@/components/NavBar';
 
 export default {
     name: 'App',
     components: {
-        Carousel,
         NavBar
     }
 };
 </script>
 
 <style scoped>
-v-content {
-    padding-top: 0;
+.content {
+    width: 70%;
 }
 </style>

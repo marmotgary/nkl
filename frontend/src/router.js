@@ -14,13 +14,43 @@ export default new Router({
             component: Home
         },
         {
-            path: '/about',
-            name: 'about',
+            path: '/info',
+            name: 'info',
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: function() {
-                return import(/* webpackChunkName: "about" */ './views/About.vue');
+                return import(/* webpackChunkName: "info" */ './views/Info.vue');
+            }
+        },
+        {
+            path: '/ottelut',
+            name: 'ottelut',
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: function() {
+                return import(/* webpackChunkName: "ottelut" */ './views/Ottelut.vue');
+            }
+        },
+        {
+            path: '/joukkueet',
+            name: 'joukkueet',
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: function() {
+                return import(/* webpackChunkName: "joukkueet" */ './views/Joukkueet.vue');
+            }
+        },
+        {
+            path: '/pelaajat',
+            name: 'pelaajat',
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: function() {
+                return import(/* webpackChunkName: "pelaajat" */ './views/Pelaajat.vue');
             }
         }
     ]

@@ -14,6 +14,7 @@
         <td class="text-xs-left">{{ props.item.häviöt }}</td>
         <td class="text-xs-left">{{ props.item.pisteet }}</td>
         <td class="text-xs-left">{{ props.item.piste_ero }}</td>
+        <td class="text-xs-left"></td>
       </template>
       <v-alert
         slot="no-results"
@@ -35,14 +36,21 @@ export default {
                     text: 'Joukkue',
                     align: 'left',
                     sortable: false,
-                    value: 'name'
+                    value: 'name',
+                    width: '1%'
                 },
-                { text: 'O', value: 'ottelut' },
-                { text: 'V', value: 'voitot' },
-                { text: 'T', value: 'tasapelit' },
-                { text: 'H', value: 'häviöt' },
-                { text: 'P', value: 'pisteet' },
-                { text: 'kPE', value: 'piste_ero' }
+                { text: 'O', value: 'ottelut', width: '1%', align: 'left' },
+                { text: 'V', value: 'voitot', width: '1%', align: 'left' },
+                { text: 'T', value: 'tasapelit', width: '1%', align: 'left' },
+                { text: 'H', value: 'häviöt', width: '1%', align: 'left' },
+                { text: 'P', value: 'pisteet', width: '1%', align: 'left' },
+                {
+                    text: 'kPE',
+                    value: 'piste_ero',
+                    width: '1%',
+                    align: 'left'
+                },
+                { align: 'left', text: '', value: 'name' }
             ],
             teams: [
                 {

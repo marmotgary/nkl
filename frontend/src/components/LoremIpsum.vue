@@ -1,9 +1,8 @@
 <template>
   <v-container class="lorem-ipsum">
     <v-layout column>
-      <v-flex class="display-2 text-xs-center my-5">Nationaali Kyykkä Liiga</v-flex>
       <v-flex>
-        <div class="headline mt-3">Lorem ipsum</div>
+        <div class="headline mt-3">Uutiset</div>
         <p class="subheading mt-3">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           Cras pulvinar risus quis mauris interdum, in euismod nibh

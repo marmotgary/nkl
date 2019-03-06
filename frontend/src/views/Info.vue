@@ -14,7 +14,7 @@ import LoremIpsum from '@/components/LoremIpsum';
 import DataTable from '@/components/DataTable';
 
 export default {
-    name: 'home',
+    name: 'info',
     components: {
         LoremIpsum,
         DataTable

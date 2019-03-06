@@ -1,8 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs10>
-      <lorem-ipsum></lorem-ipsum>
-    </v-flex>
+    <v-flex xs10></v-flex>
     <v-flex xs5 class="right">
       <data-table></data-table>
     </v-flex>
@@ -10,13 +8,11 @@
 </template>
 
 <script>
-import LoremIpsum from '@/components/LoremIpsum';
 import DataTable from '@/components/DataTable';
 
 export default {
     name: 'home',
     components: {
-        LoremIpsum,
         DataTable
     }
 };
