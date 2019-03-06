@@ -5,3 +5,4 @@
 venv*
 *.log
 static_files
+frontend

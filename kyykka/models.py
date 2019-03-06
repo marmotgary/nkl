@@ -1,66 +1,61 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+class Team(models.Model):
+    name = models.CharField(max_length=128)
+    abbreviation = models.CharField(max_length=10)
+    captain = models.ForeignKey(User, on_delete=models.CASCADE, related_name='captain', blank=True)
+    players = models.ManyToManyField(User, through='PlayersInTeam')
 
-class Users(models.Model):
-    userID = models.IntegerField()
-    name = models.CharField(max_length=30)
-    password = models.CharField(max_length=255)
-    nickname = models.CharField(max_length=64)
-    email = models.EmailField()
-    userRole = models.ForeignKey(UserRoles)
+    def __str__(self):
+        return '%s' % (self.abbreviation)
 
-class Matches(models.Model):
-    match_id = models.IntegerField()
-    season_id = models.IntegerField()
-    match_time = models.DateField()
+class Season(models.Model):
+    is_active = models.BooleanField(default=False)
+    year = models.CharField(max_length=4, unique=True)
+    teams = models.ManyToManyField(Team, blank=True)
+
+    def __str__(self):
+        return '%s' % (self.year)
+
+class PlayersInTeam(models.Model):
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('player', 'season')
+        # Make sure are players allowed to change team during the season?
+
+class Match(models.Model):
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    match_time = models.DateTimeField()
     home_first_round_score = models.IntegerField()
     home_second_round_score = models.IntegerField()
     away_first_round_score = models.IntegerField()
     away_second_round_score = models.IntegerField()
-    home_team_id = models.ForeignKey(Teams)
-    away_team_id = models.ForeignKey(Teams)
-    is_validated = models.BooleanField(initial=False)
+    home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
+    away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
+    is_validated = models.BooleanField(default=False)
 
-class PlayersInTeams(models.Model):
-    id = models.IntegerField(primary_key=True) 
-    season_id = models.IntegerField() 
-    team_id = models.ForeignKey(Teams)
-    player_id = models.ForeignKey(Users)
+# class ThrowType(models.Model):
+#     throw_order_ingame = models.CharField()
 
-
-class Teams(models.Model):
-    team_id = models.IntegerField()  
-    name = models.CharField()
-    abbreviation = models.CharField(max_length=10)
-    captain_id = models.IntegerField()
-
-class TeamsInSeason(models.Model):
-    class Meta:
-        unique_together = (('season_id', 'team_id'),)
-
-    season_id = models.IntegerField() 
-    team_id = models.ForeignKey(Teams) 
-
-class Throws(models.Model):
-    throw_id = models.IntegerField()  
-    match_id = models.ForeignKey(Matches)
-    player_id = models.ForeignKey(Users)
-    season_id = models.IntegerField()
-    throw_type_id = models.ForeignKey(ThrowTypes)
+class Throw(models.Model):
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    throw_turn = models.CharField(max_length=1)
+    # throw_type = models.ForeignKey(ThrowType, on_delete=models.CASCADE)
     score = models.CharField(max_length=2)
 
-class ThrowTypes(models.Model):
-    throw_type_id = models.IntegerField()
-    throw_order_ingame = models.CharField()
-
+# TBD if used
 class UserRoles(models.Model):
     ROLES = (
         (1,'Admin'),
         (2,'captain'),
         (3,'player'),
         )
-    id = models.IntegerField(primary_key=True)  
     role = models.CharField(max_length=6,choices=ROLES)
 
 class News(models.Model):
