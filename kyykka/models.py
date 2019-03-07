@@ -23,7 +23,7 @@ class CurrentSeason(models.Model):
         verbose_name_plural = 'Current Season'
 
     def __str__(self):
-        return 'Season %s' % (self.active_season.year)
+        return 'Season %s' % (self.season.year)
 
 class PlayersInTeam(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)

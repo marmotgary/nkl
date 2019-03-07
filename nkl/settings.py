@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kyykka.apps.KyykkaConfig'
+    'rest_framework',
+    'kyykka.apps.KyykkaConfig',
 ]
 
 MIDDLEWARE = [
