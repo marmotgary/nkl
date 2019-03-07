@@ -8,6 +8,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name')
 
 class TeamSerializer(serializers.ModelSerializer):
+    players = serializers.SerializerMethodField()
+
+    def get_players(self, obj):
+        users = obj.players
+        return UserSerializer(users,many=True).data
+
+
     class Meta:
         model = Team
         fields = ('id', 'name', 'abbreviation', 'players')
