@@ -2,30 +2,41 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Team(models.Model):
-    name = models.CharField(max_length=128)
-    abbreviation = models.CharField(max_length=10)
-    captain = models.ForeignKey(User, on_delete=models.CASCADE, related_name='captain', blank=True)
+    name = models.CharField(max_length=128, unique=True)
+    abbreviation = models.CharField(max_length=10, unique=True)
     players = models.ManyToManyField(User, through='PlayersInTeam')
 
     def __str__(self):
-        return '%s' % (self.abbreviation)
+        return 'Team %s' % (self.abbreviation)
 
 class Season(models.Model):
-    is_active = models.BooleanField(default=False)
     year = models.CharField(max_length=4, unique=True)
     teams = models.ManyToManyField(Team, blank=True)
 
     def __str__(self):
-        return '%s' % (self.year)
+        return 'Season %s' % (self.year)
+
+class CurrentSeason(models.Model):
+    season = models.OneToOneField(Season, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Current Season'
+
+    def __str__(self):
+        return 'Season %s' % (self.active_season.year)
 
 class PlayersInTeam(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_captain = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('player', 'season')
         # Make sure are players allowed to change team during the season?
+
+    def __str__(self):
+        return '%s %s %s %s' % (self.season.year, self.team.abbreviation, self.player.first_name, self.player.last_name)
 
 class Match(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
@@ -37,6 +48,9 @@ class Match(models.Model):
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_team')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_team')
     is_validated = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Matches'
 
 # class ThrowType(models.Model):
 #     throw_order_ingame = models.CharField()
@@ -50,13 +64,13 @@ class Throw(models.Model):
     score = models.CharField(max_length=2)
 
 # TBD if used
-class UserRoles(models.Model):
-    ROLES = (
-        (1,'Admin'),
-        (2,'captain'),
-        (3,'player'),
-        )
-    role = models.CharField(max_length=6,choices=ROLES)
+# class UserRoles(models.Model):
+#     ROLES = (
+#         (1,'Admin'),
+#         (2,'captain'),
+#         (3,'player'),
+#         )
+#     role = models.CharField(max_length=6,choices=ROLES)
 
 class News(models.Model):
     header = models.TextField()
