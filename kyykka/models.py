@@ -7,7 +7,7 @@ class Team(models.Model):
     players = models.ManyToManyField(User, through='PlayersInTeam')
 
     def __str__(self):
-        return 'Team %s' % (self.abbreviation)
+        return '%s' % (self.abbreviation)
 
 class Season(models.Model):
     year = models.CharField(max_length=4, unique=True)
@@ -52,12 +52,16 @@ class Match(models.Model):
     class Meta:
         verbose_name_plural = 'Matches'
 
+    def __str__(self):
+        return 'Match %s - %s %s' % (self.home_team, self.away_team, self.match_time)
+
 # class ThrowType(models.Model):
 #     throw_order_ingame = models.CharField()
 
 class Throw(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     throw_turn = models.CharField(max_length=1)
     # throw_type = models.ForeignKey(ThrowType, on_delete=models.CASCADE)

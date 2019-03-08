@@ -1,6 +1,7 @@
 from faker import Faker
 from django.contrib.auth.models import User
-from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason
+from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason, Match, Throw
+import random, pytz
 
 fake = Faker('fi_FI')
 
@@ -37,8 +38,10 @@ def userGen(amount, return_users=False):
             user.save()
             users.append(user)
             print(first_name, last_name, email)
-        except:
+        except Exception as e:
+            print(e)
             pass
+    print("Generated users", users)
     if return_users:
         return users
 
@@ -64,3 +67,39 @@ def populateTeam(team):
     PlayersInTeam.objects.create(season=season, team=team, player=players.pop(), is_captain=True)
     for p in players:
         PlayersInTeam.objects.create(season=season, team=team, player=p)
+
+def matchGen():
+    season = CurrentSeason.objects.first().season
+    for home in Team.objects.all():
+        for away in Team.objects.all().exclude(id=home.id):
+            match = Match.objects.create(
+                season=season,
+                match_time = fake.date_time_between(start_date="-60y", end_date="now", tzinfo=pytz.timezone("Europe/Helsinki")),
+                home_first_round_score = random.randint(0, 100),
+                home_second_round_score = random.randint(0, 100),
+                away_first_round_score = random.randint(0, 100),
+                away_second_round_score = random.randint(0, 100),
+                home_team = home,
+                away_team = away,
+                is_validated = random.choice([True, False])
+            )
+            throwGen(match)
+
+def throwGen(match):
+    '''
+    Generate throws for both teams in the match.
+    2 rounds, 4 players per round, 4 throws per player per round
+    '''
+    season = CurrentSeason.objects.first().season
+    for team in [match.home_team, match.away_team]:
+        for _ in range(2):
+            for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
+                for _ in range(4):
+                    Throw.objects.create(
+                        match=match,
+                        player=player,
+                        team=team,
+                        season=season,
+                        throw_turn=throw_turn,
+                        score=random.randint(-1,7)
+                    )
