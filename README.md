@@ -10,6 +10,10 @@ Install python 3.6
 
 Optional but highly recommended: create virtual environment for this project, see https://docs.python.org/3/tutorial/venv.html
 
+MySQL:
+
+`sudo apt-get install python3-dev default-libmysqlclient-dev`
+
 At root of the cloned project (where requirements.txt is), install requirements
 
 `pip install -r requirements.txt`
@@ -35,4 +39,4 @@ This will install all the packages listed in "devDependencies" of package.json.
 
 And start up the vue server
 
-`npm run serve`
+`python manage.py runserver`

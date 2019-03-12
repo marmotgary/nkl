@@ -13,6 +13,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
+.gitignore
 
 # Log files
 npm-debug.log*
@@ -27,3 +28,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+frontend
