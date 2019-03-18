@@ -59,12 +59,16 @@ class Match(models.Model):
 #     throw_order_ingame = models.CharField()
 
 class Throw(models.Model):
+    '''
+    throw_round determines is it first(1) or second(2) round of the match.
+    throw_turn determines players' turn: 1, 2, 3 or 4.
+    '''
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    throw_round = models.IntegerField()
     throw_turn = models.CharField(max_length=1)
-    # throw_type = models.ForeignKey(ThrowType, on_delete=models.CASCADE)
     score = models.CharField(max_length=2)
 
 # TBD if used
