@@ -12,7 +12,8 @@ def initGen():
     '''
     User.objects.create_superuser('test', '', 'test')
     seasonGen()
-    teamGen(10)
+    teamGen(30)
+    matchGen()
 
 def seasonGen(amount=3):
     print('Generating seasons\n')
@@ -72,6 +73,7 @@ def matchGen():
     season = CurrentSeason.objects.first().season
     for home in Team.objects.all():
         for away in Team.objects.all().exclude(id=home.id):
+            print("Generating match and throws..")
             match = Match.objects.create(
                 season=season,
                 match_time = fake.date_time_between(start_date="-60y", end_date="now", tzinfo=pytz.timezone("Europe/Helsinki")),
@@ -92,14 +94,16 @@ def throwGen(match):
     '''
     season = CurrentSeason.objects.first().season
     for team in [match.home_team, match.away_team]:
-        for _ in range(2):
+        for throw_round in range(1,3):
             for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
-                for _ in range(4):
+                for throw_number in range(1,5):
                     Throw.objects.create(
                         match=match,
                         player=player,
                         team=team,
                         season=season,
-                        throw_turn=throw_turn,
+                        throw_turn=throw_turn + 1,
+                        throw_number=throw_number,
+                        throw_round=throw_round,
                         score=random.randint(-1,7)
                     )

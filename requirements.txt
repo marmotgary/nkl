@@ -2,3 +2,4 @@ Django==2.1.5
 wheel==0.33.1
 mysqlclient
 djangorestframework==3.9.2
+Faker==1.0.4
