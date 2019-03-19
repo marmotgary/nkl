@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
     'debug_toolbar',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,7 +91,7 @@ DATABASES = {
         # 'OPTIONS': {
         #     'read_default_file': '/path/to/my.cnf',
         # },
-        }
+    }
 }
 
 # my.cnf
@@ -137,3 +139,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_WHITELIST = 'localhost:8080',
