@@ -71,13 +71,18 @@ class UserListSerializer(SharedUserSerializer):
     pike_percentage = serializers.SerializerMethodField()
     score_per_throw = serializers.SerializerMethodField()
     avg_throw_turn = serializers.SerializerMethodField()
+    scaled_points = serializers.SerializerMethodField()
+    scaled_points_per_round = serializers.SerializerMethodField()
     season = 1
-
+    def get_scaled_points(self, obj):
+        return None
+    def get_scaled_points_per_round(self, obj):
+        return None
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'team', 'score_total', 'rounds_total',
                     'pikes_total', 'zeros_total', 'gteSix_total', 'throws_total', 'pike_percentage',
-                    'score_per_throw', 'avg_throw_turn')
+                    'score_per_throw', 'scaled_points', 'scaled_points_per_round', 'avg_throw_turn')
 
 class UserDetailSerializer(SharedUserSerializer):
     team = serializers.SerializerMethodField()
