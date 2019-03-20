@@ -1,63 +1,87 @@
 from django.shortcuts import render
+from django.http import Http404
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from kyykka.models import User, Team
 from kyykka.serializers import *
 
-
-@api_view(['GET'])
-def user_list(request):
+class UserList(APIView):
     """
-    List all users.
+    Return all users.
     """
-    if request.method == 'GET':
+    def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserListSerializer(users, many=True)
         return Response(serializer.data)
 
-# class UserDetail(APIView):
-#     def get(self, request, format=None):
-#
-
-@api_view(['GET'])
-def user_detail(request, pk):
+class UserDetail(APIView):
     """
-    Retrieve a user.
+    Retrieve data of a single user.
+    Used when inspecting a single player's page
     """
-    try:
-        user = User.objects.prefetch_related('throw_set').get(pk=pk)
-        # user = UserSerializer.setup_eager_loading(user)
-        # user = user.prefetch_related('throw_set')
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            user = User.objects.prefetch_related('throw_set').get(pk=pk)
+            return user
+        except User.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = UserDetailSerializer(user)
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
+        season_id = request.query_params.get('season')
+
+        serializer = UserDetailSerializer(user, context={'season_id' : season_id})
         return Response(serializer.data)
 
-
-@api_view(['GET'])
-def team_list(request):
+class TeamList(APIView):
     """
-    List all teams.
+    Return all users.
     """
-    if request.method == 'GET':
+    def get(self, request, format=None):
+        try:
+            season_id = request.query_params.get('season')
+            if season_id:
+                season = Season.objects.get(id=season_id)
+            else:
+                raise Season.DoesNotExist
+        except Season.DoesNotExist:
+            season = CurrentSeason.objects.first().season
         teams = Team.objects.all()
-        serializer = TeamPlayerSerializer(teams, many=True)
+        serializer = TeamListSerializer(teams, many=True, context={'season':season})
         return Response(serializer.data)
 
-@api_view(['GET'])
-def team_detail(request, pk):
+class TeamDetail(APIView):
     """
-    Retrieve a team.
+    Retrieve data of a single user.
+    Used when inspecting a single player's page
     """
-    try:
-        team = Team.objects.get(pk=pk)
-    except Team.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            team = Team.objects.get(pk=pk)
+            return team
+        except Team.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        serializer = TeamPlayerSerializer(team)
+    def get(self, request, pk, format=None):
+        try:
+            season_id = request.query_params.get('season')
+            if season_id:
+                season = Season.objects.get(id=season_id)
+            else:
+                raise Season.DoesNotExist
+        except Season.DoesNotExist:
+            season = CurrentSeason.objects.first().season
+        team = self.get_object(pk)
+        # Do these querys only once here, instead of doing them 2 times at serializer.
+        throws_total = Throw.objects.filter(season=season, team=team).count()
+        pikes_total = Throw.objects.filter(season=season, team=team, score=-1).count()
+        zeros_total = Throw.objects.filter(season=season, team=team, score=0).count()
+        context = {
+            'season':season,
+            'throws_total': throws_total,
+            'pikes_total': pikes_total,
+            'zeros_total': zeros_total,
+        }
+        serializer = TeamDetailSerializer(team, context=context)
         return Response(serializer.data)
