@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.db.models import Avg, Count, Min, Sum, F, Q
 
 class SharedUserSerializer(serializers.ModelSerializer):
+    def get_player_name(self,obj):
+        return obj.first_name + " " + obj.last_name
+
     def get_score_total(self, obj):
         try:
             return int(Throw.objects.filter(season=self.season, player=obj).aggregate(Sum('score'))['score__sum'])
@@ -62,6 +65,7 @@ class SharedUserSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(SharedUserSerializer):
     team = serializers.SerializerMethodField()
+    player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
     rounds_total = serializers.SerializerMethodField()
     pikes_total = serializers.SerializerMethodField()
@@ -80,12 +84,13 @@ class UserListSerializer(SharedUserSerializer):
         return None
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'team', 'score_total', 'rounds_total',
+        fields = ('id', 'player_name', 'team', 'score_total', 'rounds_total',
                     'pikes_total', 'zeros_total', 'gteSix_total', 'throws_total', 'pike_percentage',
                     'score_per_throw', 'scaled_points', 'scaled_points_per_round', 'avg_throw_turn')
 
 class UserDetailSerializer(SharedUserSerializer):
     team = serializers.SerializerMethodField()
+    player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
     match_count = serializers.SerializerMethodField()
     rounds_total = serializers.SerializerMethodField()
@@ -143,7 +148,7 @@ class UserDetailSerializer(SharedUserSerializer):
     class Meta:
         model = User
         fields = (
-                'id', 'first_name', 'last_name', 'team', 'score_total', 'match_count',
+                'id', 'player_name', 'team', 'score_total', 'match_count',
                 'rounds_total', 'zeros_total', 'ones_total', 'twos_total', 'threes_total',
                 'fours_total', 'fives_total', 'gteSix_total', 'pikes_total', 'throws_total', 'pike_percentage',
                 'zero_percentage', 'score_per_throw', 'avg_throw_turn', 'matches',
