@@ -290,3 +290,113 @@ class TeamDetailSerializer(serializers.ModelSerializer):
                     'zeros_total', 'zero_first_throw_total', 'pike_first_throw_total',
                     'throws_total', 'gteSix_total', 'pike_percentage', 'zero_percentage',
                     'score_per_throw', 'matches', 'players')
+
+class SharedMatchSerializer(serializers.ModelSerializer):
+    def get_home_score_total(self, obj):
+        return obj.home_first_round_score + obj.home_second_round_score
+
+    def get_away_score_total(self, obj):
+        return obj.away_first_round_score + obj.away_second_round_score
+
+    def get_home_team(self, obj):
+        return TeamSerializer(obj.home_team).data
+
+    def get_away_team(self, obj):
+        return TeamSerializer(obj.away_team).data
+
+class MatchListSerializer(SharedMatchSerializer):
+    home_score_total = serializers.SerializerMethodField()
+    away_score_total = serializers.SerializerMethodField()
+    home_team = serializers.SerializerMethodField()
+    away_team = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Match
+        fields = ('id', 'match_time', 'home_team', 'away_team', 'home_score_total', 'away_score_total')
+
+class MatchDetailSerializer(SharedMatchSerializer):
+    home_score_total = serializers.SerializerMethodField()
+    away_score_total = serializers.SerializerMethodField()
+    home_team = serializers.SerializerMethodField()
+    away_team = serializers.SerializerMethodField()
+    first_round = serializers.SerializerMethodField()
+    second_round = serializers.SerializerMethodField()
+
+
+
+
+    def get_second_round(self, obj):
+        return MatchRoundSerializer(obj.throw_set.filter(throw_round=2), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
+
+    def get_first_round(self, obj):
+        return MatchRoundSerializer(obj.throw_set.filter(throw_round=1), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
+
+    class Meta:
+        model = Match
+        fields = ('id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score', 'home_second_round_score',
+                    'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team')
+
+class MatchRoundSerializer(serializers.ModelSerializer):
+    home = serializers.SerializerMethodField()
+    away = serializers.SerializerMethodField()
+
+    def get_home(self, qs):
+        home_throws = qs.filter(team=self.context.get('home_team'))
+        return MatchRoundThrowSerializer(home_throws).data
+
+    def get_away(self, qs):
+        away_throws = qs.filter(team=self.context.get('away_team'))
+        return MatchRoundThrowSerializer(away_throws).data
+
+    class Meta:
+        model = Throw
+        fields = ('home', 'away')
+
+class MatchRoundThrowSerializer(serializers.ModelSerializer):
+    first = serializers.SerializerMethodField()
+    second = serializers.SerializerMethodField()
+    third = serializers.SerializerMethodField()
+    fourth = serializers.SerializerMethodField()
+
+    def get_throws(self, obj):
+        qs = obj
+        return ThrowScoreSerialzier(qs, many=True).data
+    def get_player_name(self,obj):
+        return None
+    def get_first(self,qs):
+        return MatchRowSerialzier(qs.filter(throw_turn=1)).data
+    def get_second(self,qs):
+        return MatchRowSerialzier(qs.filter(throw_turn=2)).data
+    def get_third(self,qs):
+        return MatchRowSerialzier(qs.filter(throw_turn=3)).data
+    def get_fourth(self,qs):
+        return MatchRowSerialzier(qs.filter(throw_turn=4)).data
+
+    class Meta:
+        model = Throw
+        fields = ('id', 'first', 'second', 'third', 'fourth')
+
+class MatchRowSerialzier(serializers.ModelSerializer):
+    player_name = serializers.SerializerMethodField()
+    score_total = serializers.SerializerMethodField()
+    throws = serializers.SerializerMethodField()
+
+    def get_player_name(self, qs):
+        return qs.first().player.first_name + " " + qs.first().player.last_name
+    def get_throws(self, qs):
+        return ThrowScoreSerialzier(qs, many=True).data
+    def get_score_total(self, qs):
+        try:
+            return int(qs.aggregate(Sum('score'))['score__sum'])
+        except TypeError:
+            return 0
+
+    class Meta:
+        model = Throw
+        fields = ('player_name', 'score_total', 'throws')
+
+class ThrowScoreSerialzier(serializers.ModelSerializer):
+
+    class Meta:
+        model = Throw
+        fields = ('score', 'throw_number')
