@@ -85,3 +85,35 @@ class TeamDetail(APIView):
         }
         serializer = TeamDetailSerializer(team, context=context)
         return Response(serializer.data)
+
+class MatchList(APIView):
+    """
+    Return all matches
+    """
+    def get(self, request, format=None):
+        try:
+            season_id = request.query_params.get('season')
+            if season_id:
+                season = Season.objects.get(id=season_id)
+            else:
+                raise Season.DoesNotExist
+        except Season.DoesNotExist:
+            season = CurrentSeason.objects.first().season
+        matches = Match.objects.filter(season=season)
+        serializer = MatchListSerializer(matches, many=True, context={'season':season})
+        return Response(serializer.data)
+
+class MatchDetail(APIView):
+    """
+    Return data of a single match
+    """
+    def get_object(self, pk):
+        try:
+            match = Match.objects.get(pk=pk)
+            return match
+        except Match.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        match = self.get_object(pk)
+        serializer = MatchDetailSerializer(match)
+        return Response(serializer.data)

@@ -9,6 +9,8 @@ urlpatterns = [
     path('users/<int:pk>', views.UserDetail.as_view()),
     path('teams/', views.TeamList.as_view()),
     path('teams/<int:pk>', views.TeamDetail.as_view()),
+    path('matches/', views.MatchList.as_view()),
+    path('matches/<int:pk>', views.MatchDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns) # Allows e.g. /api/users/3.json
