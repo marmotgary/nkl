@@ -1,23 +1,24 @@
 <template>
   <v-layout>
     <v-flex xs10>
+      <h1 class="topic">INFO</h1>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
     <v-flex xs5 class="right">
-      <data-table></data-table>
+      <side-bar></side-bar>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import LoremIpsum from '@/components/LoremIpsum';
-import DataTable from '@/components/DataTable';
+import SideBar from '@/components/SideBar';
 
 export default {
     name: 'info',
     components: {
         LoremIpsum,
-        DataTable
+        SideBar
     }
 };
 </script>
@@ -26,5 +27,8 @@ export default {
 .right {
     padding-right: 3em;
     padding-top: 6em;
+}
+.topic {
+    padding-top: 1em;
 }
 </style>

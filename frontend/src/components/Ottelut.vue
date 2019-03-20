@@ -7,10 +7,12 @@
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.aika }}</td>
-        <td class="text-xs-left">{{ props.item.koti }}</td>
-        <td class="text-xs-left">{{ props.item.vieras }}</td>
-        <td class="text-xs-left">{{ props.item.tulos }}</td>
+        <td>{{ props.item.match_time }}</td>
+        <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
+        <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
+        <td
+          class="text-xs-left"
+        >{{ props.item.home_score_total + '-' + props.item.away_team_total }}</td>
       </template>
       <v-alert
         slot="no-results"
@@ -24,70 +26,53 @@
 
 <script>
 export default {
-    data() {
+    data: function() {
         return {
             search: '',
             headers: [
                 {
                     text: 'Aika',
                     align: 'left',
-                    value: 'aika'
+                    value: 'match_time'
                 },
-                { text: 'Koti', value: 'koti' },
-                { text: 'Vieras', value: 'vieras' },
-                { text: 'Tulos', value: 'tulos' }
+                { text: 'Koti', value: 'home_team.abbreviation' },
+                { text: 'Vieras', value: 'away_team.abbreviation' },
+                { text: 'Tulos' }
             ],
-            matches: [
-                {
-                    aika: '01-23-2019 20:00',
-                    koti: 'Nöhö',
-                    vieras: 'Anaheim',
-                    tulos: '34-5'
-                },
-                {
-                    aika: '01-23-2019 20:00',
-                    koti: 'Darts',
-                    vieras: 'CLG',
-                    tulos: '32-43'
-                },
-                {
-                    aika: '01-23-2019 20:00',
-                    koti: 'KKK',
-                    vieras: 'SFS',
-                    tulos: '54-34'
-                },
-                {
-                    aika: '01-23-2019 19:30',
-                    koti: 'kW',
-                    vieras: 'Nöhö',
-                    tulos: '123-43'
-                },
-                {
-                    aika: '01-23-2019 19:30',
-                    koti: 'Sick',
-                    vieras: 'Darts',
-                    tulos: '12-3'
-                },
-                {
-                    aika: '01-23-2019 19:30',
-                    koti: 'KKK',
-                    vieras: 'Sick',
-                    tulos: '30-44'
-                },
-                {
-                    aika: '01-23-2019 19:00',
-                    koti: 'Nöhö',
-                    vieras: 'Darts',
-                    tulos: '20-20'
-                },
-                {
-                    aika: '01-23-2019 19:00',
-                    koti: 'Draco',
-                    vieras: 'SFS',
-                    tulos: '22'
-                }
-            ]
+            matches: []
         };
+    },
+    methods: {
+        getMatches: function() {
+            this.$http.get('http://localhost:8000/api/matches/').then(
+                function(data) {
+                    this.matches = data.body;
+                },
+                function(error) {
+                    console.log(error.statusText);
+                }
+            );
+        }
+    },
+    mounted: function() {
+        this.getMatches();
     }
 };
 </script>
+export default {
+    data: function() {
+        return {
+            headers: [
+                { text: 'Nimi', value: 'name' },
+                { text: 'Lyhenne', value: 'abbreviation' },
+                { text: 'Ottelut', value: 'matches_played' },
+                { text: 'Voitot', value: 'matches_won' },
+                { text: 'Häviöt', value: 'matches_lost' },
+                { text: 'Tasurit', value: 'matches_tie' },
+                { text: 'Tehdyt pisteet', value: 'score_total' }
+            ],
+            teams: []
+        };
+    },
+
+};

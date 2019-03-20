@@ -18,9 +18,22 @@ At root of the cloned project (where requirements.txt is), install requirements
 
 `pip install -r requirements.txt`
 
+After opening mysql instance and selecting database `nkl` run migrations
+
+`python manage.py migrate`
+
+After the migrations are complete populate the tables
+
+`python manage.py shell`
+
+In the python shell run the following code and wait for it to complete
+
+`from utils.dummyGen import *`
+`initGen()`
+
 Start the development server
 
-`python manage.py runserver`
+`python manage.py runserver localhost:8000`
 
 # Setting up the local development environment for frontend
 
@@ -39,4 +52,4 @@ This will install all the packages listed in "devDependencies" of package.json.
 
 And start up the vue server
 
-`python manage.py runserver`
+`npm run serve`

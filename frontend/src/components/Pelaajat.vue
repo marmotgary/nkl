@@ -5,7 +5,12 @@
       <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
-      <template bind:key="props.item.id" slot="items" slot-scope="props">
+      <template
+        v-if="props.item.first_name !== ''"
+        bind:key="props.item.id"
+        slot="items"
+        slot-scope="props"
+      >
         <td>{{ props.item.first_name +' '+ props.item.last_name}}</td>
         <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
@@ -35,10 +40,15 @@ export default {
         return {
             search: '',
             headers: [
-                { text: 'Nimi', value: 'name', width: '1%', align: 'left' },
+                {
+                    text: 'Nimi',
+                    value: 'first_name',
+                    width: '1%',
+                    align: 'left'
+                },
                 {
                     text: 'Joukkue',
-                    value: 'team_name',
+                    value: 'team.name',
                     width: '1%',
                     align: 'left'
                 },
@@ -113,3 +123,12 @@ export default {
     }
 };
 </script>
+<style>
+.v-table tbody td:not(:last-child) {
+    border-right: solid #c5c5c5 1px;
+}
+.v-table {
+    align-self: center;
+    width: 30%;
+}
+</style>
