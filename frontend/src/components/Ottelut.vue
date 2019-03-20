@@ -7,12 +7,12 @@
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.match_time }}</td>
+        <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:MM') }}</td>
         <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
         <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
         <td
           class="text-xs-left"
-        >{{ props.item.home_score_total + '-' + props.item.away_team_total }}</td>
+        >{{ props.item.home_score_total + '-' + props.item.away_score_total }}</td>
       </template>
       <v-alert
         slot="no-results"

@@ -7,7 +7,9 @@ import router from './router';
 Vue.config.productionTip = false;
 
 import VueResource from 'vue-resource';
+
 Vue.use(VueResource);
+Vue.use(require('vue-moment'));
 
 new Vue({
     router,
