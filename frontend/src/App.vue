@@ -21,5 +21,6 @@ export default {
 <style scoped>
 .content {
     width: 70%;
+    align-self: center;
 }
 </style>

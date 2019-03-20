@@ -59,20 +59,3 @@ export default {
     }
 };
 </script>
-export default {
-    data: function() {
-        return {
-            headers: [
-                { text: 'Nimi', value: 'name' },
-                { text: 'Lyhenne', value: 'abbreviation' },
-                { text: 'Ottelut', value: 'matches_played' },
-                { text: 'Voitot', value: 'matches_won' },
-                { text: 'Häviöt', value: 'matches_lost' },
-                { text: 'Tasurit', value: 'matches_tie' },
-                { text: 'Tehdyt pisteet', value: 'score_total' }
-            ],
-            teams: []
-        };
-    },
-
-};
