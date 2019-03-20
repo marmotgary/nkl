@@ -6,9 +6,8 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
       <template bind:key="props.item.id" slot="items" slot-scope="props">
-        <td>{{props.item.id}}</td>
         <td>{{ props.item.first_name +' '+ props.item.last_name}}</td>
-        <td class="text-xs-left">{{ props.item.team }}</td>
+        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
         <td class="text-xs-left">{{ props.item.score_per_throw }}</td>
@@ -36,12 +35,6 @@ export default {
         return {
             search: '',
             headers: [
-                {
-                    text: '#',
-                    value: 'player_number',
-                    width: '1%',
-                    alignt: 'left'
-                },
                 { text: 'Nimi', value: 'name', width: '1%', align: 'left' },
                 {
                     text: 'Joukkue',
@@ -100,14 +93,14 @@ export default {
                     alignt: 'left'
                 }
             ],
-            teams: []
+            players: []
         };
     },
     methods: {
-        getTeams: function() {
+        getPlayers: function() {
             this.$http.get('http://localhost:8000/api/users/').then(
                 function(data) {
-                    this.teams = data.body;
+                    this.players = data.body;
                 },
                 function(error) {
                     console.log(error.statusText);
@@ -116,7 +109,7 @@ export default {
         }
     },
     mounted: function() {
-        this.getTeams();
+        this.getPlayers();
     }
 };
 </script>
