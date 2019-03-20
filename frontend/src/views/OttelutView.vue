@@ -4,19 +4,19 @@
       <ottelut></ottelut>
     </v-flex>
     <v-flex xs5 class="pl-3">
-      <data-table></data-table>
+      <side-bar></side-bar>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import DataTable from '@/components/DataTable';
+import SideBar from '@/components/SideBar';
 import Ottelut from '@/components/Ottelut';
 
 export default {
     name: 'ottelutview',
     components: {
-        DataTable,
+        SideBar,
         Ottelut
     }
 };

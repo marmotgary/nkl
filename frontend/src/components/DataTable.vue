@@ -1,37 +1,57 @@
-
-
 <template>
-  <v-card>
+  <v-card class="teams">
     <v-card-title>Joukkueet
       <v-spacer></v-spacer>
     </v-card-title>
-    <div class="single-team"></div>
-    <!-- <v-data-table :headers="headers" :items="teams" hide-actions>
-      <template slot="headers" class="text-xs-left"></template>
-      <template slot="items" slot-scope="props">
+    <v-data-table :headers="headers" :items="teams" hide-actions>
+      <template bind:key="team.id" slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.ottelut }}</td>
-        <td class="text-xs-left">{{ props.item.voitot }}</td>
-        <td class="text-xs-left">{{ props.item.tasapelit }}</td>
-        <td class="text-xs-left">{{ props.item.häviöt }}</td>
-        <td class="text-xs-left">{{ props.item.pisteet }}</td>
-        <td class="text-xs-left">{{ props.item.piste_ero }}</td>
-        <td class="text-xs-left"></td>
+        <td>{{ props.item.abbreviation }}</td>
+        <td>{{ props.item.matches_played }}</td>
+        <td>{{ props.item.matches_won }}</td>
+        <td>{{ props.item.matches_lost }}</td>
+        <td>{{ props.item.matches_tie }}</td>
+        <td>{{ props.item.score_total }}</td>
       </template>
-    </v-data-table>-->
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 export default {
-    data() {
-        return {};
+    data: function() {
+        return {
+            headers: [
+                { text: 'Nimi', value: 'name' },
+                { text: 'Lyhenne', value: 'abbreviation' },
+                { text: 'Ottelut', value: 'matches_played' },
+                { text: 'Voitot', value: 'matches_won' },
+                { text: 'Häviöt', value: 'matches_lost' },
+                { text: 'Tasurit', value: 'matches_tie' },
+                { text: 'Tehdyt pisteet', value: 'score_total' }
+            ],
+            teams: []
+        };
     },
-    methods: {},
-    created() {
-        this.$http.get('http://localhost:8000/api/teams/').then(function(data) {
-            console.log(data);
-        });
+    methods: {
+        getTeams: function() {
+            this.$http.get('http://localhost:8000/api/teams/').then(
+                function(data) {
+                    this.teams = data.body;
+                },
+                function(error) {
+                    console.log(error.statusText);
+                }
+            );
+        }
+    },
+    mounted: function() {
+        this.getTeams();
     }
 };
 </script>
+<style scoped>
+.teams {
+    margin-top: 2em;
+}
+</style>

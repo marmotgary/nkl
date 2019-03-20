@@ -4,17 +4,21 @@
       <v-spacer></v-spacer>
       <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="teams" :search="search" hide-actions>
-      <template slot="headers" class="text-xs-left"></template>
-      <template slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-left">{{ props.item.ottelut }}</td>
-        <td class="text-xs-left">{{ props.item.voitot }}</td>
-        <td class="text-xs-left">{{ props.item.tasapelit }}</td>
-        <td class="text-xs-left">{{ props.item.häviöt }}</td>
-        <td class="text-xs-left">{{ props.item.pisteet }}</td>
-        <td class="text-xs-left">{{ props.item.piste_ero }}</td>
-        <td class="text-xs-left"></td>
+    <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
+      <template bind:key="props.item.id" slot="items" slot-scope="props">
+        <td>{{props.item.id}}</td>
+        <td>{{ props.item.first_name +' '+ props.item.last_name}}</td>
+        <td class="text-xs-left">{{ props.item.team }}</td>
+        <td class="text-xs-left">{{ props.item.rounds_total }}</td>
+        <td class="text-xs-left">{{ props.item.score_total }}</td>
+        <td class="text-xs-left">{{ props.item.score_per_throw }}</td>
+        <td class="text-xs-left">{{ props.item.scaled_points }}</td>
+        <td class="text-xs-left">{{ props.item.scaled_points_per_round }}</td>
+        <td class="text-xs-left">{{ props.item.avg_throw_turn }}</td>
+        <td class="text-xs-left">{{ props.item.pikes_total }}</td>
+        <td class="text-xs-left">{{ props.item.pike_percentage }}</td>
+        <td class="text-xs-left">{{ props.item.zeros_total }}</td>
+        <td class="text-xs-left">{{ props.item.gteSix_total }}</td>
       </template>
       <v-alert
         slot="no-results"
@@ -28,105 +32,91 @@
 
 <script>
 export default {
-    data() {
+    data: function() {
         return {
             search: '',
             headers: [
                 {
-                    text: 'Joukkue',
-                    align: 'left',
-                    sortable: false,
-                    value: 'name',
-                    width: '1%'
+                    text: '#',
+                    value: 'player_number',
+                    width: '1%',
+                    alignt: 'left'
                 },
-                { text: 'O', value: 'ottelut', width: '1%', align: 'left' },
-                { text: 'V', value: 'voitot', width: '1%', align: 'left' },
-                { text: 'T', value: 'tasapelit', width: '1%', align: 'left' },
-                { text: 'H', value: 'häviöt', width: '1%', align: 'left' },
-                { text: 'P', value: 'pisteet', width: '1%', align: 'left' },
+                { text: 'Nimi', value: 'name', width: '1%', align: 'left' },
                 {
-                    text: 'kPE',
-                    value: 'piste_ero',
+                    text: 'Joukkue',
+                    value: 'team_name',
                     width: '1%',
                     align: 'left'
                 },
-                { align: 'left', text: '', value: 'name' }
-            ],
-            teams: [
                 {
-                    name: 'Nöhö',
-                    ottelut: 16,
-                    voitot: 14,
-                    tasapelit: 0,
-                    häviöt: 2,
-                    pisteet: 28,
-                    piste_ero: '-171'
+                    text: 'E',
+                    value: 'rounds_total',
+                    width: '1%',
+                    align: 'left'
+                },
+                { text: 'P', value: 'score_total', width: '1%', align: 'left' },
+                {
+                    text: 'PPH',
+                    value: 'score_per_throw',
+                    width: '1%',
+                    align: 'left'
                 },
                 {
-                    name: 'Ehkä',
-                    ottelut: 16,
-                    voitot: 10,
-                    tasapelit: 0,
-                    häviöt: 6,
-                    pisteet: 20,
-                    piste_ero: -10
+                    text: 'SP',
+                    value: 'scaled_points',
+                    width: '1%',
+                    alignt: 'left'
                 },
                 {
-                    name: 'Darts',
-                    ottelut: 16,
-                    voitot: 4,
-                    tasapelit: 0,
-                    häviöt: 12,
-                    pisteet: 8,
-                    piste_ero: -8
+                    text: 'SPe',
+                    value: 'scaled_points_per_round',
+                    width: '1%',
+                    alignt: 'left'
                 },
                 {
-                    name: 'CLG',
-                    ottelut: 16,
-                    voitot: 1,
-                    tasapelit: 1,
-                    häviöt: 14,
-                    pisteet: 3,
-                    piste_ero: -1
+                    text: 'kHP',
+                    value: 'avg_throw_turn',
+                    width: '1%',
+                    align: 'left'
+                },
+                { text: 'H', value: 'pikes_total', width: '1%', align: 'left' },
+                {
+                    text: 'H%',
+                    value: 'pike_percentage',
+                    width: '1%',
+                    align: 'left'
                 },
                 {
-                    name: 'kyRSÄ',
-                    ottelut: 16,
-                    voitot: 0,
-                    tasapelit: 0,
-                    häviöt: 16,
-                    pisteet: 0,
-                    piste_ero: +50
+                    text: 'VM',
+                    value: 'zeros_total',
+                    width: '1%',
+                    align: 'left'
                 },
                 {
-                    name: 'HUI',
-                    ottelut: 16,
-                    voitot: 12,
-                    tasapelit: 3,
-                    häviöt: 1,
-                    pisteet: 27,
-                    piste_ero: -300
-                },
-                {
-                    name: 'W(h)y',
-                    ottelut: 16,
-                    voitot: 8,
-                    tasapelit: 0,
-                    häviöt: 8,
-                    pisteet: 16,
-                    piste_ero: '-74'
-                },
-                {
-                    name: 'KKK',
-                    ottelut: 16,
-                    voitot: 3,
-                    tasapelit: 6,
-                    häviöt: 7,
-                    pisteet: 15,
-                    piste_ero: -30
+                    text: 'JK',
+                    value: 'gteSix_total',
+                    width: '1%',
+                    alignt: 'left'
                 }
-            ]
+            ],
+            teams: []
         };
+    },
+    methods: {
+        getTeams: function() {
+            this.$http.get('http://localhost:8000/api/users/').then(
+                function(data) {
+                    this.teams = data.body;
+                },
+                function(error) {
+                    console.log(error.statusText);
+                }
+            );
+        }
+    },
+    mounted: function() {
+        this.getTeams();
     }
 };
 </script>

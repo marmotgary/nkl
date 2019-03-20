@@ -4,20 +4,20 @@
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
     <v-flex xs5 class="right">
-      <data-table></data-table>
+      <side-bar></side-bar>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import LoremIpsum from '@/components/LoremIpsum';
-import DataTable from '@/components/DataTable';
+import SideBar from '@/components/SideBar';
 
 export default {
     name: 'home',
     components: {
         LoremIpsum,
-        DataTable
+        SideBar
     }
 };
 </script>
