@@ -9,7 +9,7 @@ class SharedUserSerializer(serializers.ModelSerializer):
 
     def get_score_total(self, obj):
         try:
-            return int(Throw.objects.filter(season=self.season, player=obj).aggregate(Sum('score'))['score__sum'])
+            return int(Throw.objects.filter(season=self.season, player=obj, score__gt=0).aggregate(Sum('score'))['score__sum'])
         except TypeError:
             return 0
 
@@ -226,7 +226,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_matches_played(self, obj):
         return Match.objects.filter(season=self.context.get('season')).filter(Q(home_team=obj) | Q(away_team=obj)).count()
     def get_score_total(self, obj):
-        return Throw.objects.filter(team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum']
+        return Throw.objects.filter(score__gt=0, team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum']
 
     class Meta:
         model = Team
@@ -251,7 +251,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
     def get_score_total(self, obj):
         try:
-            return int(Throw.objects.filter(team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum'])
+            return int(Throw.objects.filter(score__gt=0, team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum'])
         except TypeError:
             return 0
     def get_match_count(self, obj):
@@ -343,62 +343,40 @@ class MatchRoundSerializer(serializers.ModelSerializer):
     away = serializers.SerializerMethodField()
 
     def get_home(self, qs):
-        home_throws = qs.filter(team=self.context.get('home_team'))
-        return MatchRoundThrowSerializer(home_throws).data
+        player_ids = qs.filter(team=self.context.get('home_team')).values_list('player__id', flat=True).distinct()
+        players = User.objects.filter(id__in=player_ids)
+        return MatchRowSerialzier(players, many=True, context={'throws':qs}).data
 
     def get_away(self, qs):
-        away_throws = qs.filter(team=self.context.get('away_team'))
-        return MatchRoundThrowSerializer(away_throws).data
+        player_ids = qs.filter(team=self.context.get('away_team')).values_list('player__id', flat=True).distinct()
+        players = User.objects.filter(id__in=player_ids)
+        return MatchRowSerialzier(players, many=True, context={'throws':qs}).data
 
     class Meta:
         model = Throw
         fields = ('home', 'away')
 
-class MatchRoundThrowSerializer(serializers.ModelSerializer):
-    first = serializers.SerializerMethodField()
-    second = serializers.SerializerMethodField()
-    third = serializers.SerializerMethodField()
-    fourth = serializers.SerializerMethodField()
-
-    def get_throws(self, obj):
-        qs = obj
-        return ThrowScoreSerialzier(qs, many=True).data
-    def get_player_name(self,obj):
-        return None
-    def get_first(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=1)).data
-    def get_second(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=2)).data
-    def get_third(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=3)).data
-    def get_fourth(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=4)).data
-
-    class Meta:
-        model = Throw
-        fields = ('id', 'first', 'second', 'third', 'fourth')
-
-class MatchRowSerialzier(serializers.ModelSerializer):
+class MatchRowSerialzier(SharedUserSerializer):
     player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
     throws = serializers.SerializerMethodField()
 
-    def get_player_name(self, qs):
-        return qs.first().player.first_name + " " + qs.first().player.last_name
-    def get_throws(self, qs):
-        return ThrowScoreSerialzier(qs, many=True).data
-    def get_score_total(self, qs):
+    def get_throws(self, obj):
+        throws = self.context.get('throws').filter(player=obj)
+        return ThrowScoreSerialzier(throws, many=True).data
+    def get_score_total(self, obj):
+        throws = self.context.get('throws').filter(player=obj, score__gt=0)
         try:
-            return int(qs.aggregate(Sum('score'))['score__sum'])
+            # return int(qs.aggregate(Sum('score'))['score__sum'])
+            return int(throws.aggregate(Sum('score'))['score__sum'])
         except TypeError:
             return 0
 
     class Meta:
-        model = Throw
+        model = User
         fields = ('player_name', 'score_total', 'throws')
 
 class ThrowScoreSerialzier(serializers.ModelSerializer):
-
     class Meta:
         model = Throw
         fields = ('score', 'throw_number')
