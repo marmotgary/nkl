@@ -71,8 +71,10 @@ def populateTeam(team):
 
 def matchGen():
     season = CurrentSeason.objects.first().season
+    exclude = []
     for home in Team.objects.all():
-        for away in Team.objects.all().exclude(id=home.id):
+        exclude.append(home.id)
+        for away in Team.objects.all().exclude(id__in=exclude):
             print("Generating match and throws..")
             match = Match.objects.create(
                 season=season,
