@@ -327,9 +327,6 @@ class MatchDetailSerializer(SharedMatchSerializer):
     first_round = serializers.SerializerMethodField()
     second_round = serializers.SerializerMethodField()
 
-
-
-
     def get_second_round(self, obj):
         return MatchRoundSerializer(obj.throw_set.filter(throw_round=2), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
 

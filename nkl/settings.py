@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
     'debug_toolbar',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [

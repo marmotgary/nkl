@@ -3,8 +3,11 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_swagger.views import get_swagger_view
 from kyykka.models import User, Team
 from kyykka.serializers import *
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 class UserList(APIView):
     """
