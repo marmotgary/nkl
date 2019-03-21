@@ -6,12 +6,12 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
       <template
-        v-if="props.item.first_name !== ''"
+        v-if="props.item.rounds_total > 0"
         bind:key="props.item.id"
         slot="items"
         slot-scope="props"
       >
-        <td>{{ props.item.first_name +' '+ props.item.last_name}}</td>
+        <td>{{ props.item.player_name }}</td>
         <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
@@ -42,7 +42,7 @@ export default {
             headers: [
                 {
                     text: 'Nimi',
-                    value: 'first_name',
+                    value: 'player_name',
                     width: '1%',
                     align: 'left'
                 },
@@ -126,9 +126,5 @@ export default {
 <style>
 .v-table tbody td:not(:last-child) {
     border-right: solid #c5c5c5 1px;
-}
-.v-table {
-    align-self: center;
-    width: 30%;
 }
 </style>
