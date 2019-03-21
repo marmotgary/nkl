@@ -14,7 +14,7 @@ urlpatterns = [
     path('docs', views.schema_view)
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns) # Allows e.g. /api/users/3.json
+# urlpatterns = format_suffix_patterns(urlpatterns) # Allows e.g. /api/users/3.json
 
 if settings.DEBUG:
     import debug_toolbar
