@@ -28,7 +28,7 @@ class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, format=None):
         season = getSeason(request)
-        serializer = PlayerListSerializer(self.queryset, many=True, context={'season': season})
+        serializer = PlayerListSerializer(self.queryset.filter(playersinteam__season=season), many=True, context={'season': season})
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
@@ -45,6 +45,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request):
         season = getSeason(request)
+        self.queryset = self.queryset.filter(season=season)
         serializer = TeamListSerializer(self.queryset, many=True, context={'season':season})
         return Response(serializer.data)
 
@@ -71,6 +72,7 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request):
         season = getSeason(request)
+        self.queryset = self.queryset.filter(season=season)
         serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 

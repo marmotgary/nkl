@@ -186,6 +186,14 @@ class UserThrowSerializer(serializers.ModelSerializer):
         model = Throw
         fields = ('id', 'throw_round', 'throw_turn', 'throw_number', 'score')
 
+class PlayerNameSerializer(SharedPlayerSerializer):
+    player_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'player_name')
+
+
 class TeamSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -298,17 +306,18 @@ class SharedMatchSerializer(serializers.ModelSerializer):
     def get_away_score_total(self, obj):
         return obj.away_first_round_score + obj.away_second_round_score
 
-    def get_home_team(self, obj):
-        return TeamSerializer(obj.home_team).data
-
-    def get_away_team(self, obj):
-        return TeamSerializer(obj.away_team).data
 
 class MatchListSerializer(SharedMatchSerializer):
     home_score_total = serializers.SerializerMethodField()
     away_score_total = serializers.SerializerMethodField()
     home_team = serializers.SerializerMethodField()
     away_team = serializers.SerializerMethodField()
+
+    def get_home_team(self, obj):
+        return TeamSerializer(obj.home_team).data
+
+    def get_away_team(self, obj):
+        return TeamSerializer(obj.away_team).data
 
     class Meta:
         model = Match
@@ -328,10 +337,26 @@ class MatchDetailSerializer(SharedMatchSerializer):
     def get_first_round(self, obj):
         return MatchRoundSerializer(obj.throw_set.filter(throw_round=1), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
 
+    def get_home_team(self, obj):
+        return MatchTeamSerializer(obj.home_team, context={'season': self.context.get('season')}).data
+
+    def get_away_team(self, obj):
+        return MatchTeamSerializer(obj.away_team, context={'season': self.context.get('season')}).data
+
     class Meta:
         model = Match
         fields = ('id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score', 'home_second_round_score',
-                    'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team')
+                    'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team', 'is_validated')
+
+class MatchTeamSerializer(serializers.ModelSerializer):
+    players = serializers.SerializerMethodField()
+
+    def get_players(self, obj):
+        return PlayerNameSerializer(obj.players.filter(playersinteam__season=self.context.get('season')), many=True).data
+
+    class Meta:
+        model = Team
+        fields = ('id', 'name', 'abbreviation', 'players')
 
 class MatchRoundSerializer(serializers.ModelSerializer):
     home = serializers.SerializerMethodField()
