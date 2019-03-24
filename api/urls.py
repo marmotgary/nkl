@@ -6,7 +6,12 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from api import views
 
 urlpatterns = [
-    path('docs', views.schema_view)
+    path('docs/', views.schema_view),
+    path('csrf/', views.csrf),
+    path('ping/', views.ping),
+    path('login/', views.LoginAPI.as_view()),
+    path('logout/', views.LoginAPI.as_view()),
+    path('register/', views.RegistrationAPI.as_view())
 ]
 
 router = SimpleRouter()

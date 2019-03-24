@@ -1,8 +1,47 @@
 from rest_framework import serializers
 from kyykka.models import Team, Season, PlayersInTeam, Match, Throw, CurrentSeason
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.db.models import Avg, Count, Min, Sum, F, Q
+from django.db import IntegrityError
 
+
+
+def required(value):
+    if value is None:
+        raise serializers.ValidationError('This field is required')
+
+class CreateUserSerializer(serializers.ModelSerializer):
+    username = serializers.EmailField()
+    first_name = serializers.CharField(validators=[required], max_length=30)
+    last_name = serializers.CharField(validators=[required], max_length=150)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        try:
+            user = User.objects.create_user(validated_data['username'],
+                                            validated_data['username'],
+                                            validated_data['password'])
+            user.first_name = validated_data['first_name']
+            user.last_name = validated_data['last_name']
+            return True, None
+        except IntegrityError as e:
+            return False, "Email is already taken"
+
+
+class LoginUserSerializer(serializers.Serializer):
+    username = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Unable to log in with provided credentials.")
 class SharedPlayerSerializer(serializers.ModelSerializer):
     def get_player_name(self,obj):
         return obj.first_name + " " + obj.last_name

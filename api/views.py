@@ -1,11 +1,15 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
-from rest_framework import status, viewsets
+from django.http import Http404, JsonResponse, HttpResponse
+from django.middleware.csrf import get_token
+from rest_framework import status, viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_swagger.views import get_swagger_view
 from kyykka.models import User, Team
 from kyykka.serializers import *
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login, logout
+import json
 
 schema_view = get_swagger_view(title='NKL API')
 
@@ -19,6 +23,50 @@ def getSeason(request):
     except Season.DoesNotExist:
         season = CurrentSeason.objects.first().season
     return season
+
+def csrf(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
+def ping(request):
+    return JsonResponse({'result:': 'pong'})
+
+class LoginAPI(generics.GenericAPIView):
+    serializer_class = LoginUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        login(request, user)
+        response = HttpResponse(json.dumps({'success':True}))
+        return response
+
+class LogoutAPI(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponse(json.dumps({'success':True}))
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        print(user)
+        login(request, user)
+        print(request.session.session_key)
+        response = HttpResponse(json.dumps({'success':True}))
+        return response
+
+class RegistrationAPI(generics.GenericAPIView):
+    serializer_class = CreateUserSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        success, message = serializer.save()
+        return Response({
+            'success': True,
+            'message': message,
+        })
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
     """
