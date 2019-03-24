@@ -50,9 +50,7 @@ class LogoutAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
-        print(user)
         login(request, user)
-        print(request.session.session_key)
         response = HttpResponse(json.dumps({'success':True}))
         return response
 

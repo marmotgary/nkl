@@ -98,14 +98,26 @@ def throwGen(match):
     for team in [match.home_team, match.away_team]:
         for throw_round in range(1,3):
             for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
-                for throw_number in range(1,5):
-                    Throw.objects.create(
-                        match=match,
-                        player=player,
-                        team=team,
-                        season=season,
-                        throw_turn=throw_turn + 1,
-                        throw_number=throw_number,
-                        throw_round=throw_round,
-                        score=random.randint(-1,7)
+                Throw.objects.create(
+                    match=match,
+                    player=player,
+                    team=team,
+                    season=season,
+                    throw_turn=throw_turn + 1,
+                    throw_round=throw_round,
+                    score_first=random.randint(-1,7),
+                    score_second=random.randint(-1,7),
+                    score_third=random.randint(-1,7),
+                    score_fourth=random.randint(-1,7),
                     )
+                # for throw_number in range(1,5):
+                #     Throw.objects.create(
+                #         match=match,
+                #         player=player,
+                #         team=team,
+                #         season=season,
+                #         throw_turn=throw_turn + 1,
+                #         throw_number=throw_number,
+                #         throw_round=throw_round,
+                #         score=random.randint(-1,7)
+                #     )

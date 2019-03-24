@@ -48,7 +48,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
 
     def get_score_total(self, obj):
         try:
-            return int(Throw.objects.filter(season=self.context.get('season'), player=obj, score__gt=0).aggregate(Sum('score'))['score__sum'])
+            return int(Throw.objects.filter(player=obj).annotate(score = F('score_first') + F('score_second')+ F('score_third')+ F('score_fourth')).aggregate(Sum('score'))['score__sum'])
+            # return int(Throw.objects.filter(season=self.context.get('season'), player=obj, score__gt=0).aggregate(Sum('score'))['score__sum'])
         except TypeError:
             return 0
 
@@ -56,7 +57,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         return Match.objects.filter(season=self.context.get('season'), throw__player=obj).distinct().count()
 
     def get_rounds_total(self, obj):
-        return obj.throw_set.count() // 4
+        return obj.throw_set.count()
+        # return obj.throw_set.count() // 4
 
     def get_team(self, obj):
         try:
@@ -66,18 +68,24 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         return team
 
     def get_pikes_total(self, obj):
-        self.pikes = obj.throw_set.filter(season=self.context.get('season'), player=obj, score=-1).count()
+        pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=-1)),second=Count('pk',filter=Q(score_second=-1)),third=Count('pk',filter=Q(score_third=-1)),fourth=Count('pk',filter=Q(score_fourth=-1)))
+        self.pikes = pikes['first'] + pikes['second'] + pikes['third'] + pikes['fourth']
+        # self.pikes = obj.throw_set.filter(season=self.context.get('season'), player=obj, score=-1).count()
         return self.pikes
 
     def get_zeros_total(self, obj):
-        self.zeros = Throw.objects.filter(season=self.context.get('season'), player=obj, score=0).count()
+        # self.zeros = Throw.objects.filter(season=self.context.get('season'), player=obj, score=0).count()
+        zeros = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=0)),second=Count('pk',filter=Q(score_second=0)),third=Count('pk',filter=Q(score_third=0)),fourth=Count('pk',filter=Q(score_fourth=0)))
+        self.zeros = zeros['first'] + zeros['second'] + zeros['third'] + zeros['fourth']
         return self.zeros
 
     def get_gteSix_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
+        sixes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first__gte=6)),second=Count('pk',filter=Q(score_second__gte=6)),third=Count('pk',filter=Q(score_third__gte=6)),fourth=Count('pk',filter=Q(score_fourth__gte=6)))
+        return sixes['first'] + sixes['second'] + sixes['third'] + sixes['fourth']
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
 
     def get_throws_total(self, obj):
-        self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj).count()
+        self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj).count() * 4
         return self.throws
 
     def get_pike_percentage(self, obj):
@@ -144,23 +152,29 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
     matches = serializers.SerializerMethodField()
 
     def get_ones_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score=1).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score=1).count()
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==1)),second=Count('pk',filter=Q(score==1)),third=Count('pk',filter=Q(score==1)),fourth=Count('pk',filter=Q(score==1)))
 
     def get_twos_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score=2).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score=2).count()
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==2)),second=Count('pk',filter=Q(score==2)),third=Count('pk',filter=Q(score==2)),fourth=Count('pk',filter=Q(score==2)))
 
     def get_threes_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score=3).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score=3).count()
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==3)),second=Count('pk',filter=Q(score==3)),third=Count('pk',filter=Q(score==3)),fourth=Count('pk',filter=Q(score==3)))
 
     def get_fours_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score=4).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score=4).count()
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==4)),second=Count('pk',filter=Q(score==4)),third=Count('pk',filter=Q(score==4)),fourth=Count('pk',filter=Q(score==4)))
 
     def get_fives_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), player=obj, score=5).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj, score=5).count()
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==5)),second=Count('pk',filter=Q(score==5)),third=Count('pk',filter=Q(score==5)),fourth=Count('pk',filter=Q(score==5)))
 
-    def get_gteSix_total(self, obj):
-        self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
-        return self.throws
+
+    # def get_gteSix_total(self, obj):
+    #     self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
+    #     return self.throws
 
     def get_zero_percentage(self, obj):
         zero_count = self.zeros
