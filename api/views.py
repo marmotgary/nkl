@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
+from django.db.models import Q
 from rest_framework import status, viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -41,18 +42,10 @@ class LoginAPI(generics.GenericAPIView):
         response = HttpResponse(json.dumps({'success':True}))
         return response
 
-class LogoutAPI(generics.GenericAPIView):
+class LogoutAPI(APIView):
     def post(self, request, *args, **kwargs):
         logout(request)
         return HttpResponse(json.dumps({'success':True}))
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        login(request, user)
-        response = HttpResponse(json.dumps({'success':True}))
-        return response
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
@@ -91,7 +84,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request):
         season = getSeason(request)
-        self.queryset = self.queryset.filter(season=season)
+        self.queryset = self.queryset.filter(playersinteam__season=season).distinct()
         serializer = TeamListSerializer(self.queryset, many=True, context={'season':season})
         return Response(serializer.data)
 
@@ -99,9 +92,10 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         season = getSeason(request)
         team = get_object_or_404(self.queryset, pk=pk)
         # Do these querys only once here, instead of doing them 2 times at serializer.
-        throws_total = Throw.objects.filter(season=season, team=team).count()
-        pikes_total = Throw.objects.filter(season=season, team=team, score=-1).count()
-        zeros_total = Throw.objects.filter(season=season, team=team, score=0).count()
+        throws_total = Throw.objects.filter(season=season, team=team).count() * 4
+        pikes_total = Throw.objects.filter(season=season, team=team).annotate(count=Count('pk',filter=Q(score_first=-1)) + Count('pk',filter=Q(score_second=-1)) + Count('pk',filter=Q(score_third=-1)) + Count('pk',filter=Q(score_fourth=-1))).aggregate(Sum('count'))['count__sum']
+        zeros_total = Throw.objects.filter(season=season, team=team).annotate(count=Count('pk',filter=Q(score_first=0)) + Count('pk',filter=Q(score_second=0)) + Count('pk',filter=Q(score_third=0)) + Count('pk',filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']
+        print(throws_total, pikes_total, zeros_total)
         context = {
             'season':season,
             'throws_total': throws_total,
@@ -109,6 +103,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             'zeros_total': zeros_total,
         }
         serializer = TeamDetailSerializer(team, context=context)
+        return Response(serializer.data)
 
 class MatchViewSet(viewsets.ReadOnlyModelViewSet):
     """

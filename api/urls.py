@@ -10,7 +10,7 @@ urlpatterns = [
     path('csrf/', views.csrf),
     path('ping/', views.ping),
     path('login/', views.LoginAPI.as_view()),
-    path('logout/', views.LoginAPI.as_view()),
+    path('logout/', views.LogoutAPI.as_view()),
     path('register/', views.RegistrationAPI.as_view())
 ]
 

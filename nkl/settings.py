@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
 ]
 
+LOGIN_URL = '/api/login/'
+LOGOUT_URL = '/api/logout/'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
