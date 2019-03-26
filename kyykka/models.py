@@ -70,8 +70,11 @@ class Throw(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     throw_round = models.IntegerField()
     throw_turn = models.IntegerField()
-    throw_number = models.IntegerField(null=True)
-    score = models.CharField(max_length=2)
+    # throw_number = models.IntegerField(null=True)
+    score_first = models.IntegerField(null=True)
+    score_second = models.IntegerField(null=True)
+    score_third = models.IntegerField(null=True)
+    score_fourth = models.IntegerField(null=True)
 
 # TBD if used
 # class UserRoles(models.Model):

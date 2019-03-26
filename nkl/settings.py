@@ -38,9 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
-    # 'debug_toolbar',
-    'corsheaders',
+    'debug_toolbar',
+    'rest_framework_swagger',
 ]
+
+LOGIN_URL = '/api/login/'
+LOGOUT_URL = '/api/logout/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication', ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # )
+}
 
 MIDDLEWARE = [
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
