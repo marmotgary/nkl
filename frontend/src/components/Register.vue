@@ -6,7 +6,12 @@
         <span class="headline">User Profile</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="info" transition="scale-transition" outline>{{alertMessage}}</v-alert>
+        <v-alert :value="alert" type="info" transition="scale-transition" outline>
+          <b>Please correct the following error(s):</b>
+          <ul>
+            <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
+          </ul>
+        </v-alert>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
@@ -16,20 +21,13 @@
               <v-text-field v-model="credentials.last_name" label="Last name*" required></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field
-                v-model="credentials.username"
-                label="Email*"
-                type="email"
-                :rules="rules.email"
-                required
-              ></v-text-field>
+              <v-text-field v-model="credentials.username" label="Email*" type="email" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
                 v-model="credentials.password"
                 label="Password*"
                 type="password"
-                :rules="rules.password"
                 required
               ></v-text-field>
             </v-flex>
@@ -53,20 +51,8 @@ export default {
     data: () => ({
         dialog: false,
         alert: false,
-        credentials: {},
-        // Diis aways
-        rules: {
-            email: [
-                v => !!v || this.alertMessage('Email is required'),
-                v => re.test(v) || 'Enter a valid email address'
-            ],
-            password: [
-                v => !!v || 'Password is required',
-                v =>
-                    (v && v.length > 7) ||
-                    'The password must be longer than 7 characters'
-            ]
-        }
+        errors: [],
+        credentials: {}
     }),
     methods: {
         register() {
@@ -74,10 +60,46 @@ export default {
                 .post('http://localhost:8000/api/register/', this.credentials)
                 .then(res => {
                     this.dialog = false;
+                })
+                .catch(e => {
+                    this.checkForm();
                 });
         },
-        // Chang messuga here
-        changeMessage(message) {}
+        checkForm: function(e) {
+            if (
+                this.credentials.username &&
+                this.credentials.password &&
+                this.credentials.first_name &&
+                this.credentials.last_name
+            ) {
+                return true;
+            }
+
+            this.errors = [];
+
+            if (!this.alert) {
+                this.alert = !this.alert;
+            }
+
+            if (!this.credentials.username) {
+                this.errors.push('Email required.');
+            } else if (!this.validEmail(this.credentials.username)) {
+                this.errors.push('Valid email required.');
+            }
+            if (!this.credentials.password) {
+                this.errors.push('Password required.');
+            }
+            if (!this.credentials.first_name) {
+                this.errors.push('First name required.');
+            }
+            if (!this.credentials.last_name) {
+                this.errors.push('Last name required.');
+            }
+        },
+        validEmail: function(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
     }
 };
 </script>
