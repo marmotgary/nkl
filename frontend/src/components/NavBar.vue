@@ -26,8 +26,11 @@
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <log-in class="hidden-sm-and-down"></log-in>
-      <register class="hidden-sm-and-down"></register>
+      <div v-if="!loggedIn">
+        <log-in class="hidden-sm-and-down"></log-in>
+        <register class="hidden-sm-and-down"></register>
+      </div>
+      <div v-if="loggedIn">Logged in as Seppo</div>
       <v-spacer></v-spacer>
     </v-toolbar>
   </span>
@@ -47,6 +50,7 @@ export default {
         return {
             appTitle: 'NKL',
             drawer: false,
+            loggedIn: false,
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },

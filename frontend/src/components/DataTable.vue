@@ -3,8 +3,9 @@
     <v-card-title>
       Joukkueet
       <v-spacer></v-spacer>
+      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="teams" hide-actions>
+    <v-data-table :headers="headers" :search="search" :items="teams" hide-actions>
       <template slot="no-data">
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -25,6 +26,7 @@
 export default {
     data: function() {
         return {
+            search: '',
             headers: [
                 { text: 'Nimi', value: 'name' },
                 { text: 'Lyhenne', value: 'abbreviation' },
