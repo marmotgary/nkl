@@ -56,11 +56,9 @@ export default {
                     response => {
                         this.dialog = !this.dialog;
                         this.alert = false;
-                        console.log('LOGIN SUCCESFUL!!');
                     },
                     response => {
                         this.alert = !this.alert;
-                        console.log('LOGIN ERROR!!');
                     }
                 );
         }
