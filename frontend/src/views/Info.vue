@@ -24,10 +24,6 @@ export default {
 </script>
 
 <style scoped>
-.right {
-    padding-right: 3em;
-    padding-top: 6em;
-}
 .topic {
     padding-top: 1em;
 }

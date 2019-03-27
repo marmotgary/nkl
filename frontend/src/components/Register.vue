@@ -6,6 +6,7 @@
         <span class="headline">User Profile</span>
       </v-card-title>
       <v-card-text>
+        <v-alert :value="alert" type="info" transition="scale-transition" outline>{{alertMessage}}</v-alert>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm6 md4>
@@ -38,8 +39,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-1" flat @click="dialog = false">Close</v-btn>
-        <v-btn color="red darken-1" flat @click="register">Register</v-btn>
+        <v-btn color="primary darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn color="primary darken-1" flat @click="register">Register</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -51,10 +52,12 @@ export default {
     name: 'Register',
     data: () => ({
         dialog: false,
+        alert: false,
         credentials: {},
+        // Diis aways
         rules: {
             email: [
-                v => !!v || 'Email is required',
+                v => !!v || this.alertMessage('Email is required'),
                 v => re.test(v) || 'Enter a valid email address'
             ],
             password: [
@@ -72,7 +75,9 @@ export default {
                 .then(res => {
                     this.dialog = false;
                 });
-        }
+        },
+        // Chang messuga here
+        changeMessage(message) {}
     }
 };
 </script>

@@ -1,5 +1,6 @@
 <template>
   <v-layout>
+    <div class="circular" v-bind:style="{ backgroundImage: 'url(../public/squirrel.jpeg)' }"></div>
     <v-flex xs10>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
@@ -22,9 +23,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .right {
     padding-right: 3em;
     padding-top: 6em;
+}
+.layout {
+    margin-bottom: 1em;
 }
 </style>

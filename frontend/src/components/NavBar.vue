@@ -19,7 +19,7 @@
         to="/"
         style="text-decoration: none; color:white; padding-right:2em; padding-left:1em;"
       >
-        <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
+        <img src="../../public/package-lock.png">
       </router-link>
       <v-btn flat class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
