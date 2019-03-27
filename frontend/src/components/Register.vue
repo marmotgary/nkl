@@ -60,27 +60,25 @@ export default {
                 .post('http://localhost:8000/api/register/', this.credentials)
                 .then(res => {
                     this.dialog = false;
+                    this.alert = false;
                 })
                 .catch(e => {
                     this.checkForm();
                 });
         },
         checkForm: function(e) {
-            if (
-                this.credentials.username &&
-                this.credentials.password &&
-                this.credentials.first_name &&
-                this.credentials.last_name
-            ) {
-                return true;
-            }
-
             this.errors = [];
 
             if (!this.alert) {
                 this.alert = !this.alert;
             }
 
+            if (!this.credentials.first_name) {
+                this.errors.push('First name required.');
+            }
+            if (!this.credentials.last_name) {
+                this.errors.push('Last name required.');
+            }
             if (!this.credentials.username) {
                 this.errors.push('Email required.');
             } else if (!this.validEmail(this.credentials.username)) {
@@ -89,11 +87,9 @@ export default {
             if (!this.credentials.password) {
                 this.errors.push('Password required.');
             }
-            if (!this.credentials.first_name) {
-                this.errors.push('First name required.');
-            }
-            if (!this.credentials.last_name) {
-                this.errors.push('Last name required.');
+
+            if (errors.length == 0) {
+                return true;
             }
         },
         validEmail: function(email) {
