@@ -1,10 +1,14 @@
 <template>
   <v-card class="teams">
-    <v-card-title>Joukkueet
+    <v-card-title>
+      Joukkueet
       <v-spacer></v-spacer>
     </v-card-title>
     <v-flex xs12>
       <v-data-table :headers="headers" :items="teams" hide-actions>
+        <template slot="no-data">
+          <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+        </template>
         <template bind:key="team.id" slot="items" slot-scope="props">
           <td class="block">{{ props.item.abbreviation }}</td>
           <td class="block">{{ props.item.matches_played }}</td>

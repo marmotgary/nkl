@@ -1,9 +1,13 @@
 <template>
   <v-card class="teams">
-    <v-card-title>Joukkueet
+    <v-card-title>
+      Joukkueet
       <v-spacer></v-spacer>
     </v-card-title>
     <v-data-table :headers="headers" :items="teams" hide-actions>
+      <template slot="no-data">
+        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+      </template>
       <template bind:key="team.id" slot="items" slot-scope="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.abbreviation }}</td>

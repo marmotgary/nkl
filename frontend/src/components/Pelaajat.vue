@@ -1,10 +1,14 @@
 <template>
   <v-card>
-    <v-card-title>Pelaajat
+    <v-card-title>
+      Pelaajat
       <v-spacer></v-spacer>
       <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
+      <template slot="no-data">
+        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+      </template>
       <template
         v-if="props.item.rounds_total > 0"
         bind:key="props.item.id"

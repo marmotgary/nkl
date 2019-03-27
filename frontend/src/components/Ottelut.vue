@@ -1,10 +1,14 @@
 <template>
   <v-card>
-    <v-card-title>Ottelut
+    <v-card-title>
+      Ottelut
       <v-spacer></v-spacer>
       <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
+      <template slot="no-data">
+        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+      </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:MM') }}</td>
