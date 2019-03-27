@@ -6,13 +6,24 @@
         <span class="headline">Log In</span>
       </v-card-title>
       <v-card-text>
+        <v-alert
+          :value="alert"
+          type="info"
+          transition="scale-transition"
+          outline
+        >Invalid user credentials.</v-alert>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field label="Email*" required></v-text-field>
+              <v-text-field v-model="credentials.username" label="Email*" required></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-text-field label="Password*" type="password" required></v-text-field>
+              <v-text-field
+                v-model="credentials.password"
+                label="Password*"
+                type="password"
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -20,8 +31,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" flat @click="dialog = false">Log in</v-btn>
+        <v-btn color="blue darken-1" flat @click="dialog = false, alert=false">Close</v-btn>
+        <v-btn color="blue darken-1" v-on:keyup.enter="login" flat @click="login">Log in</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -31,8 +42,29 @@
 export default {
     name: 'LogIn',
     data: () => ({
-        dialog: false
-    })
+        dialog: false,
+        alert: false,
+        valid: true,
+        loading: false,
+        credentials: {}
+    }),
+    methods: {
+        login() {
+            this.$http
+                .post('http://localhost:8000/api/login/', this.credentials)
+                .then(
+                    response => {
+                        this.dialog = !this.dialog;
+                        this.alert = false;
+                        console.log('LOGIN SUCCESFUL!!');
+                    },
+                    response => {
+                        this.alert = !this.alert;
+                        console.log('LOGIN ERROR!!');
+                    }
+                );
+        }
+    }
 };
 </script>
 

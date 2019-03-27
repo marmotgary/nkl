@@ -112,7 +112,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('http://localhost:8000/api/users/').then(
+            this.$http.get('http://localhost:8000/api/players/').then(
                 function(data) {
                     this.players = data.body;
                 },
