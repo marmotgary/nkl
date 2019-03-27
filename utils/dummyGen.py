@@ -29,6 +29,7 @@ def seasonGen(amount=3):
         year = year - 1
         print(year)
 
+
 # Generate Users
 
 
@@ -81,21 +82,24 @@ def populateTeam(team):
 
 def matchGen():
     season = CurrentSeason.objects.first().season
+    exclude = []
     for home in Team.objects.all():
-        for away in Team.objects.all().exclude(id=home.id):
+        exclude.append(home.id)
+        for away in Team.objects.all().exclude(id__in=exclude):
             print("Generating match and throws..")
             match = Match.objects.create(
                 season=season,
                 match_time=fake.date_time_between(
-                    start_date="-60y", end_date="now", tzinfo=pytz.timezone("Europe/Helsinki")),
+                    start_date="-60y",
+                    end_date="now",
+                    tzinfo=pytz.timezone("Europe/Helsinki")),
                 home_first_round_score=random.randint(0, 100),
                 home_second_round_score=random.randint(0, 100),
                 away_first_round_score=random.randint(0, 100),
                 away_second_round_score=random.randint(0, 100),
                 home_team=home,
                 away_team=away,
-                is_validated=random.choice([True, False])
-            )
+                is_validated=random.choice([True, False]))
             throwGen(match)
 
 
@@ -107,15 +111,28 @@ def throwGen(match):
     season = CurrentSeason.objects.first().season
     for team in [match.home_team, match.away_team]:
         for throw_round in range(1, 3):
-            for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
-                for throw_number in range(1, 5):
-                    Throw.objects.create(
-                        match=match,
-                        player=player,
-                        team=team,
-                        season=season,
-                        throw_turn=throw_turn + 1,
-                        throw_number=throw_number,
-                        throw_round=throw_round,
-                        score=random.randint(-1, 7)
-                    )
+            for throw_turn, player in enumerate(
+                    team.players.all().order_by('?')[:4]):
+                Throw.objects.create(
+                    match=match,
+                    player=player,
+                    team=team,
+                    season=season,
+                    throw_turn=throw_turn + 1,
+                    throw_round=throw_round,
+                    score_first=random.randint(-1, 7),
+                    score_second=random.randint(-1, 7),
+                    score_third=random.randint(-1, 7),
+                    score_fourth=random.randint(-1, 7),
+                )
+                # for throw_number in range(1,5):
+                #     Throw.objects.create(
+                #         match=match,
+                #         player=player,
+                #         team=team,
+                #         season=season,
+                #         throw_turn=throw_turn + 1,
+                #         throw_number=throw_number,
+                #         throw_round=throw_round,
+                #         score=random.randint(-1,7)
+                #     )

@@ -1,48 +1,111 @@
 from rest_framework import serializers
 from kyykka.models import Team, Season, PlayersInTeam, Match, Throw, CurrentSeason
 from django.contrib.auth.models import User
-from django.db.models import Avg, Count, Min, Sum, F, Q
+from django.contrib.auth import authenticate, login
+from django.db.models import Avg, Count, Min, Sum, F, Q, Case, Value, When, IntegerField
+from django.db import IntegrityError
 
-class SharedUserSerializer(serializers.ModelSerializer):
+
+
+def required(value):
+    if value is None:
+        raise serializers.ValidationError('This field is required')
+
+class CreateUserSerializer(serializers.ModelSerializer):
+    username = serializers.EmailField()
+    first_name = serializers.CharField(validators=[required], max_length=30)
+    last_name = serializers.CharField(validators=[required], max_length=150)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        try:
+            user = User.objects.create_user(validated_data['username'],
+                                            validated_data['username'],
+                                            validated_data['password'])
+            user.first_name = validated_data['first_name']
+            user.last_name = validated_data['last_name']
+            return True, None
+        except IntegrityError as e:
+            return False, "Email is already taken"
+
+
+class LoginUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    # username = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Unable to log in with provided credentials.")
+class SharedPlayerSerializer(serializers.ModelSerializer):
     def get_player_name(self,obj):
         return obj.first_name + " " + obj.last_name
 
     def get_score_total(self, obj):
         try:
-            return int(Throw.objects.filter(season=self.season, player=obj).aggregate(Sum('score'))['score__sum'])
+            # return int(Throw.objects.filter(player=obj).annotate(score = F('score_first') + F('score_second')+ F('score_third')+ F('score_fourth')).aggregate(Sum('score'))['score__sum'])
+            return Throw.objects.filter(player=obj).annotate(
+                score = Case(
+                    When(score_first__gt=0, then='score_first'),
+                    default=Value('0'),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_second__gt=0, then='score_second'),
+                    default=Value('0'),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_third__gt=0, then='score_third'),
+                    default=Value('0'),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_fourth__gt=0, then='score_fourth'),
+                    default=Value('0'),
+                    output_field=IntegerField(),
+                )
+            ).aggregate(Sum('score'))['score__sum']
+            # return int(Throw.objects.filter(season=self.context.get('season'), player=obj, score__gt=0).aggregate(Sum('score'))['score__sum'])
         except TypeError:
             return 0
 
     def get_match_count(self, obj):
-        return Match.objects.filter(season=self.season, throw__player=obj).distinct().count()
+        return Match.objects.filter(season=self.context.get('season'), throw__player=obj).distinct().count()
 
     def get_rounds_total(self, obj):
-        return obj.throw_set.count() // 4
+        return obj.throw_set.count()
+        # return obj.throw_set.count() // 4
 
     def get_team(self, obj):
         try:
-            self.season = Season.objects.get(id=self.context.get('season_id'))
-        except Season.DoesNotExist:
-            self.season = CurrentSeason.objects.first().season
-        try:
-            team = TeamSerializer(obj.team_set.get(playersinteam__season=self.season)).data
+            team = TeamSerializer(obj.team_set.get(playersinteam__season=self.context.get('season'))).data
         except Team.DoesNotExist:
             team = None
         return team
 
     def get_pikes_total(self, obj):
-        self.pikes = obj.throw_set.filter(season=self.season, player=obj, score=-1).count()
+        # pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=-1)),second=Count('pk',filter=Q(score_second=-1)),third=Count('pk',filter=Q(score_third=-1)),fourth=Count('pk',filter=Q(score_fourth=-1)))
+        # self.pikes = pikes['first'] + pikes['second'] + pikes['third'] + pikes['fourth']
+        self.pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=-1)) + Count('pk',filter=Q(score_second=-1)) + Count('pk',filter=Q(score_third=-1)) + Count('pk',filter=Q(score_fourth=-1))).aggregate(Sum('count'))['count__sum']
         return self.pikes
 
     def get_zeros_total(self, obj):
-        self.zeros = Throw.objects.filter(season=self.season, player=obj, score=0).count()
+        # zeros = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=0)),second=Count('pk',filter=Q(score_second=0)),third=Count('pk',filter=Q(score_third=0)),fourth=Count('pk',filter=Q(score_fourth=0)))
+        # self.zeros = zeros['first'] + zeros['second'] + zeros['third'] + zeros['fourth']
+        self.zeros = Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=0)) + Count('pk',filter=Q(score_second=0)) + Count('pk',filter=Q(score_third=0)) + Count('pk',filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']
         return self.zeros
 
     def get_gteSix_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score__gte=6).count()
+        # sixes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first__gte=6)),second=Count('pk',filter=Q(score_second__gte=6)),third=Count('pk',filter=Q(score_third__gte=6)),fourth=Count('pk',filter=Q(score_fourth__gte=6)))
+        # return sixes['first'] + sixes['second'] + sixes['third'] + sixes['fourth']
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first__gte=6)) + Count('pk',filter=Q(score_second__gte=6)) + Count('pk',filter=Q(score_third__gte=6)) + Count('pk',filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
 
     def get_throws_total(self, obj):
-        self.throws = Throw.objects.filter(season=self.season, player=obj).count()
+        self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj).count() * 4
         return self.throws
 
     def get_pike_percentage(self, obj):
@@ -63,7 +126,7 @@ class SharedUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
 
-class UserListSerializer(SharedUserSerializer):
+class PlayerListSerializer(SharedPlayerSerializer):
     team = serializers.SerializerMethodField()
     player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
@@ -77,7 +140,6 @@ class UserListSerializer(SharedUserSerializer):
     avg_throw_turn = serializers.SerializerMethodField()
     scaled_points = serializers.SerializerMethodField()
     scaled_points_per_round = serializers.SerializerMethodField()
-    season = 1
     def get_scaled_points(self, obj):
         return None
     def get_scaled_points_per_round(self, obj):
@@ -88,7 +150,7 @@ class UserListSerializer(SharedUserSerializer):
                     'pikes_total', 'zeros_total', 'gteSix_total', 'throws_total', 'pike_percentage',
                     'score_per_throw', 'scaled_points', 'scaled_points_per_round', 'avg_throw_turn')
 
-class UserDetailSerializer(SharedUserSerializer):
+class PlayerDetailSerializer(SharedPlayerSerializer):
     team = serializers.SerializerMethodField()
     player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
@@ -110,23 +172,29 @@ class UserDetailSerializer(SharedUserSerializer):
     matches = serializers.SerializerMethodField()
 
     def get_ones_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score=1).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==1)),second=Count('pk',filter=Q(score==1)),third=Count('pk',filter=Q(score==1)),fourth=Count('pk',filter=Q(score==1)))
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=1)) + Count('pk',filter=Q(score_second=1)) + Count('pk',filter=Q(score_third=1)) + Count('pk',filter=Q(score_fourth=1))).aggregate(Sum('count'))['count__sum']
 
     def get_twos_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score=2).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==2)),second=Count('pk',filter=Q(score==2)),third=Count('pk',filter=Q(score==2)),fourth=Count('pk',filter=Q(score==2)))
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=2)) + Count('pk',filter=Q(score_second=2)) + Count('pk',filter=Q(score_third=2)) + Count('pk',filter=Q(score_fourth=2))).aggregate(Sum('count'))['count__sum']
 
     def get_threes_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score=3).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==3)),second=Count('pk',filter=Q(score==3)),third=Count('pk',filter=Q(score==3)),fourth=Count('pk',filter=Q(score==3)))
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=3)) + Count('pk',filter=Q(score_second=3)) + Count('pk',filter=Q(score_third=3)) + Count('pk',filter=Q(score_fourth=3))).aggregate(Sum('count'))['count__sum']
 
     def get_fours_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score=4).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==4)),second=Count('pk',filter=Q(score==4)),third=Count('pk',filter=Q(score==4)),fourth=Count('pk',filter=Q(score==4)))
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=4)) + Count('pk',filter=Q(score_second=4)) + Count('pk',filter=Q(score_third=4)) + Count('pk',filter=Q(score_fourth=4))).aggregate(Sum('count'))['count__sum']
 
     def get_fives_total(self, obj):
-        return Throw.objects.filter(season=self.season, player=obj, score=5).count()
+        # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==5)),second=Count('pk',filter=Q(score==5)),third=Count('pk',filter=Q(score==5)),fourth=Count('pk',filter=Q(score==5)))
+        return Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(count=Count('pk',filter=Q(score_first=5)) + Count('pk',filter=Q(score_second=5)) + Count('pk',filter=Q(score_third=5)) + Count('pk',filter=Q(score_fourth=5))).aggregate(Sum('count'))['count__sum']
 
-    def get_gteSix_total(self, obj):
-        self.throws = Throw.objects.filter(season=self.season, player=obj, score__gte=6).count()
-        return self.throws
+
+    # def get_gteSix_total(self, obj):
+    #     self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
+    #     return self.throws
 
     def get_zero_percentage(self, obj):
         zero_count = self.zeros
@@ -139,7 +207,7 @@ class UserDetailSerializer(SharedUserSerializer):
 
     def get_matches(self, obj):
         try:
-            matches = Match.objects.filter(throw__player=obj, season=self.season).distinct()
+            matches = Match.objects.filter(throw__player=obj, season=self.context.get('season')).distinct()
             matches = UserMatchSerializer(matches, many=True, context={'user_id':obj.id}).data
         except Match.DoesNotExist:
             matches = None
@@ -162,7 +230,6 @@ class UserMatchSerializer(serializers.ModelSerializer):
         try:
             user = self.context.get('user_id')
             throws = obj.throw_set.filter(player=user)
-            # rounds = UserRoundThrowSerializer(throws, many=True).data
             rounds = UserThrowSerializer(throws, many=True).data
         except Throw.DoesNotExist:
             rounds = None
@@ -172,24 +239,23 @@ class UserMatchSerializer(serializers.ModelSerializer):
         model = Match
         fields = ('id', 'match_time', 'home_team', 'away_team', 'throws')
 
-class UserRoundThrowSerializer(serializers.Serializer):
-    first_round = serializers.SerializerMethodField()
-    second_round = serializers.SerializerMethodField()
-
-    def get_first_round(self, obj):
-        # throws = obj.filter(throw_round=1)
-        throws = None
-        throws = UserThrowSerializer(obj).data
-        return throws
-
-    def get_second_round(self, obj):
-        return 2
-
 class UserThrowSerializer(serializers.ModelSerializer):
+    score_total = serializers.SerializerMethodField()
+
+    def get_score_total(self, obj):
+        return None
 
     class Meta:
         model = Throw
-        fields = ('id', 'throw_round', 'throw_turn', 'throw_number', 'score')
+        fields = ('id', 'throw_round', 'throw_turn', 'score_first','score_second','score_third','score_fourth', 'score_total')
+
+class PlayerNameSerializer(SharedPlayerSerializer):
+    player_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'player_name')
+
 
 class TeamSerializer(serializers.ModelSerializer):
 
@@ -226,7 +292,26 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_matches_played(self, obj):
         return Match.objects.filter(season=self.context.get('season')).filter(Q(home_team=obj) | Q(away_team=obj)).count()
     def get_score_total(self, obj):
-        return Throw.objects.filter(team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum']
+        return Throw.objects.filter(team=obj, season=self.context.get('season')).annotate(
+            score = Case(
+                When(score_first__gt=0, then='score_first'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_second__gt=0, then='score_second'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_third__gt=0, then='score_third'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_fourth__gt=0, then='score_fourth'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            )
+        ).aggregate(Sum('score'))['score__sum']
+        # return Throw.objects.filter(score__gt=0, team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum']
 
     class Meta:
         model = Team
@@ -250,10 +335,25 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
 
     def get_score_total(self, obj):
-        try:
-            return int(Throw.objects.filter(team=obj, season=self.context.get('season')).aggregate(Sum('score'))['score__sum'])
-        except TypeError:
-            return 0
+        return Throw.objects.filter(team=obj, season=self.context.get('season')).annotate(
+            score = Case(
+                When(score_first__gt=0, then='score_first'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_second__gt=0, then='score_second'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_third__gt=0, then='score_third'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_fourth__gt=0, then='score_fourth'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            )
+        ).aggregate(Sum('score'))['score__sum']
     def get_match_count(self, obj):
         return Match.objects.filter(season=self.context.get('season'), throw__team=obj).distinct().count()
     def get_throws_total(self, obj):
@@ -263,11 +363,11 @@ class TeamDetailSerializer(serializers.ModelSerializer):
     def get_zeros_total(self, obj):
         return self.context.get('zeros_total')
     def get_zero_first_throw_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), team=obj, score=0, throw_turn=1, throw_number=1).count()
+        return Throw.objects.filter(season=self.context.get('season'), team=obj, score_first=0, throw_turn=1).count()
     def get_pike_first_throw_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), team=obj, score=-1, throw_turn=1, throw_number=1).count()
+        return Throw.objects.filter(season=self.context.get('season'), team=obj, score_first=-1, throw_turn=1).count()
     def get_gteSix_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), team=obj, score__gte=6).count()
+        return Throw.objects.filter(season=self.context.get('season'), team=obj).annotate(count=Count('pk',filter=Q(score_first__gte=6)) + Count('pk',filter=Q(score_second__gte=6)) + Count('pk',filter=Q(score_third__gte=6)) + Count('pk',filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
     def get_pike_percentage(self, obj):
         try:
             pike_percentage = round((self.context.get('pikes_total') / self.context.get('throws_total'))*100, 2)
@@ -286,7 +386,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         return None
     def get_players(self, obj):
         users = obj.players
-        return UserListSerializer(users,many=True).data
+        return PlayerListSerializer(users,many=True, context={'season': self.context.get('season')}).data
 
 
     class Meta:
@@ -303,17 +403,18 @@ class SharedMatchSerializer(serializers.ModelSerializer):
     def get_away_score_total(self, obj):
         return obj.away_first_round_score + obj.away_second_round_score
 
-    def get_home_team(self, obj):
-        return TeamSerializer(obj.home_team).data
-
-    def get_away_team(self, obj):
-        return TeamSerializer(obj.away_team).data
 
 class MatchListSerializer(SharedMatchSerializer):
     home_score_total = serializers.SerializerMethodField()
     away_score_total = serializers.SerializerMethodField()
     home_team = serializers.SerializerMethodField()
     away_team = serializers.SerializerMethodField()
+
+    def get_home_team(self, obj):
+        return TeamSerializer(obj.home_team).data
+
+    def get_away_team(self, obj):
+        return TeamSerializer(obj.away_team).data
 
     class Meta:
         model = Match
@@ -327,81 +428,86 @@ class MatchDetailSerializer(SharedMatchSerializer):
     first_round = serializers.SerializerMethodField()
     second_round = serializers.SerializerMethodField()
 
-
-
-
     def get_second_round(self, obj):
         return MatchRoundSerializer(obj.throw_set.filter(throw_round=2), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
 
     def get_first_round(self, obj):
         return MatchRoundSerializer(obj.throw_set.filter(throw_round=1), context={'home_team':obj.home_team, 'away_team':obj.away_team}).data
 
+    def get_home_team(self, obj):
+        return MatchTeamSerializer(obj.home_team, context={'season': self.context.get('season')}).data
+
+    def get_away_team(self, obj):
+        return MatchTeamSerializer(obj.away_team, context={'season': self.context.get('season')}).data
+
     class Meta:
         model = Match
         fields = ('id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score', 'home_second_round_score',
-                    'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team')
+                    'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team', 'is_validated')
+
+class MatchTeamSerializer(serializers.ModelSerializer):
+    players = serializers.SerializerMethodField()
+
+    def get_players(self, obj):
+        return PlayerNameSerializer(obj.players.filter(playersinteam__season=self.context.get('season')), many=True).data
+
+    class Meta:
+        model = Team
+        fields = ('id', 'name', 'abbreviation', 'players')
 
 class MatchRoundSerializer(serializers.ModelSerializer):
     home = serializers.SerializerMethodField()
     away = serializers.SerializerMethodField()
 
     def get_home(self, qs):
-        home_throws = qs.filter(team=self.context.get('home_team'))
-        return MatchRoundThrowSerializer(home_throws).data
+        player_ids = qs.filter(team=self.context.get('home_team')).values_list('player__id', flat=True).distinct()
+        players = User.objects.filter(id__in=player_ids)
+        return MatchRowSerialzier(players, many=True, context={'throws':qs}).data
 
     def get_away(self, qs):
-        away_throws = qs.filter(team=self.context.get('away_team'))
-        return MatchRoundThrowSerializer(away_throws).data
+        player_ids = qs.filter(team=self.context.get('away_team')).values_list('player__id', flat=True).distinct()
+        players = User.objects.filter(id__in=player_ids)
+        return MatchRowSerialzier(players, many=True, context={'throws':qs}).data
 
     class Meta:
         model = Throw
         fields = ('home', 'away')
 
-class MatchRoundThrowSerializer(serializers.ModelSerializer):
-    first = serializers.SerializerMethodField()
-    second = serializers.SerializerMethodField()
-    third = serializers.SerializerMethodField()
-    fourth = serializers.SerializerMethodField()
-
-    def get_throws(self, obj):
-        qs = obj
-        return ThrowScoreSerialzier(qs, many=True).data
-    def get_player_name(self,obj):
-        return None
-    def get_first(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=1)).data
-    def get_second(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=2)).data
-    def get_third(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=3)).data
-    def get_fourth(self,qs):
-        return MatchRowSerialzier(qs.filter(throw_turn=4)).data
-
-    class Meta:
-        model = Throw
-        fields = ('id', 'first', 'second', 'third', 'fourth')
-
-class MatchRowSerialzier(serializers.ModelSerializer):
+class MatchRowSerialzier(SharedPlayerSerializer):
     player_name = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
     throws = serializers.SerializerMethodField()
 
-    def get_player_name(self, qs):
-        return qs.first().player.first_name + " " + qs.first().player.last_name
-    def get_throws(self, qs):
-        return ThrowScoreSerialzier(qs, many=True).data
-    def get_score_total(self, qs):
-        try:
-            return int(qs.aggregate(Sum('score'))['score__sum'])
-        except TypeError:
-            return 0
+    def get_throws(self, obj):
+        throws = self.context.get('throws').filter(player=obj)
+        return ThrowScoreSerialzier(throws, many=True).data
+
+    def get_score_total(self, obj):
+        return self.context.get('throws').filter(player=obj).annotate(
+            score = Case(
+                When(score_first__gt=0, then='score_first'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_second__gt=0, then='score_second'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_third__gt=0, then='score_third'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            ) + Case(
+                When(score_fourth__gt=0, then='score_fourth'),
+                default=Value('0'),
+                output_field=IntegerField(),
+            )
+        ).aggregate(Sum('score'))['score__sum']
 
     class Meta:
-        model = Throw
+        model = User
         fields = ('player_name', 'score_total', 'throws')
 
 class ThrowScoreSerialzier(serializers.ModelSerializer):
-
     class Meta:
         model = Throw
-        fields = ('score', 'throw_number')
+        fields = ('score_first','score_second','score_third','score_fourth', 'throw_turn')
