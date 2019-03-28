@@ -30,7 +30,11 @@
         <log-in class="hidden-sm-and-down"></log-in>
         <register class="hidden-sm-and-down"></register>
       </div>
-      <div v-if="loggedIn">Logged in as Seppo</div>
+      <div v-if="loggedIn">
+        Logged in as {{ name }}
+        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()">Logout</v-btn>
+      </div>
+
       <v-spacer></v-spacer>
     </v-toolbar>
   </span>
@@ -39,6 +43,7 @@
 <script>
 import LogIn from '@/components/LogIn';
 import Register from '@/components/Register';
+import { eventBus } from '../main';
 
 export default {
     name: 'NavBar',
@@ -51,6 +56,7 @@ export default {
             appTitle: 'NKL',
             drawer: false,
             loggedIn: false,
+            name: '',
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
@@ -58,6 +64,18 @@ export default {
                 { title: 'Info' }
             ]
         };
+    },
+    methods: {
+        logout() {
+            this.loggedIn = false;
+            this.name = '';
+        }
+    },
+    created() {
+        eventBus.$on('loginChanged', data => {
+            this.loggedIn = true;
+            this.name = data;
+        });
     }
 };
 </script>

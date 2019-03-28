@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { eventBus } from '../main';
+
 export default {
     name: 'LogIn',
     data: () => ({
@@ -49,6 +51,9 @@ export default {
         credentials: {}
     }),
     methods: {
+        changeLogin: function() {
+            eventBus.$emit('loginChanged', 'This Is a PlaceHolder');
+        },
         login() {
             this.$http
                 .post('http://localhost:8000/api/login/', this.credentials)
@@ -56,6 +61,7 @@ export default {
                     response => {
                         this.dialog = !this.dialog;
                         this.alert = false;
+                        this.changeLogin();
                     },
                     response => {
                         this.alert = !this.alert;

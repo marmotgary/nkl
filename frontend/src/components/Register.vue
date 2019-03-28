@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { eventBus } from '../main';
+
 export default {
     name: 'Register',
     data: () => ({
@@ -60,6 +62,7 @@ export default {
                 .then(res => {
                     this.dialog = false;
                     this.alert = false;
+                    this.changeLogin();
                 })
                 .catch(e => {
                     this.checkForm();
@@ -88,8 +91,15 @@ export default {
             }
 
             if (errors.length == 0) {
+                changeLogin();
                 return true;
             }
+        },
+        changeLogin: function() {
+            eventBus.$emit(
+                'loginChanged',
+                this.credentials.first_name + ' ' + this.credentials.last_name
+            );
         },
         validEmail: function(email) {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
