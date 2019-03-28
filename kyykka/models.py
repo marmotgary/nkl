@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Player(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    number = models.CharField(max_length=2, default=99)
+
 class Team(models.Model):
     name = models.CharField(max_length=128, unique=True)
     abbreviation = models.CharField(max_length=10, unique=True)

@@ -18,6 +18,7 @@ router = SimpleRouter()
 router.register(r'players', views.PlayerViewSet)
 router.register(r'teams', views.TeamViewSet)
 router.register(r'matches', views.MatchViewSet)
+router.register(r'reserve', views.ReservePlayerViewSet)
 urlpatterns = router.urls + urlpatterns
 
 if settings.DEBUG:
