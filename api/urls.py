@@ -11,14 +11,15 @@ urlpatterns = [
     path('ping/', views.ping),
     path('login/', views.LoginAPI.as_view()),
     path('logout/', views.LogoutAPI.as_view()),
-    path('register/', views.RegistrationAPI.as_view())
+    path('register/', views.RegistrationAPI.as_view()),
+    path('reserve/', views.ReservePlayerAPI.as_view())
 ]
 
 router = SimpleRouter()
 router.register(r'players', views.PlayerViewSet)
 router.register(r'teams', views.TeamViewSet)
 router.register(r'matches', views.MatchViewSet)
-router.register(r'reserve', views.ReservePlayerViewSet)
+# router.register(r'reserve', views.ReservePlayerViewSet)
 urlpatterns = router.urls + urlpatterns
 
 if settings.DEBUG:

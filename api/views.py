@@ -32,6 +32,10 @@ def ping(request):
     return JsonResponse({'result:': 'pong'})
 
 class LoginAPI(generics.GenericAPIView):
+    """
+    Creates session for user upon successful login
+    Set cookies sessionid and role (1 for player, 2 for captain)
+    """
     serializer_class = LoginUserSerializer
 
     def post(self, request, *args, **kwargs):
@@ -42,9 +46,9 @@ class LoginAPI(generics.GenericAPIView):
         response = HttpResponse(json.dumps({'success':True,
                                             'user': UserSerializer(user).data}))
         if user.groups.filter(name='captains').exists():
-            role = 'captain'
+            role = '2'
         else:
-            role = 'player'
+            role = '1'
         response.set_cookie('role', role, expires=1209600)
         return response
 
@@ -67,6 +71,27 @@ class RegistrationAPI(generics.GenericAPIView):
             'message': message,
         })
 
+class ReservePlayerAPI(generics.GenericAPIView):
+    serializer_class = ReserveCreateSerializer
+    queryset = User.objects.all()
+
+    def get(self, request):
+        season = getSeason(request)
+        queryset = User.objects.all()
+        serializer = ReserveListSerializer(queryset, many=True, context = {'season': season})
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.has_perm('kyykka.add_playersinteam'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        success, message = serializer.save()
+        return Response({
+            'success': success,
+            'message': message,
+        })
+
 class ReservePlayerViewSet(viewsets.ViewSet):
     """
     This viewset provides `list` and `detail` actions.
@@ -79,10 +104,14 @@ class ReservePlayerViewSet(viewsets.ViewSet):
         serializer = ReserveListSerializer(self.queryset, many=True, context = {'season': season})
         return Response(serializer.data)
 
-    # def create(self, request):
-    #     serializer = ReserveCreateSerializer
-    #     serializer.is_valid(raise_exception=True)
-    #     success, message = serializer.save()
+    def create(self, request):
+        serializer = ReserveCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # serializer.save()
+        return Response(None)
+        # serializer = ReserveCreateSerializer
+        # serializer.is_valid(raise_exception=True)
+        # success, message = serializer.save()
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
     """

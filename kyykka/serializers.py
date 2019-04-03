@@ -153,11 +153,27 @@ class ReserveListSerializer(SharedPlayerSerializer):
         model = User
         fields = ('id', 'number', 'player_name', 'team')
 
-class ReserveCreateSerializer(serializers.SerializerMethodField):
+class ReserveCreateSerializer(serializers.ModelSerializer):
+    player = serializers.PrimaryKeyRelatedField(validators=[required], queryset=User.objects.all())
 
     class Meta:
         model = PlayersInTeam
-        fields = ('id', 'season', 'team', 'player')
+        fields = ('id', 'player')
+
+    def create(self, validated_data):
+        print(self.context.get("request").user)
+        user = self.context.get("request").user
+        add_player = validated_data['player']
+        season = CurrentSeason.objects.first().season
+        try:
+            team = user.team_set.get(playersinteam__season=season)
+            PlayersInTeam.objects.create(season=season, team=team, player=add_player)
+        except IntegrityError:
+            return False, "DUPLICATE"
+        except Team.DoesNotExist:
+            return False, "USER_TEAM_404"
+        return True, ""
+
 
 class PlayerListSerializer(SharedPlayerSerializer):
     team = serializers.SerializerMethodField()
@@ -431,11 +447,16 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
 class SharedMatchSerializer(serializers.ModelSerializer):
     def get_home_score_total(self, obj):
-        return obj.home_first_round_score + obj.home_second_round_score
+        try:
+            return obj.home_first_round_score + obj.home_second_round_score
+        except TypeError:
+            return None
 
     def get_away_score_total(self, obj):
-        return obj.away_first_round_score + obj.away_second_round_score
-
+        try:
+            return obj.away_first_round_score + obj.away_second_round_score
+        except TypeError:
+            return None
 
 class MatchListSerializer(SharedMatchSerializer):
     home_score_total = serializers.SerializerMethodField()
@@ -544,3 +565,5 @@ class ThrowScoreSerialzier(serializers.ModelSerializer):
     class Meta:
         model = Throw
         fields = ('score_first','score_second','score_third','score_fourth', 'throw_turn')
+
+# class ThrowSerializer(serializers.ModelSerializer)

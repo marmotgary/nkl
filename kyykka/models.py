@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -45,10 +47,10 @@ class PlayersInTeam(models.Model):
 class Match(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     match_time = models.DateTimeField()
-    home_first_round_score = models.IntegerField()
-    home_second_round_score = models.IntegerField()
-    away_first_round_score = models.IntegerField()
-    away_second_round_score = models.IntegerField()
+    home_first_round_score = models.IntegerField(blank=True, null=True)
+    home_second_round_score = models.IntegerField(blank=True, null=True)
+    away_first_round_score = models.IntegerField(blank=True, null=True)
+    away_second_round_score = models.IntegerField(blank=True, null=True)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
     is_validated = models.BooleanField(default=False)
@@ -69,7 +71,7 @@ class Throw(models.Model):
     throw_number determines is it players' 1st, 2nd, 3rd or 4th throw.
     '''
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     throw_round = models.IntegerField()
@@ -93,3 +95,18 @@ class News(models.Model):
     header = models.TextField()
     date = models.DateTimeField()
     text = models.TextField()
+
+
+@receiver(post_save, sender=Match)
+def match_post_save_handler(sender, instance, created, **kwargs):
+    if created and instance:
+        for team in [instance.home_team, instance.away_team]:
+            for round in range(1, 3):
+                for turn in range(1, 5):
+                    Throw.objects.create(
+                        match=instance,
+                        team=team,
+                        season=instance.season,
+                        throw_turn=turn,
+                        throw_round=round
+                    )
