@@ -10,9 +10,9 @@ Install python 3.6
 
 Optional but highly recommended: create virtual environment for this project, see https://docs.python.org/3/tutorial/venv.html
 
-MySQL:
+MySQL and other stuff:
 
-``` sudo apt-get install python3-dev default-libmysqlclient-dev ``` 
+``` sudo apt install python3-dev default-libmysqlclient-dev memcached ``` 
 
 At root of the cloned project (where requirements.txt is), install requirements
 
