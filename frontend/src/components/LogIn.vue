@@ -59,6 +59,7 @@ export default {
                 .post('http://localhost:8000/api/login/', this.credentials)
                 .then(
                     response => {
+                        console.log(response);
                         this.dialog = !this.dialog;
                         this.alert = false;
                         this.changeLogin();
