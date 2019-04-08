@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player')
     number = models.CharField(max_length=2, default=99)
 
 class Team(models.Model):
@@ -77,10 +77,10 @@ class Throw(models.Model):
     throw_round = models.IntegerField()
     throw_turn = models.IntegerField()
     # throw_number = models.IntegerField(null=True)
-    score_first = models.IntegerField(null=True)
-    score_second = models.IntegerField(null=True)
-    score_third = models.IntegerField(null=True)
-    score_fourth = models.IntegerField(null=True)
+    score_first = models.IntegerField(null=True, db_index=True)
+    score_second = models.IntegerField(null=True, db_index=True)
+    score_third = models.IntegerField(null=True, db_index=True)
+    score_fourth = models.IntegerField(null=True, db_index=True)
 
 # TBD if used
 # class UserRoles(models.Model):
