@@ -95,6 +95,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 class ReservePlayerViewSet(viewsets.ViewSet):
     """
     This viewset provides `list` and `detail` actions.
+    NOT CURRENTLY IN USE, ReservePlayerAPI is.
     """
     queryset = User.objects.all()
 

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.cache import cache
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player')
@@ -77,10 +78,10 @@ class Throw(models.Model):
     throw_round = models.IntegerField()
     throw_turn = models.IntegerField()
     # throw_number = models.IntegerField(null=True)
-    score_first = models.IntegerField(null=True, db_index=True)
-    score_second = models.IntegerField(null=True, db_index=True)
-    score_third = models.IntegerField(null=True, db_index=True)
-    score_fourth = models.IntegerField(null=True, db_index=True)
+    score_first = models.IntegerField(null=True, blank=True, db_index=True)
+    score_second = models.IntegerField(null=True, blank=True, db_index=True)
+    score_third = models.IntegerField(null=True, blank=True, db_index=True)
+    score_fourth = models.IntegerField(null=True, blank=True, db_index=True)
 
 # TBD if used
 # class UserRoles(models.Model):
@@ -110,3 +111,21 @@ def match_post_save_handler(sender, instance, created, **kwargs):
                         throw_turn=turn,
                         throw_round=round
                     )
+
+@receiver(post_save, sender=Throw)
+def throw_post_save_handler(sender, instance, created, **kwargs):
+    if instance and instance.match.is_validated:
+        reset_player_cache(instance.player)
+
+def reset_player_cache(player):
+    caches = [
+        'player_' + str(player.id) + '_score_total',
+        'player_' + str(player.id) + '_match_count',
+        'player_' + str(player.id) + '_rounds_total',
+        'player_' + str(player.id) + '_pikes_total',
+        'player_' + str(player.id) + '_zeros_total',
+        'player_' + str(player.id) + '_gteSix_total',
+        'player_' + str(player.id) + '_throws_total',
+        'player_' + str(player.id) + '_pike_percentage'
+        ]
+    cache.delete_many(caches)
