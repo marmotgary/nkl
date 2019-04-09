@@ -38,7 +38,7 @@ def userGen(amount, return_users=False):
             user.last_name = last_name
             user.save()
             # user.player.number = random.randint(1,100)
-            Player.objects.create(user=user, number=random.randInt(1,100))
+            Player.objects.create(user=user, number=random.randint(1,100))
             users.append(user)
             print(first_name, last_name, email)
         except Exception as e:
