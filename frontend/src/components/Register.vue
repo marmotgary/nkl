@@ -20,6 +20,9 @@
             <v-flex xs12 sm6 md4>
               <v-text-field v-model="credentials.last_name" label="Last name*" required></v-text-field>
             </v-flex>
+            <v-flex>
+              <v-select v-model="credentials.number" :items="numbers"></v-select>
+            </v-flex>
             <v-flex xs12>
               <v-text-field v-model="credentials.username" label="Email*" type="email" required></v-text-field>
             </v-flex>
@@ -53,10 +56,17 @@ export default {
         dialog: false,
         alert: false,
         errors: [],
-        credentials: {}
+        credentials: {},
+        numbers: [1, 2, 3]
     }),
     methods: {
         register() {
+            this.$http.get('http://localhost:8000/api/csrf').then(response => {
+                if (response.status === 200 && 'csrfToken' in response.body) {
+                    this.$session.start();
+                    this.$session.set('csrf', response.body.csrfToken);
+                }
+            });
             this.$http
                 .post('http://localhost:8000/api/register/', this.credentials)
                 .then(res => {
