@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -95,9 +96,9 @@ WSGI_APPLICATION = 'nkl.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NKL',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'nkl',
+        'USER': 'nkl',
+        'PASSWORD': 'nkl',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         # 'OPTIONS': {
@@ -158,3 +159,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_WHITELIST = 'localhost:8080',
