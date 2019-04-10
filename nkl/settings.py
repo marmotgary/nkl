@@ -24,7 +24,9 @@ SECRET_KEY = '&clagu7m@fo_*sfr^&i$56r_b-46=$15h83iv68r*^t^5c8r*5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+SESSION_COOKIE_DOMAIN = ['localhost']
+SESSION_COOKIE_SAMESITE = None
 INTERNAL_IPS = ['localhost', '127.0.0.1']
 
 # Application definition
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'rest_framework_swagger',
 ]
 
@@ -55,7 +57,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -92,9 +94,9 @@ WSGI_APPLICATION = 'nkl.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NKL',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'nkl',
+        'USER': 'nkl',
+        'PASSWORD': 'nkl',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         # 'OPTIONS': {
@@ -157,4 +159,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# CORS
 CORS_ORIGIN_WHITELIST = 'localhost:8080',
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True

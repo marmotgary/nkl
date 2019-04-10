@@ -69,6 +69,7 @@ export default {
         logout() {
             this.loggedIn = false;
             this.name = '';
+            this.$session.destroy();
         }
     },
     created() {
