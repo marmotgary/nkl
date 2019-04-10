@@ -57,15 +57,20 @@ export default {
         },
         login() {
             // Like this
-            this.$http.get('http://localhost:8000/api/csrf').then(response => {
-                if (response.status === 200 && 'csrfToken' in response.body) {
-                    this.$session.start();
-                    this.$session.set('csrf', response.body.csrfToken);
-                }
-            });
             this.$http
-                .post('http://localhost:8000/api/login/', this.credentials, {
-                    credentials: true,
+                .get('https://kyykka.rauko.la/api/csrf')
+                .then(response => {
+                    if (
+                        response.status === 200 &&
+                        'csrfToken' in response.body
+                    ) {
+                        this.$session.start();
+                        this.$session.set('csrf', response.body.csrfToken);
+                        console.log(this.$session.get('csrf'));
+                    }
+                });
+            this.$http
+                .post('https://kyykka.rauko.la/api/login/', this.credentials, {
                     headers: {
                         'X-CSRFToken': this.$session.get('csrf')
                     }

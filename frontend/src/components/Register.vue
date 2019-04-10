@@ -61,14 +61,19 @@ export default {
     }),
     methods: {
         register() {
-            this.$http.get('http://localhost:8000/api/csrf').then(response => {
-                if (response.status === 200 && 'csrfToken' in response.body) {
-                    this.$session.start();
-                    this.$session.set('csrf', response.body.csrfToken);
-                }
-            });
             this.$http
-                .post('http://localhost:8000/api/register/', this.credentials)
+                .get('https://kyykka.rauko.la/api/csrf')
+                .then(response => {
+                    if (
+                        response.status === 200 &&
+                        'csrfToken' in response.body
+                    ) {
+                        this.$session.start();
+                        this.$session.set('csrf', response.body.csrfToken);
+                    }
+                });
+            this.$http
+                .post('https://kyykka.rauko.la/api/register/', this.credentials)
                 .then(res => {
                     this.dialog = false;
                     this.alert = false;
