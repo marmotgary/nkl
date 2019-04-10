@@ -15,13 +15,21 @@
         slot="items"
         slot-scope="props"
       >
-        <td v-if="props.item.team == null">
-          <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox>
-        </td>
-        <td v-else>reserved</td>
+        <v-if>
+          <td v-if="props.item.team == null">
+            <v-btn flat icon color="green">
+              <v-icon>fas fa-plus</v-icon>
+            </v-btn>
+          </td>
+          <td v-else>
+            <v-btn flat disabled icon color="gray">
+              <v-icon>fas fa-lock</v-icon>
+            </v-btn>
+          </td>
+        </v-if>
         <td>{{ props.item.player_name }}</td>
         <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
-        <td v-else>Not reserved</td>
+        <td v-else>Ei varausta</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
         <td class="text-xs-left">{{ props.item.score_per_throw }}</td>
@@ -132,10 +140,21 @@ export default {
                     console.log(error.statusText);
                 }
             );
-        }
+        },
+        reservePlayer: function() {}
     },
     mounted: function() {
         this.getPlayers();
+        if (this.$session.get('user_id')) {
+            this.$http
+                .get(
+                    'https://kyykka.rauko.la/api/players/' +
+                        this.$session.get('user_id')
+                )
+                .then(function(response) {
+                    console.log(response.body);
+                });
+        }
     }
 };
 </script>

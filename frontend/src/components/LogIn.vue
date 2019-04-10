@@ -51,9 +51,8 @@ export default {
         credentials: {}
     }),
     methods: {
-        changeLogin: function() {
-            // this.credentials.username is a placeholder before REST returns firstname from the backend
-            eventBus.$emit('loginChanged', this.credentials.username);
+        changeLogin: function(username) {
+            eventBus.$emit('loginChanged', username);
         },
         login() {
             // Like this
@@ -66,7 +65,6 @@ export default {
                     ) {
                         this.$session.start();
                         this.$session.set('csrf', response.body.csrfToken);
-                        console.log(this.$session.get('csrf'));
                     }
                 });
             this.$http
@@ -79,7 +77,8 @@ export default {
                     response => {
                         this.dialog = !this.dialog;
                         this.alert = false;
-                        this.changeLogin();
+                        this.$session.set('user_id', response.body.user.id);
+                        this.changeLogin(response.body.user.player_name);
                     },
                     response => {
                         this.alert = !this.alert;

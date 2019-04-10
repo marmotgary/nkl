@@ -110,7 +110,7 @@ export default {
                 return true;
             }
         },
-        changeLogin: function() {
+        changeLogin: function(username) {
             eventBus.$emit(
                 'loginChanged',
                 this.credentials.first_name + ' ' + this.credentials.last_name
