@@ -11,7 +11,12 @@
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:MM') }}</td>
+        <td>
+          <a
+            v-bind:href="'/job/'+ props.item.matches.id"
+            class="btn btn-primary btn-xs"
+          >{{ props.item.match_time | moment('YYYY-MM-DD HH:MM') }}</a>
+        </td>
         <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
         <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
         <td
@@ -32,6 +37,7 @@
 export default {
     data: function() {
         return {
+            url: '/matches/' + this.match.id + '/',
             search: '',
             headers: [
                 {
@@ -51,6 +57,7 @@ export default {
             this.$http.get('https://kyykka.rauko.la/api/matches/').then(
                 function(data) {
                     this.matches = data.body;
+                    console.log(data.body);
                 },
                 function(error) {
                     console.log(error.statusText);
