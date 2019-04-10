@@ -15,8 +15,13 @@
         slot="items"
         slot-scope="props"
       >
+        <td v-if="props.item.team == null">
+          <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox>
+        </td>
+        <td v-else>reserved</td>
         <td>{{ props.item.player_name }}</td>
         <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
+        <td v-else>Not reserved</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
         <td class="text-xs-left">{{ props.item.score_per_throw }}</td>
@@ -44,6 +49,12 @@ export default {
         return {
             search: '',
             headers: [
+                {
+                    text: 'Varaa',
+                    value: 'reserve',
+                    width: '1%',
+                    align: 'left'
+                },
                 {
                     text: 'Nimi',
                     value: 'player_name',
@@ -107,12 +118,13 @@ export default {
                     alignt: 'left'
                 }
             ],
-            players: []
+            players: [],
+            selected: []
         };
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('http://localhost:8000/api/players/').then(
+            this.$http.get('https://kyykka.rauko.la/api/players/').then(
                 function(data) {
                     this.players = data.body;
                 },
