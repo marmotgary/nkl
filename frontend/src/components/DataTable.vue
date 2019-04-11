@@ -10,7 +10,11 @@
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
       <template bind:key="team.id" slot="items" slot-scope="props">
-        <td>{{ props.item.name }}</td>
+        <router-link :to="'joukkue/'+props.item.id">
+          <td>
+            <a>{{ props.item.name }}</a>
+          </td>
+        </router-link>
         <td>{{ props.item.abbreviation }}</td>
         <td>{{ props.item.matches_played }}</td>
         <td>{{ props.item.matches_won }}</td>
