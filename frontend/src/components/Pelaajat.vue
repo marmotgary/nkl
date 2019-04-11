@@ -15,18 +15,6 @@
         slot="items"
         slot-scope="props"
       >
-        <div v-if="isCaptain">
-          <td v-if="props.item.team == null">
-            <v-btn flat icon color="green">
-              <v-icon>fas fa-plus</v-icon>
-            </v-btn>
-          </td>
-          <td v-else>
-            <v-btn flat disabled icon color="gray">
-              <v-icon>fas fa-lock</v-icon>
-            </v-btn>
-          </td>
-        </div>
         <td>{{ props.item.player_name }}</td>
         <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
         <td v-else>Ei varausta</td>
@@ -58,12 +46,6 @@ export default {
             search: '',
             isCaptain: false,
             headers: [
-                {
-                    text: 'Varaa',
-                    value: 'reserve',
-                    width: '1%',
-                    align: 'left'
-                },
                 {
                     text: 'Nimi',
                     value: 'player_name',
@@ -136,6 +118,7 @@ export default {
             this.$http.get('https://kyykka.rauko.la/api/players/').then(
                 function(data) {
                     this.players = data.body;
+                    console.log(this.players);
                 },
                 function(error) {
                     console.log(error.statusText);
