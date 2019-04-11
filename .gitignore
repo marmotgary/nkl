@@ -6,3 +6,4 @@ venv*
 *.log
 static_files
 frontend
+local_settings.py
