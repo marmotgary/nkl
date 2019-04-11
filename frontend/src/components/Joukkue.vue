@@ -125,14 +125,14 @@
           <div>Varaa pelaajia</div>
         </template>
         <v-card>
-          <v-data-table v-model="selected" :items="reserve" :headers="reserveHeaders" hide-actions>
+          <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
             <template slot="no-data">
               <v-progress-linear slot="progress" indeterminate></v-progress-linear>
             </template>
             <template slot="items" slot-scope="props">
               <div class="row">
                 <td v-if="props.item.team == null">
-                  <v-btn v-on:click="reserveButton" flat icon color="green">
+                  <v-btn v-on:click="reserveButton(props.index)" flat icon color="green">
                     <v-icon>fas fa-plus</v-icon>
                   </v-btn>
                 </td>
@@ -270,8 +270,22 @@ export default {
                 }
             );
         },
-        reserveButton: function() {
-            console.log(this.$parent);
+        reserveButton: function(index) {
+            console.log(this.reserve);
+            if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
+                this.$http
+                    .post(
+                        'https://kyykka.rauko.la/api/reserve',
+                        this.reserve[index].id
+                    )
+                    .then(function(response) {
+                        console.log(response);
+                    });
+
+                console.log(this.reserve[index]);
+                this.reserve.splice(index, 1);
+            }
+
             // if (confirm('Haluatko varata tämän pelaajan?')) {
             //     this.$parent.items.$remove(this.item);
             // }
