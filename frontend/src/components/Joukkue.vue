@@ -4,34 +4,103 @@
       <v-flex xs12>
         <v-card>
           <v-container grid-list-sm fluid>
-            <v-layout row wrap>
-              <v-flex xs4 d-flex>
-                <v-card flat tile class="d-flex">
-                  <v-img
-                    :src="`https://picsum.photos/500/300?image=15`"
-                    :lazy-src="`https://picsum.photos/10/6?image=15`"
-                    aspect-ratio="1"
-                    class="grey lighten-2"
-                  ></v-img>
-                </v-card>
-              </v-flex>
-              <v-data-table :items="stats" hide-actions>
-                <template slot="items" slot-scope="props">
-                  <td>{{ props.item.id }}</td>
-                  <td>{{ props.item.abbreviation }}</td>
-                  <td>{{ props.item.matches_played }}</td>
-                  <td>{{ props.item.matches_won }}</td>
-                  <td>{{ props.item.matches_lost }}</td>
-                  <td>{{ props.item.matches_tie }}</td>
-                  <td>{{ props.item.score_total }}</td>
+            <v-flex xs4 mb-4 d-flex offset-sm4>
+              <v-card flat tile class="d-flex">
+                <v-img
+                  :src="`https://picsum.photos/500/300?image=15`"
+                  :lazy-src="`https://picsum.photos/10/6?image=15`"
+                  aspect-ratio="1"
+                  max-height="200"
+                  max-width="300"
+                  class="grey lighten-2"
+                ></v-img>
+              </v-card>
+            </v-flex>
+            <v-flex xs12 d-flex>
+              <v-data-iterator
+                :items="stats"
+                :headers="header"
+                content-tag="v-layout"
+                hide-actions
+                row
+                wrap
+              >
+                <template v-slot:header>
+                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
+                    <v-toolbar-title>{{header}}</v-toolbar-title>
+                  </v-toolbar>
                 </template>
-              </v-data-table>
-            </v-layout>
+                <template v-slot:item="props">
+                  <v-flex xs12>
+                    <v-card>
+                      <v-list dense>
+                        <v-list-tile>
+                          <v-list-tile-content>Tehdyt pisteet:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.score_total }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Ottelut:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.match_count }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Hauet:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.pikes_total }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Nolla heitot:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.zeros_total }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Nolla aloitukset:</v-list-tile-content>
+                          <v-list-tile-content
+                            class="align-end"
+                          >{{ props.item.zero_first_throw_total }}</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-flex>
+                </template>
+              </v-data-iterator>
+              <v-data-iterator :items="stats" content-tag="v-layout" hide-actions row wrap>
+                <template v-slot:header>
+                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
+                    <v-toolbar-title></v-toolbar-title>
+                  </v-toolbar>
+                </template>
+                <template v-slot:item="props">
+                  <v-flex xs12>
+                    <v-card>
+                      <v-list dense>
+                        <v-list-tile>
+                          <v-list-tile-content>Heitot:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.throws_total }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Pistettä per heitto:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.score_per_throw }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Haukiprosentti:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.pike_percentage }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Nollaprosentti:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.zero_percentage }}</v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-content>Joulukuuset:</v-list-tile-content>
+                          <v-list-tile-content class="align-end">{{ props.item.gteSix_total }}</v-list-tile-content>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-flex>
+                </template>
+              </v-data-iterator>
+            </v-flex>
           </v-container>
         </v-card>
       </v-flex>
     </v-layout>
-
     <v-data-table :headers="headers" :items="players" hide-actions>
       <template slot="no-data">
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
@@ -50,6 +119,37 @@
         <td>{{ props.item.gteSix_total }}</td>
       </template>
     </v-data-table>
+    <v-expansion-panel>
+      <v-expansion-panel-content>
+        <template v-slot:header>
+          <div>Varaa pelaajia</div>
+        </template>
+        <v-card>
+          <v-data-table v-model="selected" :items="reserve" :headers="reserveHeaders" hide-actions>
+            <template slot="no-data">
+              <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+            </template>
+            <template slot="items" slot-scope="props">
+              <div class="row">
+                <td v-if="props.item.team == null">
+                  <v-btn v-on:click="reserveButton" flat icon color="green">
+                    <v-icon>fas fa-plus</v-icon>
+                  </v-btn>
+                </td>
+                <td v-else>
+                  <v-btn flat disabled icon color="gray">
+                    <v-icon>fas fa-lock</v-icon>
+                  </v-btn>
+                </td>
+              </div>
+              <td>{{ props.item.id }}</td>
+              <td>{{ props.item.player_name }}</td>
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    <v-flex mt-4></v-flex>
   </v-card>
 </template>
 
@@ -57,6 +157,17 @@
 export default {
     data: function() {
         return {
+            header: '',
+            reserveHeaders: [
+                {
+                    text: 'Varaa',
+                    value: 'reserve',
+                    width: '1%',
+                    align: 'left'
+                },
+                { text: '#', value: 'id' },
+                { text: 'Pelaajan nimi', value: 'player_name' }
+            ],
             headers: [
                 { text: '#', value: 'id' },
                 {
@@ -117,25 +228,60 @@ export default {
                 }
             ],
             stats: [],
-            players: []
+            players: [],
+            reserve: []
         };
     },
     methods: {
         getTeams: function() {
-            this.$http.get('https://kyykka.rauko.la/api/teams/4').then(
+            this.$http
+                .get(
+                    'https://kyykka.rauko.la/api/teams/' +
+                        this.$route.fullPath.substr(
+                            this.$route.fullPath.lastIndexOf('/') + 1
+                        )
+                )
+                .then(
+                    function(data) {
+                        this.stats = [data.body];
+                        this.players = data.body.players;
+                        this.header = data.body.name;
+                        console.log(this.header);
+                    },
+                    function(error) {
+                        console.log(error.statusText);
+                    }
+                );
+        },
+        getReserve: function() {
+            this.$http.get('https://kyykka.rauko.la/api/reserve/').then(
                 function(data) {
-                    this.stats = data.body;
-                    this.players = data.body.players;
-                    console.log(this.stats);
+                    var i = 0;
+                    for (var player in data.body) {
+                        // console.log(data.body[i].team);
+                        if (data.body[i].team == null) {
+                            this.reserve.push(data.body[i]);
+                        }
+                        i++;
+                    }
                 },
                 function(error) {
                     console.log(error.statusText);
                 }
             );
+        },
+        reserveButton: function() {
+            console.log(this.$parent);
+            // if (confirm('Haluatko varata tämän pelaajan?')) {
+            //     this.$parent.items.$remove(this.item);
+            // }
+            // this.$http.post('https://kyykka.rauko.la/api/reserve').then()
         }
     },
     mounted: function() {
+        this.header = '';
         this.getTeams();
+        this.getReserve();
     }
 };
 </script>
