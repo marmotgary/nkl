@@ -4,10 +4,10 @@ django-debug-toolbar==1.11
 djangorestframework==3.9.2
 Faker==1.0.4
 wheel==0.33.1
-mysqlclient
-pkg-resources==0.0.0
+mysqlclient==1.4.2.post1pkg-resources==0.0.0
 python-dateutil==2.8.0
 pytz==2018.9
 six==1.12.0
 sqlparse==0.3.0
-text-unidecode==1.2
+text-unidecode==1.2django-rest-swagger==2.2.0
+python-memcached==1.59
