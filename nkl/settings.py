@@ -22,12 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&clagu7m@fo_*sfr^&i$56r_b-46=$15h83iv68r*^t^5c8r*5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost']
 SESSION_COOKIE_DOMAIN = ['localhost']
 SESSION_COOKIE_SAMESITE = None
-INTERNAL_IPS = ['localhost', '127.0.0.1']
+INTERNAL_IPS = []
 
 # Application definition
 
@@ -40,8 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
-    # 'debug_toolbar',
-    'rest_framework_swagger',
+    'debug_toolbar',    'rest_framework_swagger',
     'corsheaders',
 ]
 
@@ -58,8 +57,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,26 +90,6 @@ WSGI_APPLICATION = 'nkl.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nkl',
-        'USER': 'nkl',
-        'PASSWORD': 'nkl',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        # 'OPTIONS': {
-        #     'read_default_file': '/path/to/my.cnf',
-        # },
-    }
-}
-
-# my.cnf
-# [client]
-# database = NAME
-# user = USER
-# password = PASSWORD
-# default-character-set = utf8
 
 CACHES = {
     'default': {
@@ -159,7 +137,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# CORS
-CORS_ORIGIN_WHITELIST = 'localhost:8080',
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
+ADMINS = []
+MAILER_LIST = []
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = ''
+
+try:
+    exec(open(os.path.join(
+        os.path.dirname(__file__), "local_settings.py"
+    )).read())
+except Exception as e:
+    print(e)
