@@ -15,22 +15,17 @@
                   ></v-img>
                 </v-card>
               </v-flex>
-              <v-flex xs4 d-flex>
-                <v-data-table :headers="headers" :items="teams" hide-actions>
-                  <template slot="no-data">
-                    <v-progress-linear slot="progress" indeterminate></v-progress-linear>
-                  </template>
-                  <template bind:key="team.id" slot="items" slot-scope="props">
-                    <td>{{ props.item.name }}</td>
-                    <td>{{ props.item.abbreviation }}</td>
-                    <td>{{ props.item.matches_played }}</td>
-                    <td>{{ props.item.matches_won }}</td>
-                    <td>{{ props.item.matches_lost }}</td>
-                    <td>{{ props.item.matches_tie }}</td>
-                    <td>{{ props.item.score_total }}</td>
-                  </template>
-                </v-data-table>
-              </v-flex>
+              <v-data-table :items="stats" hide-actions>
+                <template slot="items" slot-scope="props">
+                  <td>{{ props.item.id }}</td>
+                  <td>{{ props.item.abbreviation }}</td>
+                  <td>{{ props.item.matches_played }}</td>
+                  <td>{{ props.item.matches_won }}</td>
+                  <td>{{ props.item.matches_lost }}</td>
+                  <td>{{ props.item.matches_tie }}</td>
+                  <td>{{ props.item.score_total }}</td>
+                </template>
+              </v-data-table>
             </v-layout>
           </v-container>
         </v-card>
@@ -129,9 +124,9 @@ export default {
         getTeams: function() {
             this.$http.get('https://kyykka.rauko.la/api/teams/4').then(
                 function(data) {
-                    this.teams = data.body;
+                    this.stats = data.body;
                     this.players = data.body.players;
-                    console.log(this.players);
+                    console.log(this.stats);
                 },
                 function(error) {
                     console.log(error.statusText);

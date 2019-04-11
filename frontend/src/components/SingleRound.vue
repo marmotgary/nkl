@@ -89,7 +89,7 @@ export default {
                             this.data = data.body.second_round.away;
                             this.away_team = data.body.away_team.name;
                         }
-                        console.log(data);
+                        console.log(data.body);
                     },
                     function(error) {
                         console.log(error.statusText);
