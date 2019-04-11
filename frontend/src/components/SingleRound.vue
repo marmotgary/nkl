@@ -1,13 +1,24 @@
 <template>
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}</v-card-title>
+    <v-layout row wrap>
+      <v-card-title v-if="this.teamSide == 'home'">{{this.home_team}}</v-card-title>
+      <v-card-title v-if="this.teamSide == 'away'">{{this.away_team}}</v-card-title>
+      <v-card-title>Hello</v-card-title>
+    </v-layout>
     <v-data-table :headers="headers" :items="data" hide-actions>
       <template slot="no-data">
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="item" slot-scope="props">
-        <td v-for="i in props.item" :key="i.id" class="text-xs-left">{{i.player.id}}</td>
+      <template slot="items" slot-scope="props">
+        <td v-if="props.item.player.id">{{props.item.player.id}}</td>
+        <td v-if="props.item.player.player_name">{{props.item.player.player_name}}</td>
+        <td v-if="props.item.score_first">{{props.item.score_first}}</td>
+        <td v-if="props.item.score_second">{{props.item.score_second}}</td>
+        <td v-if="props.item.score_third">{{props.item.score_third}}</td>
+        <td v-if="props.item.score_fourth">{{props.item.score_fourth}}</td>
+        <td v-if="props.item.score_fourth">{{props.item.score_total}}</td>
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template></template>
@@ -24,6 +35,8 @@ export default {
     },
     data: function() {
         return {
+            home_team: '',
+            away_team: '',
             data: [],
             headers: [
                 {
@@ -38,7 +51,8 @@ export default {
                 { value: 'first_round.home.player.score_first' },
                 { value: 'first_round.home.player.score_second' },
                 { value: 'first_round.home.player.score_third' },
-                { text: 'P', value: 'first_round.home.player.score_fourth' }
+                { value: 'first_round.home.player.score_fourth' },
+                { text: 'P', value: 'first_round.home.player.score_total' }
             ]
         };
     },
@@ -54,22 +68,26 @@ export default {
                 .then(
                     function(data) {
                         if (this.roundNumber == 1 && this.teamSide == 'home') {
-                            var data = data.body.first_round.home;
+                            this.data = data.body.first_round.home;
+                            this.home_team = data.body.home_team.name;
                         } else if (
                             this.roundNumber == 2 &&
                             this.teamSide == 'home'
                         ) {
-                            var data = data.body.second_round.home;
+                            this.data = data.body.second_round.home;
+                            this.home_team = data.body.home_team.name;
                         } else if (
                             this.roundNumber == 1 &&
                             this.teamSide == 'away'
                         ) {
-                            var data = data.body.first_round.away;
+                            this.data = data.body.first_round.away;
+                            this.away_team = data.body.away_team.name;
                         } else if (
                             this.roundNumber == 2 &&
                             this.teamSide == 'away'
                         ) {
-                            var data = data.body.second_round.away;
+                            this.data = data.body.second_round.away;
+                            this.away_team = data.body.away_team.name;
                         }
                         console.log(data);
                     },
