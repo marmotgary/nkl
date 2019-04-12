@@ -15,7 +15,7 @@ def getFromCache(key):
     # print("Get cache", key)
     return cache.get(key)
 
-def setToCache(key, value, timeout=300):
+def setToCache(key, value, timeout=3600):
     # print("Set cache", key)
     if value is None:
         value = 0
