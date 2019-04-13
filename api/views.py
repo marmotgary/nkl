@@ -43,13 +43,13 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         login(request, user)
-        response = HttpResponse(json.dumps({'success':True,
-                                            'user': UserSerializer(user).data}))
         if user.groups.filter(name='captains').exists():
             role = '2'
         else:
             role = '1'
-        response.set_cookie('role', role, expires=1209600)
+        response = HttpResponse(json.dumps({'success':True,
+                                            'user': UserSerializer(user).data,
+                                            'role': role}))
         return response
 
 class LogoutAPI(APIView):
