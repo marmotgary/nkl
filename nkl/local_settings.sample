@@ -1,0 +1,30 @@
+DEBUG = True
+ALLOWED_HOSTS = []
+INTERNAL_IPS = ['localhost', '127.0.0.1']
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nkl',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        }
+}
+
+INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
+MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+
+ADMINS = [('Ville', 'ville@rauko.la')]
+MAILER_LIST = ['vilde70@gmail.com']
+EMAIL_HOST = 'smtp.eu.mailgun.org'
+EMAIL_HOST_USER = 'kyykka@mail.rauko.la'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'kyykka@rauko.la'
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
