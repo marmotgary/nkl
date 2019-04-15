@@ -1,9 +1,9 @@
 <template>
   <v-layout class="pt-5">
-    <v-flex xs10>
+    <v-flex xs9>
       <pelaajat></pelaajat>
     </v-flex>
-    <v-flex xs5 class="pl-3">
+    <v-flex xs3 class="pl-3">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>
