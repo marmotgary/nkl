@@ -6,6 +6,7 @@ from rest_framework import status, viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework.mixins import UpdateModelMixin
 from kyykka.models import User, Team
 from kyykka.serializers import *
 from django.views.decorators.csrf import csrf_exempt
@@ -25,6 +26,13 @@ def getSeason(request):
         season = CurrentSeason.objects.first().season
     return season
 
+def getRole(user):
+    if user.groups.filter(name='captains').exists():
+        role = '2'
+    else:
+        role = '1'
+    return role
+
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
@@ -43,10 +51,7 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         login(request, user)
-        if user.groups.filter(name='captains').exists():
-            role = '2'
-        else:
-            role = '1'
+        role = getRole(user)
         response = HttpResponse(json.dumps({'success':True,
                                             'user': UserSerializer(user).data,
                                             'role': role}))
@@ -177,3 +182,10 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
         match = get_object_or_404(self.queryset, pk=pk)
         serializer = MatchDetailSerializer(match, context={'season' : season})
         return Response(serializer.data)
+
+class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
+    serializer_class = ThrowSerializer
+    queryset = Throw.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
