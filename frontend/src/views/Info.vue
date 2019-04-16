@@ -1,10 +1,10 @@
 <template>
   <v-layout>
-    <v-flex xs10>
+    <v-flex xs9>
       <h1 class="topic">INFO</h1>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
-    <v-flex xs2 class="right">
+    <v-flex xs3 class="right">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>
