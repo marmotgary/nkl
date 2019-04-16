@@ -12,7 +12,8 @@ urlpatterns = [
     path('login/', views.LoginAPI.as_view()),
     path('logout/', views.LogoutAPI.as_view()),
     path('register/', views.RegistrationAPI.as_view()),
-    path('reserve/', views.ReservePlayerAPI.as_view())
+    path('reserve/', views.ReservePlayerAPI.as_view()),
+    path('throws/update/<int:pk>/', views.ThrowAPI.as_view()),
 ]
 
 router = SimpleRouter()

@@ -603,6 +603,9 @@ class ThrowScoreSerialzier(serializers.ModelSerializer):
 
     class Meta:
         model = Throw
-        fields = ('player', 'score_total', 'score_first','score_second','score_third','score_fourth', 'throw_turn')
+        fields = ('id', 'player', 'score_total', 'score_first','score_second','score_third','score_fourth', 'throw_turn')
 
-# class ThrowSerializer(serializers.ModelSerializer)
+class ThrowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Throw
+        fields = ('score_first', 'score_second', 'score_third', 'score_fourth', 'player')
