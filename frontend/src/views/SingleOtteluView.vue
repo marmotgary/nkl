@@ -1,8 +1,6 @@
 <template>
   <v-layout class="pt-5">
-    <v-flex xs8>
-      <ottelu></ottelu>
-    </v-flex>
+    <ottelu></ottelu>
   </v-layout>
 </template>
 

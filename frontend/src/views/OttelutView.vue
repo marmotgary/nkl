@@ -3,7 +3,7 @@
     <v-flex xs8>
       <ottelut></ottelut>
     </v-flex>
-    <v-flex xs5 class="pl-3">
+    <v-flex xs4 class="pl-3">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>

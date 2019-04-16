@@ -1,5 +1,10 @@
 <template>
-  <v-container grid-list-md text-xs-center>
+  <v-container grid-list-md>
+    <v-layout row wrap align-center>
+      <v-flex xm12>
+        <match></match>
+      </v-flex>
+    </v-layout>
     <v-layout row>
       <v-flex xm6>
         <v-card color="secondary">
@@ -30,11 +35,13 @@
 
 <script>
 import Round from '@/components/SingleRound';
+import Match from '@/components/MatchData';
 
 export default {
     name: 'ottelu',
     components: {
-        Round
+        Round,
+        Match
     }
 };
 </script>
