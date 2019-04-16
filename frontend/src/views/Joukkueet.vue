@@ -1,5 +1,7 @@
 <template>
-  <data-table></data-table>
+  <v-layout class="layout">
+    <data-table></data-table>
+  </v-layout>
 </template>
 
 <script>

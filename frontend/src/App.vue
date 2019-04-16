@@ -25,7 +25,6 @@ export default {
 
 .app {
     background-color: transparent;
-    display: inline-block;
     overflow: hidden;
 }
 </style>

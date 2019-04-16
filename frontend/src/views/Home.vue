@@ -1,10 +1,9 @@
 <template>
   <v-layout>
-    <div class="circular" v-bind:style="{ backgroundImage: 'url(../public/squirrel.jpeg)' }"></div>
-    <v-flex xs10>
+    <v-flex xs9>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
-    <v-flex xs5 class="right">
+    <v-flex xs3 class="right">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>

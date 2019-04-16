@@ -4,7 +4,7 @@
       <h1 class="topic">INFO</h1>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
-    <v-flex xs5 class="right">
+    <v-flex xs2 class="right">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>
@@ -23,7 +23,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .topic {
     padding-top: 1em;
 }

@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span class="navbar">
     <v-flex mt-5></v-flex>
     <v-navigation-drawer app v-model="drawer" class="gray lighten-2" dark disable-resize-watcher>
       <v-list>
@@ -13,7 +13,7 @@
         <register></register>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app color="black darken-4" dark>
+    <v-toolbar app color="grey darken-3" dark>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <router-link
@@ -99,5 +99,9 @@ export default {
 <style scoped>
 .v-toolbar--fixed {
     position: inherit;
+}
+
+.navbar {
+    width: 100%;
 }
 </style>
