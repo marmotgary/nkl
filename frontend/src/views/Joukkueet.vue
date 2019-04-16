@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="layout">
+  <v-layout>
     <data-table></data-table>
   </v-layout>
 </template>
@@ -15,5 +15,5 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 </style>

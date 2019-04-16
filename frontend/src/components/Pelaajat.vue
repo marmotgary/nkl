@@ -141,7 +141,6 @@ export default {
                 )
                 .then(function(response) {
                     console.log(response);
-                    // this.isCaptain = !this.isCaptain;
                 });
         }
     }

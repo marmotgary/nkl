@@ -14,15 +14,17 @@
         </v-alert>
         <v-container grid-list-md>
           <v-layout wrap>
-            <v-flex xs12 sm6 md4>
-              <v-text-field v-model="credentials.first_name" label="First name*" required></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm6 md4>
-              <v-text-field v-model="credentials.last_name" label="Last name*" required></v-text-field>
-            </v-flex>
-            <v-flex>
-              <v-select v-model="credentials.number" :items="numbers"></v-select>
-            </v-flex>
+            <v-layout row>
+              <v-flex xs5 sm6 md4>
+                <v-text-field v-model="credentials.first_name" label="First name*" required></v-text-field>
+              </v-flex>
+              <v-flex xs5 sm6 md4 mr-5>
+                <v-text-field v-model="credentials.last_name" label="Last name*" required></v-text-field>
+              </v-flex>
+              <v-flex xs2 sm2 ml-5>
+                <v-select v-model="credentials.number" required :items="numbers"></v-select>
+              </v-flex>
+            </v-layout>
             <v-flex xs12>
               <v-text-field v-model="credentials.username" label="Email*" type="email" required></v-text-field>
             </v-flex>
@@ -57,7 +59,7 @@ export default {
         alert: false,
         errors: [],
         credentials: {},
-        numbers: [1, 2, 3]
+        numbers: []
     }),
     methods: {
         register() {
@@ -120,6 +122,9 @@ export default {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
         }
+    },
+    mounted: function() {
+        this.numbers = Array.from(Array(100).keys());
     }
 };
 </script>

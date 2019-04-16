@@ -76,6 +76,7 @@ export default {
                     response => {
                         this.dialog = !this.dialog;
                         this.alert = false;
+                        this.$session.set('role_id', response.body.role);
                         this.$session.set('user_id', response.body.user.id);
                         this.changeLogin(response.body.user.player_name);
                     },

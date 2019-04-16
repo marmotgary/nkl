@@ -158,7 +158,10 @@ export default {
     data: function() {
         return {
             header: '',
-            isCaptain: true,
+            isCaptain: false,
+            team_id: this.$route.fullPath.substr(
+                this.$route.fullPath.lastIndexOf('/') + 1
+            ),
             reserveHeaders: [
                 {
                     text: 'Varaa',
@@ -236,12 +239,7 @@ export default {
     methods: {
         getTeams: function() {
             this.$http
-                .get(
-                    'https://kyykka.rauko.la/api/teams/' +
-                        this.$route.fullPath.substr(
-                            this.$route.fullPath.lastIndexOf('/') + 1
-                        )
-                )
+                .get('https://kyykka.rauko.la/api/teams/' + this.team_id)
                 .then(
                     function(data) {
                         this.stats = [data.body];
@@ -270,23 +268,15 @@ export default {
             );
         },
         reserveButton: function(index) {
-            console.log(this.reserve[index].id);
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
                 this.$http
                     .post(
                         'https://kyykka.rauko.la/api/reserve',
-                        this.reserve[index].id,
-                        {
-                            headers: {
-                                'X-CSRFToken': this.$session.get('csrf')
-                            }
-                        }
+                        this.reserve[index].id
                     )
                     .then(function(response) {
                         console.log(response);
                     });
-
-                console.log(this.reserve[index]);
                 this.reserve.splice(index, 1);
             }
         }
@@ -294,18 +284,9 @@ export default {
     mounted: function() {
         this.header = '';
         this.getTeams();
-        if (this.$session.get('user_id')) {
-            this.$http
-                .get(
-                    'https://kyykka.rauko.la/api/players/' +
-                        this.$session.get('user_id')
-                )
-                .then(function(response) {
-                    this.getReserve();
-                    console.log(response);
-                    console.log(document.cookie);
-                    // this.isCaptain = !this.isCaptain;
-                });
+        if (this.$session.get('user_id') && this.$session.get('role_id') == 1) {
+            this.getReserve();
+            this.isCaptain = true;
         }
     }
 };

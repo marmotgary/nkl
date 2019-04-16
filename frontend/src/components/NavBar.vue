@@ -1,5 +1,5 @@
 <template>
-  <span class="navbar">
+  <span>
     <v-flex mt-5></v-flex>
     <v-navigation-drawer app v-model="drawer" class="gray lighten-2" dark disable-resize-watcher>
       <v-list>
@@ -27,7 +27,12 @@
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
 
-      <v-btn v-if="loggedIn" flat class="hidden-sm-and-down" to="/joukkueet">Joukkueeni</v-btn>
+      <v-btn
+        v-if="loggedIn"
+        flat
+        class="hidden-sm-and-down"
+        :to="'joukkue/'+this.team_id"
+      >Joukkueeni</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <div v-if="!loggedIn">
         <log-in class="hidden-sm-and-down"></log-in>
@@ -74,6 +79,7 @@ export default {
             this.loggedIn = false;
             this.name = '';
             this.$session.destroy();
+            window.location.reload();
         }
     },
     created() {
@@ -87,8 +93,8 @@ export default {
                             this.$session.get('user_id')
                     )
                     .then(function(response) {
+                        this.team_id = response.body.team.id;
                         console.log(response);
-                        // this.isCaptain = !this.isCaptain;
                     });
             }
         });
@@ -99,9 +105,5 @@ export default {
 <style scoped>
 .v-toolbar--fixed {
     position: inherit;
-}
-
-.navbar {
-    width: 100%;
 }
 </style>
