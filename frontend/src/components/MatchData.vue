@@ -17,8 +17,14 @@
           <v-flex pt-5 text-xs-center class="justify-center align-center">
             <h1>{{this.home_team.name}} vs. {{this.away_team.name}}</h1>
             <h4>
-              <v-chip :color="`${this.home_team.color} lighten-2`">{{this.home_team.score_total}}</v-chip>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-              <v-chip :color="`${this.away_team.color} lighten-2`">{{this.away_team.score_total}}</v-chip>
+              <v-chip
+                style="margin-right: 20%"
+                :color="`${this.home_team.color} lighten-2`"
+              >{{this.home_team.score_total}}</v-chip>
+              <v-chip
+                style="margin-left: 20%"
+                :color="`${this.away_team.color} lighten-2`"
+              >{{this.away_team.score_total}}</v-chip>
             </h4>
           </v-flex>
           <v-flex>
