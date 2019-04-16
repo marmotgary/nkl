@@ -2,9 +2,16 @@
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}</v-card-title>
     <v-layout row wrap>
-      <v-card-title v-if="this.teamSide == 'home'">{{this.home_team}}</v-card-title>
-      <v-card-title v-if="this.teamSide == 'away'">{{this.away_team}}</v-card-title>
-      <v-card-title>Hello</v-card-title>
+      <v-card-text>
+        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+          {{this.home_team}}
+          <v-btn style="float:right;">52</v-btn>
+        </p>
+        <p class="text-xs-left" v-if="this.teamSide == 'away'">
+          {{this.away_team}}
+          <v-btn style="float:right;">52</v-btn>
+        </p>
+      </v-card-text>
     </v-layout>
     <v-data-table :headers="headers" :items="data" hide-actions>
       <template slot="no-data">

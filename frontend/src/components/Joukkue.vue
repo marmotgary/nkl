@@ -119,37 +119,39 @@
         <td>{{ props.item.gteSix_total }}</td>
       </template>
     </v-data-table>
-    <v-expansion-panel v-if="isCaptain">
-      <v-expansion-panel-content>
-        <template v-slot:header>
-          <div>Varaa pelaajia</div>
-        </template>
-        <v-card>
-          <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
-            <template slot="no-data">
-              <v-progress-linear slot="progress" indeterminate></v-progress-linear>
-            </template>
-            <template slot="items" slot-scope="props">
-              <div class="row">
-                <td v-if="props.item.team == null">
-                  <v-btn v-on:click="reserveButton(props.index)" flat icon color="green">
-                    <v-icon>fas fa-plus</v-icon>
-                  </v-btn>
-                </td>
-                <td v-else>
-                  <v-btn flat disabled icon color="gray">
-                    <v-icon>fas fa-lock</v-icon>
-                  </v-btn>
-                </td>
-              </div>
-              <td>{{ props.item.id }}</td>
-              <td>{{ props.item.player_name }}</td>
-            </template>
-          </v-data-table>
-        </v-card>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-    <v-flex mt-4></v-flex>
+    <v-spacer></v-spacer>
+    <v-card>
+      <v-expansion-panel v-if="isCaptain">
+        <v-expansion-panel-content>
+          <template v-slot:header>
+            <div>Varaa pelaajia</div>
+          </template>
+          <v-card>
+            <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
+              <template slot="no-data">
+                <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+              </template>
+              <template slot="items" slot-scope="props">
+                <div class="row">
+                  <td v-if="props.item.team == null">
+                    <v-btn v-on:click="reserveButton(props.index)" flat icon color="green">
+                      <v-icon>fas fa-plus</v-icon>
+                    </v-btn>
+                  </td>
+                  <td v-else>
+                    <v-btn flat disabled icon color="gray">
+                      <v-icon>fas fa-lock</v-icon>
+                    </v-btn>
+                  </td>
+                </div>
+                <td>{{ props.item.id }}</td>
+                <td>{{ props.item.player_name }}</td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-card>
   </v-card>
 </template>
 
@@ -237,7 +239,7 @@ export default {
         };
     },
     methods: {
-        getTeams: function() {
+        getPlayers: function() {
             this.$http
                 .get('https://kyykka.rauko.la/api/teams/' + this.team_id)
                 .then(
@@ -277,13 +279,14 @@ export default {
                     .then(function(response) {
                         console.log(response);
                     });
+                this.getPlayers();
                 this.reserve.splice(index, 1);
             }
         }
     },
     mounted: function() {
         this.header = '';
-        this.getTeams();
+        this.getPlayers();
         if (this.$session.get('user_id') && this.$session.get('role_id') == 1) {
             this.getReserve();
             this.isCaptain = true;
