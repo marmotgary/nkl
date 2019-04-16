@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="app">
     <nav-bar></nav-bar>
     <v-content transition="slide-x-transition" class="content pa-0 mx-auto">
       <router-view></router-view>
@@ -21,5 +21,11 @@ export default {
 <style scoped>
 .content {
     width: 90%;
+}
+
+.app {
+    background-color: transparent;
+    display: inline-block;
+    overflow: hidden;
 }
 </style>
