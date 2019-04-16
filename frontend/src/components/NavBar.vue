@@ -26,6 +26,8 @@
       <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
+
+      <v-btn v-if="loggedIn" flat class="hidden-sm-and-down" to="/joukkueet">Joukkueeni</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <div v-if="!loggedIn">
         <log-in class="hidden-sm-and-down"></log-in>
@@ -58,6 +60,7 @@ export default {
             drawer: false,
             loggedIn: false,
             name: '',
+            team_id: '',
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
@@ -77,6 +80,17 @@ export default {
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
+            if (this.$session.get('user_id')) {
+                this.$http
+                    .get(
+                        'https://kyykka.rauko.la/api/players/' +
+                            this.$session.get('user_id')
+                    )
+                    .then(function(response) {
+                        console.log(response);
+                        // this.isCaptain = !this.isCaptain;
+                    });
+            }
         });
     }
 };

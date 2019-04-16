@@ -55,7 +55,6 @@ export default {
             eventBus.$emit('loginChanged', username);
         },
         login() {
-            // Like this
             this.$http
                 .get('https://kyykka.rauko.la/api/csrf')
                 .then(response => {

@@ -10,10 +10,13 @@ export const eventBus = new Vue();
 
 import VueResource from 'vue-resource';
 import VueSession from 'vue-session';
+import VueCookies from 'vue-cookies';
+import VueMoment from 'vue-moment';
 
 Vue.use(VueResource);
 Vue.use(VueSession);
-Vue.use(require('vue-moment'));
+Vue.use(VueCookies);
+Vue.use(VueMoment);
 
 new Vue({
     router,

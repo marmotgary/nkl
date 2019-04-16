@@ -119,7 +119,7 @@
         <td>{{ props.item.gteSix_total }}</td>
       </template>
     </v-data-table>
-    <v-expansion-panel>
+    <v-expansion-panel v-if="isCaptain">
       <v-expansion-panel-content>
         <template v-slot:header>
           <div>Varaa pelaajia</div>
@@ -158,6 +158,7 @@ export default {
     data: function() {
         return {
             header: '',
+            isCaptain: true,
             reserveHeaders: [
                 {
                     text: 'Varaa',
@@ -246,7 +247,6 @@ export default {
                         this.stats = [data.body];
                         this.players = data.body.players;
                         this.header = data.body.name;
-                        console.log(this.header);
                     },
                     function(error) {
                         console.log(error.statusText);
@@ -258,7 +258,6 @@ export default {
                 function(data) {
                     var i = 0;
                     for (var player in data.body) {
-                        // console.log(data.body[i].team);
                         if (data.body[i].team == null) {
                             this.reserve.push(data.body[i]);
                         }
@@ -271,12 +270,17 @@ export default {
             );
         },
         reserveButton: function(index) {
-            console.log(this.reserve);
+            console.log(this.reserve[index].id);
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
                 this.$http
                     .post(
                         'https://kyykka.rauko.la/api/reserve',
-                        this.reserve[index].id
+                        this.reserve[index].id,
+                        {
+                            headers: {
+                                'X-CSRFToken': this.$session.get('csrf')
+                            }
+                        }
                     )
                     .then(function(response) {
                         console.log(response);
@@ -285,17 +289,24 @@ export default {
                 console.log(this.reserve[index]);
                 this.reserve.splice(index, 1);
             }
-
-            // if (confirm('Haluatko varata tämän pelaajan?')) {
-            //     this.$parent.items.$remove(this.item);
-            // }
-            // this.$http.post('https://kyykka.rauko.la/api/reserve').then()
         }
     },
     mounted: function() {
         this.header = '';
         this.getTeams();
-        this.getReserve();
+        if (this.$session.get('user_id')) {
+            this.$http
+                .get(
+                    'https://kyykka.rauko.la/api/players/' +
+                        this.$session.get('user_id')
+                )
+                .then(function(response) {
+                    this.getReserve();
+                    console.log(response);
+                    console.log(document.cookie);
+                    // this.isCaptain = !this.isCaptain;
+                });
+        }
     }
 };
 </script>
