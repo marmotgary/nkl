@@ -11,7 +11,6 @@
           <round roundNumber="1" teamSide="home"></round>
         </v-card>
       </v-flex>
-      <v-spacer></v-spacer>
       <v-flex xm6>
         <v-card color="secondary">
           <round roundNumber="1" teamSide="away"></round>

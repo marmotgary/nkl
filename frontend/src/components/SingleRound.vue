@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}</v-card-title>
     <v-layout row wrap>
-      <v-card-text>
+      <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-chip
@@ -23,7 +23,7 @@
         </p>
       </v-card-text>
     </v-layout>
-    <v-data-table :headers="headers" :items="data" hide-actions>
+    <v-data-table disable-initial-sort="true" :headers="headers" :items="data" hide-actions>
       <template slot="no-data">
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -60,17 +60,19 @@ export default {
                 {
                     text: this.teamSide,
                     align: 'left',
-                    value: 'player_id'
+                    value: 'player_id',
+                    sortable: false
                 },
                 {
-                    text: 'Pelaaja',
-                    value: 'first_round.home.player.player_name'
+                    text: 'pelaaja',
+                    value: 'player',
+                    sortable: false
                 },
-                { value: 'first_round.home.player.score_first' },
-                { value: 'first_round.home.player.score_second' },
-                { value: 'first_round.home.player.score_third' },
-                { value: 'first_round.home.player.score_fourth' },
-                { text: 'P', value: 'first_round.home.player.score_total' }
+                { value: 'score_first', sortable: false },
+                { value: 'score_second', sortable: false },
+                { value: 'score_third', sortable: false },
+                { value: 'score_fourth', sortable: false },
+                { text: 'P', value: 'score_total' }
             ]
         };
     },

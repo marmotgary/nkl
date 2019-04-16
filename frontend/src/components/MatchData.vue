@@ -12,23 +12,35 @@
         </v-flex>
         <v-layout mx-5 pb-5 px-5 row wrap>
           <v-flex>
-            <img src="../../public/kyykkalogo120px.png">
+            <figure>
+              <img src="../../public/kyykkalogo120px.png">
+              <figcaption v-if="this.home_team.score_total">
+                <br>
+                <v-chip
+                  style="margin-left:15%;"
+                  :color="`${this.home_team.color} lighten-2`"
+                >{{this.home_team.score_total}}</v-chip>
+              </figcaption>
+            </figure>
           </v-flex>
-          <v-flex pt-5 text-xs-center class="justify-center align-center">
-            <h1>{{this.home_team.name}} vs. {{this.away_team.name}}</h1>
-            <h4>
-              <v-chip
-                style="margin-right: 20%"
-                :color="`${this.home_team.color} lighten-2`"
-              >{{this.home_team.score_total}}</v-chip>
-              <v-chip
-                style="margin-left: 20%"
-                :color="`${this.away_team.color} lighten-2`"
-              >{{this.away_team.score_total}}</v-chip>
-            </h4>
+          <v-flex pt-5 text-xm-center class="justify-center align-center">
+            <h2>
+              <span>{{this.home_team.name}}</span>
+              <span style="padding-left: 10%;padding-right: 10%">vs.</span>
+              <span>{{this.away_team.name}}</span>
+            </h2>
           </v-flex>
           <v-flex>
-            <img style="float:right;" src="../../public/kyykkalogo120px.png">
+            <figure style="float:right;">
+              <img src="../../public/kyykkalogo120px.png">
+              <figcaption v-if="this.home_team.score_total">
+                <br>
+                <v-chip
+                  style="margin-left:30%;"
+                  :color="`${this.away_team.color} lighten-2`"
+                >{{this.away_team.score_total}}</v-chip>
+              </figcaption>
+            </figure>
           </v-flex>
         </v-layout>
       </v-card>
@@ -63,7 +75,6 @@ export default {
                         )
                 )
                 .then(function(response) {
-                    console.log(response);
                     this.match_time = response.body.match_time;
                     this.away_team.name = response.body.away_team.name;
                     this.home_team.name = response.body.home_team.name;
