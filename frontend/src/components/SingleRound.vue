@@ -52,9 +52,11 @@
       hide-actions
     >
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items">
+      <template slot="items" slot-scope="props">
         <td>+</td>
-        <td></td>
+        <td>
+          <v-select :items="players" single-line></v-select>
+        </td>
         <td>+</td>
         <td>+</td>
         <td>+</td>
@@ -63,7 +65,6 @@
       </template>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
-    <v-select :items="this.players"></v-select>
   </v-card>
 </template>
 
@@ -95,7 +96,8 @@ export default {
                 {
                     text: 'pelaaja',
                     value: 'player',
-                    sortable: false
+                    sortable: false,
+                    width: '40%'
                 },
                 { value: 'score_first', sortable: false },
                 { value: 'score_second', sortable: false },
@@ -178,12 +180,13 @@ export default {
                                 this.color = 'green';
                             }
                         }
+                        var arr = [];
                         data.body.home_team.players.forEach(function(player) {
                             var x = player.player_name;
-                            this.players.push(x);
+                            arr.push(x);
                             console.log(x);
                         });
-                        console.log(this.players);
+                        this.players = arr;
                     },
                     function(error) {
                         console.log(error.statusText);
