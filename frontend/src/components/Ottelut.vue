@@ -43,7 +43,7 @@ export default {
                 },
                 { text: 'Koti', value: 'home_team.abbreviation' },
                 { text: 'Vieras', value: 'away_team.abbreviation' },
-                { text: 'Tulos' }
+                { text: 'Tulos', sortable: false }
             ],
             matches: []
         };

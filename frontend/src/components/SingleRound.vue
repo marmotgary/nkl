@@ -28,19 +28,49 @@
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props">
+      <template slot="items" slot-scope="props" v-if="props.item">
         <td v-if="props.item.player.id">{{props.item.player.id}}</td>
         <td v-if="props.item.player.player_name">{{props.item.player.player_name}}</td>
         <td v-if="props.item.score_first">{{props.item.score_first}}</td>
         <td v-if="props.item.score_second">{{props.item.score_second}}</td>
         <td v-if="props.item.score_third">{{props.item.score_third}}</td>
         <td v-if="props.item.score_fourth">{{props.item.score_fourth}}</td>
-        <td v-if="props.item.score_fourth">{{props.item.score_total}}</td>
+        <td v-if="props.item.score_total">{{props.item.score_total}}</td>
       </template>
+      <v-else>
+        <template slot="items">
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+        </template>
+      </v-else>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
   </v-card>
+                <!-- <v-data-table :headers="headers" :items="desserts" hide-actions class="elevation-1">
+                <template slot="items" slot-scope="props">
+                  <td>{{ props.item.name }}</td>
+                  <td class="text-xs-right">{{ props.item.calories }}</td>
+                  <td class="text-xs-right">{{ props.item.fat }}</td>
+                  <td class="text-xs-right">{{ props.item.carbs }}</td>
+                  <td class="text-xs-right">{{ props.item.protein }}</td>
+                  <td class="justify-center layout px-0">
+                    <v-btn icon class="mx-0" @click="editItem(props.item)">
+                      <v-icon color="teal">edit</v-icon>
+                    </v-btn>
+                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+                      <v-icon color="pink">delete</v-icon>
+                    </v-btn>
+                  </td>
+                </template>
+              </v-data-table> -->
 </template>
+
+
 
 <script>
 export default {
