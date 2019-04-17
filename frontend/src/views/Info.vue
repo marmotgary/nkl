@@ -2,7 +2,7 @@
   <v-layout>
     <v-flex xs9>
       <h1 class="topic">INFO</h1>
-      <lorem-ipsum></lorem-ipsum>
+      <info></info>
     </v-flex>
     <v-flex xs3 class="right">
       <side-bar></side-bar>
@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import LoremIpsum from '@/components/LoremIpsum';
+import Info from '@/components/Info';
 import SideBar from '@/components/SideBar';
 
 export default {
-    name: 'info',
+    name: 'info-view',
     components: {
-        LoremIpsum,
+        Info,
         SideBar
     }
 };
