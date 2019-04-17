@@ -20,7 +20,7 @@ export default {
 
 <style scoped>
 .content {
-    width: 70%;
+    width: 80%;
 }
 
 .app {

@@ -1,7 +1,5 @@
 <template>
   <div class="inner bg-white">
-    <h3 class="major">Säännöt</h3>
-
     <ol>
       <li class="text-align-justify">
         <a href="#S1">Pelin perusidea</a>
@@ -226,5 +224,4 @@
     <p>Säännöt päivitetty 25.11.2016</p>
   </div>
 </template>
-            
-        
+
