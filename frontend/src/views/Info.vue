@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex xs9>
-      <h1 class="topic">INFO</h1>
+      <h1 class="topic">Säännöt</h1>
       <info></info>
     </v-flex>
     <v-flex xs3 class="right">

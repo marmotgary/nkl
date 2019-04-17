@@ -28,7 +28,7 @@
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props" v-if="props.item">
+      <template slot="items" slot-scope="props" v-if="props.item.is_validated">
         <td v-if="props.item.player.id">{{props.item.player.id}}</td>
         <td v-if="props.item.player.player_name">{{props.item.player.player_name}}</td>
         <td v-if="props.item.score_first">{{props.item.score_first}}</td>
@@ -51,7 +51,7 @@
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
   </v-card>
-                <!-- <v-data-table :headers="headers" :items="desserts" hide-actions class="elevation-1">
+  <!-- <v-data-table :headers="headers" :items="desserts" hide-actions class="elevation-1">
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.name }}</td>
                   <td class="text-xs-right">{{ props.item.calories }}</td>
@@ -67,7 +67,7 @@
                     </v-btn>
                   </td>
                 </template>
-              </v-data-table> -->
+  </v-data-table>-->
 </template>
 
 
@@ -117,6 +117,7 @@ export default {
                 )
                 .then(
                     function(data) {
+                        console.log(data.body.is_validated);
                         if (this.roundNumber == 1 && this.teamSide == 'home') {
                             this.data = data.body.first_round.home;
                             this.home_team = data.body.home_team.name;
