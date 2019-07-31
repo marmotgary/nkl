@@ -53,15 +53,26 @@
     >
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>+</td>
+        <!-- Here you put the id according to the player selected on the next column !-->
+        <td>69</td>
         <td>
           <v-select :items="players" single-line></v-select>
         </td>
-        <td>+</td>
-        <td>+</td>
-        <td>+</td>
-        <td>+</td>
-        <td>+</td>
+        <td>
+          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+        </td>
+        <td>
+          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+        </td>
+        <td>
+          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+        </td>
+        <td>
+          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+        </td>
+        <td>
+          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+        </td>
       </template>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
@@ -84,6 +95,7 @@ export default {
             round_score: '',
             color: '',
             is_validated: '',
+            throw_score: 0,
             players: [],
             data: [],
             headers: [
@@ -108,6 +120,12 @@ export default {
         };
     },
     methods: {
+        increment: function() {
+            this.throw_score = parseInt(this.throw_score, 10) + 1;
+        },
+        decrement: function() {
+            this.throw_score = parseInt(this.throw_score, 10) - 1;
+        },
         getMatch: function() {
             this.$http
                 .get(
