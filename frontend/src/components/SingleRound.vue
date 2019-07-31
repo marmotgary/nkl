@@ -23,12 +23,18 @@
         </p>
       </v-card-text>
     </v-layout>
-    <v-data-table disable-initial-sort="true" :headers="headers" :items="data" hide-actions>
+    <v-data-table
+      v-if="is_validated"
+      disable-initial-sort
+      :headers="headers"
+      :items="data"
+      hide-actions
+    >
       <template slot="no-data">
         <v-progress-linear slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props" v-if="props.item.is_validated">
+      <template slot="items" slot-scope="props">
         <td v-if="props.item.player.id">{{props.item.player.id}}</td>
         <td v-if="props.item.player.player_name">{{props.item.player.player_name}}</td>
         <td v-if="props.item.score_first">{{props.item.score_first}}</td>
@@ -37,37 +43,29 @@
         <td v-if="props.item.score_fourth">{{props.item.score_fourth}}</td>
         <td v-if="props.item.score_total">{{props.item.score_total}}</td>
       </template>
-      <v-else>
-        <template slot="items">
-          <td>+</td>
-          <td>+</td>
-          <td>+</td>
-          <td>+</td>
-          <td>+</td>
-          <td>+</td>
-          <td>+</td>
-        </template>
-      </v-else>
+    </v-data-table>
+    <v-data-table
+      v-if="!is_validated"
+      disable-initial-sort
+      :headers="headers"
+      :items="players"
+      hide-actions
+    >
+      <template slot="headers" class="text-xs-center"></template>
+      <template slot="items" slot-scope="props">
+        <td>+</td>
+        <td>
+          <v-select :items="players" single-line></v-select>
+        </td>
+        <td>+</td>
+        <td>+</td>
+        <td>+</td>
+        <td>+</td>
+        <td>+</td>
+      </template>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
   </v-card>
-  <!-- <v-data-table :headers="headers" :items="desserts" hide-actions class="elevation-1">
-                <template slot="items" slot-scope="props">
-                  <td>{{ props.item.name }}</td>
-                  <td class="text-xs-right">{{ props.item.calories }}</td>
-                  <td class="text-xs-right">{{ props.item.fat }}</td>
-                  <td class="text-xs-right">{{ props.item.carbs }}</td>
-                  <td class="text-xs-right">{{ props.item.protein }}</td>
-                  <td class="justify-center layout px-0">
-                    <v-btn icon class="mx-0" @click="editItem(props.item)">
-                      <v-icon color="teal">edit</v-icon>
-                    </v-btn>
-                    <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-                      <v-icon color="pink">delete</v-icon>
-                    </v-btn>
-                  </td>
-                </template>
-  </v-data-table>-->
 </template>
 
 
@@ -85,6 +83,8 @@ export default {
             away_team: '',
             round_score: '',
             color: '',
+            is_validated: '',
+            players: [],
             data: [],
             headers: [
                 {
@@ -96,7 +96,8 @@ export default {
                 {
                     text: 'pelaaja',
                     value: 'player',
-                    sortable: false
+                    sortable: false,
+                    width: '40%'
                 },
                 { value: 'score_first', sortable: false },
                 { value: 'score_second', sortable: false },
@@ -117,7 +118,8 @@ export default {
                 )
                 .then(
                     function(data) {
-                        console.log(data.body.is_validated);
+                        this.is_validated = data.body.is_validated;
+                        console.log(this.is_validated);
                         if (this.roundNumber == 1 && this.teamSide == 'home') {
                             this.data = data.body.first_round.home;
                             this.home_team = data.body.home_team.name;
@@ -178,6 +180,13 @@ export default {
                                 this.color = 'green';
                             }
                         }
+                        var arr = [];
+                        data.body.home_team.players.forEach(function(player) {
+                            var x = player.player_name;
+                            arr.push(x);
+                            console.log(x);
+                        });
+                        this.players = arr;
                     },
                     function(error) {
                         console.log(error.statusText);

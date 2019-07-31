@@ -224,5 +224,4 @@
     <p>Säännöt päivitetty 25.11.2016</p>
   </div>
 </template>
-            
-        
+

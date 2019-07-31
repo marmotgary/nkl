@@ -53,4 +53,7 @@ export default {
 };
 </script>
 <style>
+tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
 </style>
