@@ -28,8 +28,7 @@ After the migrations are complete populate the tables
 
 In the python shell run the following code and wait for it to complete
 
-`from utils.dummyGen import *`
-`initGen()`
+`from utils.dummyGen import *; initGen()`
 
 Start the development server
 
