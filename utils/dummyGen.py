@@ -1,7 +1,7 @@
 import django
 from faker import Faker
 from django.contrib.auth.models import User
-from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason, Match, Throw
+from kyykka.models import *
 import random
 import pytz
 
@@ -73,7 +73,7 @@ def teamGen(amount):
 
 
 def populateTeam(team):
-    print('Generating fake userse for team ', team)
+    print('Generating fake users for team ', team)
     players = userGen(6, True)
     season = CurrentSeason.objects.first().season
     PlayersInTeam.objects.create(
