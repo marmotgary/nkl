@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         getTeams: function() {
-            this.$http.get('https://kyykka.rauko.la/api/teams/').then(
+            this.$http.get('http://localhost:8000/api/teams/').then(
                 function(data) {
                     this.teams = data.body;
                 },

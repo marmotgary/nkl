@@ -241,7 +241,7 @@ export default {
     methods: {
         getPlayers: function() {
             this.$http
-                .get('https://kyykka.rauko.la/api/teams/' + this.team_id)
+                .get('http://localhost:8000/api/teams/' + this.team_id)
                 .then(
                     function(data) {
                         this.stats = [data.body];
@@ -254,7 +254,7 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('https://kyykka.rauko.la/api/reserve/').then(
+            this.$http.get('http://localhost:8000/api/reserve/').then(
                 function(data) {
                     var i = 0;
                     for (var player in data.body) {
@@ -273,7 +273,7 @@ export default {
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
                 this.$http
                     .post(
-                        'https://kyykka.rauko.la/api/reserve',
+                        'http://localhost:8000/api/reserve',
                         this.reserve[index].id
                     )
                     .then(function(response) {

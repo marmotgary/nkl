@@ -56,7 +56,7 @@ export default {
         },
         login() {
             this.$http
-                .get('https://kyykka.rauko.la/api/csrf')
+                .get('http://localhost:8000/api/csrf')
                 .then(response => {
                     if (
                         response.status === 200 &&
@@ -67,7 +67,7 @@ export default {
                     }
                 });
             this.$http
-                .post('https://kyykka.rauko.la/api/login/', this.credentials, {
+                .post('http://localhost:8000/api/login/', this.credentials, {
                     headers: {
                         'X-CSRFToken': this.$session.get('csrf')
                     }

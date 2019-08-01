@@ -129,7 +129,7 @@ export default {
         getMatch: function() {
             this.$http
                 .get(
-                    'https://kyykka.rauko.la/api/matches/' +
+                    'http://localhost:8000/api/matches/' +
                         this.$route.fullPath.substr(
                             this.$route.fullPath.lastIndexOf('/') + 1
                         )

@@ -64,7 +64,7 @@ export default {
     methods: {
         register() {
             this.$http
-                .get('https://kyykka.rauko.la/api/csrf')
+                .get('http://localhost:8000/api/csrf')
                 .then(response => {
                     if (
                         response.status === 200 &&
@@ -75,7 +75,7 @@ export default {
                     }
                 });
             this.$http
-                .post('https://kyykka.rauko.la/api/register/', this.credentials)
+                .post('http://localhost:8000/api/register/', this.credentials)
                 .then(res => {
                     this.dialog = false;
                     this.alert = false;

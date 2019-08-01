@@ -115,7 +115,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('https://kyykka.rauko.la/api/players/').then(
+            this.$http.get('http://localhost:8000/api/players/').then(
                 function(data) {
                     this.players = data.body;
                     console.log(this.players);
@@ -127,7 +127,7 @@ export default {
         },
         reservePlayer: function() {
             this.$http
-                .post('https://kyykka.rauko.la/api/reserve/')
+                .post('http://localhost:8000/api/reserve/')
                 .then(function(response) {});
         }
     },
@@ -136,7 +136,7 @@ export default {
         if (this.$session.get('user_id')) {
             this.$http
                 .get(
-                    'https://kyykka.rauko.la/api/players/' +
+                    'http://localhost:8000/api/players/' +
                         this.$session.get('user_id')
                 )
                 .then(function(response) {

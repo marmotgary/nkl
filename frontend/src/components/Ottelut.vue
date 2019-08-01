@@ -50,7 +50,7 @@ export default {
     },
     methods: {
         getMatches: function() {
-            this.$http.get('https://kyykka.rauko.la/api/matches/').then(
+            this.$http.get('http://localhost:8000/api/matches/').then(
                 function(data) {
                     this.matches = data.body;
                 },

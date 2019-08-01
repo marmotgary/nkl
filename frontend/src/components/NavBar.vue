@@ -89,7 +89,7 @@ export default {
             if (this.$session.get('user_id')) {
                 this.$http
                     .get(
-                        'https://kyykka.rauko.la/api/players/' +
+                        'http://localhost:8000/api/players/' +
                             this.$session.get('user_id')
                     )
                     .then(function(response) {
