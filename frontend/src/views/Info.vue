@@ -1,10 +1,6 @@
 <template>
   <v-layout>
-<<<<<<< HEAD
     <v-flex xs9>
-=======
-    <v-flex mt-3 xs8>
->>>>>>> 1a106a6c293f084244994738f8b1556f7fdbcbb5
       <h1 class="topic">Säännöt</h1>
       <info></info>
     </v-flex>
