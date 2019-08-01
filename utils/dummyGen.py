@@ -1,5 +1,6 @@
 import django
 from faker import Faker
+from tqdm import tqdm
 from django.contrib.auth.models import User
 from kyykka.models import *
 import random
@@ -20,14 +21,12 @@ def initGen():
 
 
 def seasonGen(amount=3):
-    print('Generating seasons\n')
     year = 2019
     for _ in range(amount):
         season = Season.objects.create(year=year)
         if year == 2019:
             CurrentSeason.objects.create(season=season)
         year = year - 1
-        print(year)
 
 
 # Generate Users
@@ -35,7 +34,7 @@ def seasonGen(amount=3):
 
 def userGen(amount, return_users=False):
     users = []
-    for _ in range(amount):
+    for _ in (range(amount)):
         try:
             email = fake.email()
             first_name = fake.first_name()
@@ -47,18 +46,16 @@ def userGen(amount, return_users=False):
             # user.player.number = random.randint(1,100)
             Player.objects.create(user=user, number=random.randint(1,100))
             users.append(user)
-            print(first_name, last_name, email)
         except Exception as e:
             print(e)
             pass
-    print("Generated users", users)
     if return_users:
         return users
 
 
 def teamGen(amount):
     print('Generating fake teams\n')
-    for i in range(amount):
+    for i in tqdm(range(amount)):
         try:
             name = fake.company()
             abbreviation = fake.company_suffix()
@@ -68,12 +65,10 @@ def teamGen(amount):
             abbreviation = fake.ean8()
             team = Team.objects.create(name=name, abbreviation=abbreviation)
             pass
-        print('\n Generated team', name, abbreviation, '\n')
         populateTeam(team)
 
 
 def populateTeam(team):
-    print('Generating fake users for team ', team)
     players = userGen(6, True)
     season = CurrentSeason.objects.first().season
     PlayersInTeam.objects.create(
@@ -85,10 +80,10 @@ def populateTeam(team):
 def matchGen():
     season = CurrentSeason.objects.first().season
     exclude = []
-    for home in Team.objects.all():
+    print('\nGenerating fake matches.')
+    for home in tqdm(Team.objects.all()):
         exclude.append(home.id)
         for away in Team.objects.all().exclude(id__in=exclude):
-            print("Generating match and throws..")
             match = Match.objects.create(
                 season=season,
                 match_time=fake.date_time_between(
