@@ -1,8 +1,31 @@
 <template>
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}</v-card-title>
-    <v-layout row wrap>
+    <v-layout v-if="is_validated" row wrap>
       <v-card-text v-if="this.round_score">
+        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+          {{this.home_team}}
+          <v-chip
+            style="float:right;"
+            :color="`${this.color} lighten-2`"
+            label
+            small
+          >{{this.round_score}}</v-chip>
+        </p>
+        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+          {{this.away_team}}
+          <v-chip
+            style="float:right;"
+            :color="`${this.color} lighten-2`"
+            label
+            small
+          >{{this.round_score}}</v-chip>
+        </p>
+      </v-card-text>
+    </v-layout>
+    <v-layout v-if="!is_validated" row wrap>
+      <v-card-text v-if="this.round_score">
+        <!-- Tähän dynaaminen pisteiden lisäys -->
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-chip
@@ -52,33 +75,38 @@
       hide-actions
       :pagination.sync="pagination"
       >
-      <template slot="headers" class="text-xs-center"></template>
+      <template slot="headers"></template>
       <template slot="items">
         <!-- Here you put the id according to the player selected on the next column !-->
-          <td>69</td>
+          <td class="pa-1">69</td>
           <td>
-            <v-select :items="players" @change="disablePlayer" single-line></v-select>
+            <v-select class="pr-1" v-bind:value="players[0]" :items="players" @change="disablePlayer" single-line></v-select>
           </td>
           <td>
-            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+            <v-select class="pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
-          <td>
-            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          <td >
+            <v-text-field v-bind:value="99"></v-text-field>
           </td>
       </template>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
   </v-card>
 </template>
+<style scoped>
+td {
+  padding: 0 !important;
+}
+</style>
 
 
 
@@ -108,19 +136,20 @@ export default {
                     text: this.teamSide,
                     align: 'left',
                     value: 'player_id',
-                    sortable: false
+                    sortable: false,
+                    width: '5%'
                 },
                 {
                     text: 'pelaaja',
                     value: 'player',
                     sortable: false,
-                    width: '40%'
+                    width: '35%'
                 },
-                { value: 'score_first', sortable: false },
-                { value: 'score_second', sortable: false },
-                { value: 'score_third', sortable: false },
-                { value: 'score_fourth', sortable: false },
-                { text: 'P', value: 'score_total' }
+                { value: 'score_first', sortable: false, width: '10%'},
+                { value: 'score_second', sortable: false, width: '10%'},
+                { value: 'score_third', sortable: false, width: '10%'},
+                { value: 'score_fourth', sortable: false, width: '10%'},
+                { text: 'P', value: 'score_total', width: '5%'}
             ],
             options: {
               itemsPerPage:4,
