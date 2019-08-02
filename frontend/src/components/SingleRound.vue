@@ -78,33 +78,34 @@
       <template slot="headers"></template>
       <template slot="items">
         <!-- Here you put the id according to the player selected on the next column !-->
-          <td class="pa-1">69</td>
+          <td>69</td>
           <td>
-            <v-select class="pr-1" v-bind:value="players[0]" :items="players" @change="disablePlayer" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="players[0]" :items="players" @change="disablePlayer" single-line></v-select>
           </td>
           <td>
-            <v-select class="pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td>
-            <v-select class="pr-1" v-bind:value="0" :items="[H,0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
           <td >
-            <v-text-field v-bind:value="99"></v-text-field>
+            <v-text-field class="text-righ" v-bind:value="99"></v-text-field>
           </td>
       </template>
-      <template slot="headers" class="text-xs-center"></template>
+      <template slot="headers"></template>
     </v-data-table>
   </v-card>
 </template>
 <style scoped>
 td {
   padding: 0 !important;
+  text-align: center !important;
 }
 </style>
 
@@ -134,7 +135,6 @@ export default {
             headers: [
                 {
                     text: this.teamSide,
-                    align: 'left',
                     value: 'player_id',
                     sortable: false,
                     width: '5%'
