@@ -83,19 +83,19 @@
             <v-select class="text-center pr-1" v-bind:value="players[0]" :items="players" @change="disablePlayer" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal"  single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
           </td>
           <td>
-            {{this.roundNumber}}
+            {{this.player_scores}}
           </td>
       </template>
       <template slot="headers"></template>
@@ -126,12 +126,12 @@ export default {
             home_team: '',
             away_team: '',
             round_score: '',
+            player_scores: 0,
             color: '',
             is_validated: '',
             throw_score: 0,
             players: [],
             data: [],
-            selected: [],
             headers: [
                 {
                     text: this.teamSide,
@@ -157,6 +157,9 @@ export default {
         };
     },
     methods: {
+        countTotal: function(val) {
+          this.player_scores += val
+        },
         disablePlayer: function(player) {
           // this.selected.push(player)
           // this.players = this.players.filter( ( el ) => !this.selected.includes( el ) );
