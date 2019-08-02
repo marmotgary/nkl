@@ -94,8 +94,8 @@
           <td>
             <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" single-line></v-select>
           </td>
-          <td >
-            <v-text-field class="text-righ" v-bind:value="99"></v-text-field>
+          <td>
+            {{this.roundNumber}}
           </td>
       </template>
       <template slot="headers"></template>
@@ -140,7 +140,7 @@ export default {
                     width: '5%'
                 },
                 {
-                    text: 'pelaaja',
+                    text: 'player',
                     value: 'player',
                     sortable: false,
                     width: '35%'
@@ -149,7 +149,7 @@ export default {
                 { value: 'score_second', sortable: false, width: '10%'},
                 { value: 'score_third', sortable: false, width: '10%'},
                 { value: 'score_fourth', sortable: false, width: '10%'},
-                { text: 'P', value: 'score_total', width: '5%'}
+                { text: 'Pts.', align: 'center',value: 'score_total', width: '5%'}
             ],
             options: {
               itemsPerPage:4,
