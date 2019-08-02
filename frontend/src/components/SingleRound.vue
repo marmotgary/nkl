@@ -50,29 +50,30 @@
       :headers="headers"
       :items="players"
       hide-actions
-    >
+      :pagination.sync="pagination"
+      >
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props">
+      <template slot="items">
         <!-- Here you put the id according to the player selected on the next column !-->
-        <td>69</td>
-        <td>
-          <v-select :items="players" single-line></v-select>
-        </td>
-        <td>
-          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
-        </td>
-        <td>
-          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
-        </td>
-        <td>
-          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
-        </td>
-        <td>
-          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
-        </td>
-        <td>
-          <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
-        </td>
+          <td>69</td>
+          <td>
+            <v-select :items="players" @change="disablePlayer" single-line></v-select>
+          </td>
+          <td>
+            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          </td>
+          <td>
+            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          </td>
+          <td>
+            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          </td>
+          <td>
+            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          </td>
+          <td>
+            <v-text-field type="number" @click:append-outer="increment" @click:prepend="decrement"></v-text-field>
+          </td>
       </template>
       <template slot="headers" class="text-xs-center"></template>
     </v-data-table>
@@ -90,6 +91,9 @@ export default {
     },
     data: function() {
         return {
+            pagination: {
+              rowsPerPage: 4
+            },
             home_team: '',
             away_team: '',
             round_score: '',
@@ -98,6 +102,7 @@ export default {
             throw_score: 0,
             players: [],
             data: [],
+            selected: [],
             headers: [
                 {
                     text: this.teamSide,
@@ -116,10 +121,17 @@ export default {
                 { value: 'score_third', sortable: false },
                 { value: 'score_fourth', sortable: false },
                 { text: 'P', value: 'score_total' }
-            ]
+            ],
+            options: {
+              itemsPerPage:4,
+            }
         };
     },
     methods: {
+        disablePlayer: function(player) {
+          // this.selected.push(player)
+          // this.players = this.players.filter( ( el ) => !this.selected.includes( el ) );
+        },
         increment: function() {
             this.throw_score = parseInt(this.throw_score, 10) + 1;
         },
@@ -137,7 +149,6 @@ export default {
                 .then(
                     function(data) {
                         this.is_validated = data.body.is_validated;
-                        console.log(this.is_validated);
                         if (this.roundNumber == 1 && this.teamSide == 'home') {
                             this.data = data.body.first_round.home;
                             this.home_team = data.body.home_team.name;
@@ -202,7 +213,6 @@ export default {
                         data.body.home_team.players.forEach(function(player) {
                             var x = player.player_name;
                             arr.push(x);
-                            console.log(x);
                         });
                         this.players = arr;
                     },
