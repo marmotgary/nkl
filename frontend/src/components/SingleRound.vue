@@ -71,32 +71,35 @@
       v-if="!is_validated"
       disable-initial-sort
       :headers="headers"
-      :items="players"
+      :items="data"
       hide-actions
       :pagination.sync="pagination"
       >
       <template slot="headers"></template>
       <template slot="items">
         <!-- Here you put the id according to the player selected on the next column !-->
+        <tr>
           <td>69</td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="players[0]" :items="players" @change="disablePlayer" single-line></v-select>
+            <v-select v-if="this.teamSide == 'home'" class="text-center pr-1" v-bind:value="home_players[0]" :items="home_players" @change="disablePlayer" single-line></v-select>
+            <v-select v-else-if="this.teamSide == 'away'" class="text-center pr-1" v-bind:value="away_players[0]" :items="away_players" @change="disablePlayer" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal"  single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal"  single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @change="countTotal" single-line></v-select>
+            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
           </td>
           <td>
             {{this.player_scores}}
           </td>
+        </tr>
       </template>
       <template slot="headers"></template>
     </v-data-table>
@@ -130,7 +133,8 @@ export default {
             color: '',
             is_validated: '',
             throw_score: 0,
-            players: [],
+            home_players: [],
+            away_players: [],
             data: [],
             headers: [
                 {
@@ -241,12 +245,18 @@ export default {
                                 this.color = 'green';
                             }
                         }
-                        var arr = [];
+                        var arr_home = [];
+                        var arr_away = [];
                         data.body.home_team.players.forEach(function(player) {
                             var x = player.player_name;
-                            arr.push(x);
+                            arr_home.push(x);
                         });
-                        this.players = arr;
+                        data.body.away_team.players.forEach(function(player) {
+                            var x = player.player_name;
+                            arr_away.push(x);
+                        });
+                        this.home_players = arr_home;
+                        this.away_players = arr_away;
                     },
                     function(error) {
                         console.log(error.statusText);
