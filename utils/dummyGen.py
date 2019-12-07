@@ -5,6 +5,7 @@ import random, pytz
 
 fake = Faker('fi_FI')
 
+
 def initGen():
     '''
     Generates dummy Seasons, Teams and populates teams with Users.
@@ -15,6 +16,7 @@ def initGen():
     teamGen(30)
     matchGen()
 
+
 def seasonGen(amount=3):
     print('Generating seasons\n')
     year = 2019
@@ -24,6 +26,7 @@ def seasonGen(amount=3):
             CurrentSeason.objects.create(season=season)
         year = year - 1
         print(year)
+
 
 # Generate Users
 def userGen(amount, return_users=False):
@@ -38,7 +41,7 @@ def userGen(amount, return_users=False):
             user.last_name = last_name
             user.save()
             # user.player.number = random.randint(1,100)
-            Player.objects.create(user=user, number=random.randint(1,100))
+            Player.objects.create(user=user, number=random.randint(1, 100))
             users.append(user)
             print(first_name, last_name, email)
         except Exception as e:
@@ -47,6 +50,7 @@ def userGen(amount, return_users=False):
     print("Generated users", users)
     if return_users:
         return users
+
 
 def teamGen(amount):
     print('Generating fake teams\n')
@@ -63,6 +67,7 @@ def teamGen(amount):
         print('\n Generated team', name, abbreviation, '\n')
         populateTeam(team)
 
+
 def populateTeam(team):
     print('Generating fake userse for team ', team)
     players = userGen(6, True)
@@ -70,6 +75,7 @@ def populateTeam(team):
     PlayersInTeam.objects.create(season=season, team=team, player=players.pop(), is_captain=True)
     for p in players:
         PlayersInTeam.objects.create(season=season, team=team, player=p)
+
 
 def matchGen():
     season = CurrentSeason.objects.first().season
@@ -80,16 +86,18 @@ def matchGen():
             print("Generating match and throws..")
             match = Match.objects.create(
                 season=season,
-                match_time = fake.date_time_between(start_date="-60y", end_date="now", tzinfo=pytz.timezone("Europe/Helsinki")),
-                home_first_round_score = random.randint(0, 100),
-                home_second_round_score = random.randint(0, 100),
-                away_first_round_score = random.randint(0, 100),
-                away_second_round_score = random.randint(0, 100),
-                home_team = home,
-                away_team = away,
-                is_validated = random.choice([True, False])
+                match_time=fake.date_time_between(start_date="-60y", end_date="now",
+                                                  tzinfo=pytz.timezone("Europe/Helsinki")),
+                home_first_round_score=random.randint(0, 100),
+                home_second_round_score=random.randint(0, 100),
+                away_first_round_score=random.randint(0, 100),
+                away_second_round_score=random.randint(0, 100),
+                home_team=home,
+                away_team=away,
+                is_validated=random.choice([True, False])
             )
             throwGen(match)
+
 
 def throwGen(match):
     '''
@@ -98,7 +106,7 @@ def throwGen(match):
     '''
     season = CurrentSeason.objects.first().season
     for team in [match.home_team, match.away_team]:
-        for throw_round in range(1,3):
+        for throw_round in range(1, 3):
             for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
                 Throw.objects.create(
                     match=match,
@@ -107,11 +115,11 @@ def throwGen(match):
                     season=season,
                     throw_turn=throw_turn + 1,
                     throw_round=throw_round,
-                    score_first=random.randint(-1,7),
-                    score_second=random.randint(-1,7),
-                    score_third=random.randint(-1,7),
-                    score_fourth=random.randint(-1,7),
-                    )
+                    score_first=random.randint(-1, 7),
+                    score_second=random.randint(-1, 7),
+                    score_third=random.randint(-1, 7),
+                    score_fourth=random.randint(-1, 7),
+                )
                 # for throw_number in range(1,5):
                 #     Throw.objects.create(
                 #         match=match,
