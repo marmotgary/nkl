@@ -5,3 +5,4 @@ djangorestframework==3.9.2
 Faker==1.0.4
 django-rest-swagger==2.2.0
 python-memcached==1.59
+django-cors-headers

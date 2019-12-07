@@ -7,3 +7,4 @@ venv*
 static_files
 frontend
 local_settings.py
+.idea

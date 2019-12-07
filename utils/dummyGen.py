@@ -1,6 +1,6 @@
 from faker import Faker
 from django.contrib.auth.models import User
-from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason, Match, Throw
+from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason, Match, Throw, Player
 import random, pytz
 
 fake = Faker('fi_FI')
