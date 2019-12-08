@@ -66,7 +66,7 @@ class Match(models.Model):
         verbose_name_plural = 'Matches'
 
     def __str__(self):
-        return 'Match %s - %s %s' % (self.home_team, self.away_team, self.match_time)
+        return '%s | %s - %s' % (self.match_time.strftime("%m/%d/%Y, %H:%M"), self.home_team, self.away_team, )
 
 
 # class ThrowType(models.Model):
