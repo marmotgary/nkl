@@ -390,7 +390,8 @@ class UserThrowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Throw
         fields = (
-        'id', 'throw_round', 'throw_turn', 'score_first', 'score_second', 'score_third', 'score_fourth', 'score_total')
+            'id', 'throw_round', 'throw_turn', 'score_first', 'score_second', 'score_third', 'score_fourth',
+            'score_total')
 
 
 class PlayerNameSerializer(SharedPlayerSerializer):
@@ -622,9 +623,11 @@ class MatchDetailSerializer(SharedMatchSerializer):
     class Meta:
         model = Match
         fields = (
-        'id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score', 'home_second_round_score',
-        'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team', 'away_team',
-        'is_validated')
+            'id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score',
+            'home_second_round_score',
+            'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team',
+            'away_team',
+            'is_validated')
 
 
 class MatchTeamSerializer(serializers.ModelSerializer):
@@ -673,7 +676,7 @@ class ThrowScoreSerialzier(serializers.ModelSerializer):
     class Meta:
         model = Throw
         fields = (
-        'id', 'player', 'score_total', 'score_first', 'score_second', 'score_third', 'score_fourth', 'throw_turn')
+            'id', 'player', 'score_total', 'score_first', 'score_second', 'score_third', 'score_fourth', 'throw_turn')
 
 
 class ThrowSerializer(serializers.ModelSerializer):
