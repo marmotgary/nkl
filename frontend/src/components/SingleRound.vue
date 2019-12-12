@@ -248,12 +248,10 @@ export default {
                         var arr_home = [];
                         var arr_away = [];
                         data.body.home_team.players.forEach(function(player) {
-                            var x = player.player_name;
-                            arr_home.push(x);
+                            arr_home.push(player.player_name);
                         });
                         data.body.away_team.players.forEach(function(player) {
-                            var x = player.player_name;
-                            arr_away.push(x);
+                          arr_away.push(player.player_name);
                         });
                         this.home_players = arr_home;
                         this.away_players = arr_away;
