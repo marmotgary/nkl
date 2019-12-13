@@ -75,7 +75,6 @@
       hide-actions
       :pagination.sync="pagination"
       >
-      <template slot="headers"></template>
       <template slot="items">
         <!-- Here you put the id according to the player selected on the next column !-->
         <tr>
@@ -85,23 +84,22 @@
             <v-select v-else-if="this.teamSide == 'away'" class="text-center pr-1" v-bind:value="away_players[0]" :items="away_players" @change="disablePlayer" single-line></v-select>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal"  single-line></v-select>
+            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
+            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
+            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
           </td>
           <td>
-            <v-select class="text-center pr-1" v-bind:value="0" :items="[0,1,2,3,4,5,6,7,8,9,10]" @input="countTotal" single-line></v-select>
+          <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
           </td>
           <td>
             {{this.player_scores}}
           </td>
         </tr>
       </template>
-      <template slot="headers"></template>
     </v-data-table>
   </v-card>
 </template>
@@ -255,6 +253,7 @@ export default {
                         });
                         this.home_players = arr_home;
                         this.away_players = arr_away;
+                        console.log(this.data)
                     },
                     function(error) {
                         console.log(error.statusText);
