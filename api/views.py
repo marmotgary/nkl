@@ -79,7 +79,7 @@ class RegistrationAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         success, message = serializer.save()
         return Response({
-            'success': True,
+            'success': success,
             'message': message,
         })
 
@@ -95,7 +95,10 @@ class ReservePlayerAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        if not request.user.has_perm('kyykka.add_playersinteam'):
+        try:
+            if not request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain:
+                return Response(status.HTTP_403_FORBIDDEN)
+        except PlayersInTeam.DoesNotExist:
             return Response(status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

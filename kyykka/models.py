@@ -21,7 +21,7 @@ class Team(models.Model):
 
 class Season(models.Model):
     year = models.CharField(max_length=4, unique=True)
-    teams = models.ManyToManyField(Team, blank=True)
+    teams = models.ManyToManyField(Team, blank=True) # CURRENTLY NOT IN USE
 
     def __str__(self):
         return 'Season %s' % (self.year)

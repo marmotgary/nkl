@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 from kyykka.models import Team, Season, PlayersInTeam, Match, Throw, CurrentSeason, Player
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -25,10 +26,10 @@ def setToCache(key, value, timeout=3600):
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
-    username = serializers.EmailField()
+    username = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
     first_name = serializers.CharField(validators=[required], max_length=30)
     last_name = serializers.CharField(validators=[required], max_length=150)
-    number = serializers.CharField(validators=[required], max_length=2)
+    number = serializers.IntegerField(validators=[required], min_value=0, max_value=99)
 
     class Meta:
         model = User
@@ -36,18 +37,15 @@ class CreateUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        try:
-            user = User.objects.create_user(validated_data['username'],
-                                            validated_data['username'],
-                                            validated_data['password'])
-            user.first_name = validated_data['first_name']
-            user.last_name = validated_data['last_name']
-            user.save()
-            Player.objects.create(user=user, number=validated_data['number'])
-            msg = ""
-            return True, msg
-        except IntegrityError as e:
-            return False, "Email is already taken"
+        user = User.objects.create_user(validated_data['username'],
+                                        validated_data['username'],
+                                        validated_data['password'])
+        user.first_name = validated_data['first_name']
+        user.last_name = validated_data['last_name']
+        user.save()
+        Player.objects.create(user=user, number=validated_data['number'])
+        msg = ""
+        return True, msg
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -234,13 +232,23 @@ class ReserveListSerializer(SharedPlayerSerializer):
 
 class ReserveCreateSerializer(serializers.ModelSerializer):
     player = serializers.PrimaryKeyRelatedField(validators=[required], queryset=User.objects.all())
+    # season = serializers.SerializerMethodField()
+    #
+    # def get_season(self):
+    #     return CurrentSeason.objects.first().season
 
     class Meta:
         model = PlayersInTeam
         fields = ('id', 'player')
+        # validators = [
+        #     UniqueTogetherValidator(
+        #         queryset=PlayersInTeam.objects.all(),
+        #         fields=["season", "player"]
+        #     )
+        # ]
 
     def create(self, validated_data):
-        print(self.context.get("request").user)
+        print("create")
         user = self.context.get("request").user
         add_player = validated_data['player']
         season = CurrentSeason.objects.first().season
@@ -268,6 +276,7 @@ class PlayerListSerializer(SharedPlayerSerializer):
     avg_throw_turn = serializers.SerializerMethodField()
     scaled_points = serializers.SerializerMethodField()
     scaled_points_per_round = serializers.SerializerMethodField()
+    is_captain = serializers.SerializerMethodField()
 
     def get_scaled_points(self, obj):
         return None
@@ -275,11 +284,18 @@ class PlayerListSerializer(SharedPlayerSerializer):
     def get_scaled_points_per_round(self, obj):
         return None
 
+    def get_is_captain(self, obj):
+        try:
+            return PlayersInTeam.objects.get(player=obj, season=self.context.get("season")).is_captain
+        except Exception as e:
+            print(e, obj)
+
+
     class Meta:
         model = User
         fields = ('id', 'player_name', 'team', 'score_total', 'rounds_total',
                   'pikes_total', 'zeros_total', 'gteSix_total', 'throws_total', 'pike_percentage',
-                  'score_per_throw', 'scaled_points', 'scaled_points_per_round', 'avg_throw_turn')
+                  'score_per_throw', 'scaled_points', 'scaled_points_per_round', 'avg_throw_turn', 'is_captain')
 
 
 class PlayerDetailSerializer(SharedPlayerSerializer):
@@ -538,15 +554,15 @@ class TeamDetailSerializer(serializers.ModelSerializer):
     def get_pike_percentage(self, obj):
         try:
             pike_percentage = round((self.context.get('pikes_total') / self.context.get('throws_total')) * 100, 2)
-        except ZeroDivisionError:
-            pike_percentage = 0
+        except (ZeroDivisionError, TypeError):
+            pike_percentage = None
         return pike_percentage
 
     def get_zero_percentage(self, obj):
         try:
             zero_percentage = round((self.context.get('zeros_total') / self.context.get('throws_total')) * 100, 2)
-        except ZeroDivisionError:
-            zero_percentage = 0
+        except (ZeroDivisionError, TypeError):
+            zero_percentage = None
         return zero_percentage
 
     def get_score_per_throw(self, obj):
