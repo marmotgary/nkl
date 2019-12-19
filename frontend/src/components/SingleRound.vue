@@ -189,7 +189,6 @@ export default {
         loadPlayer: function(player, index) {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
           let obj = this.plain_data.body[this.teamSide + "_team"].players.find(o => o.player_name === player)
-          console.log(this.$refs['id_'+index])
           this.$refs['id_'+index].innerHTML=obj.id
           this.selected = []
         },
