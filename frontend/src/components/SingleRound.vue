@@ -70,44 +70,42 @@
     <v-data-table
       v-if="!is_validated"
       disable-initial-sort
+      v-model="selected"
       :headers="headers"
       :items="data"
       hide-actions
       :pagination.sync="pagination"
       >
-      <template slot="items">
-        <!-- Here you put the id according to the player selected on the next column !-->
-        <tr>
-          <td>69</td>
-          <td>
-            <v-select v-if="this.teamSide == 'home'" class="text-center pr-1" v-bind:value="home_players[0]" :items="home_players" @change="disablePlayer" single-line></v-select>
-            <v-select v-else-if="this.teamSide == 'away'" class="text-center pr-1" v-bind:value="away_players[0]" :items="away_players" @change="disablePlayer" single-line></v-select>
-          </td>
-          <td>
-            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
-          </td>
-          <td>
-            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
-          </td>
-          <td>
-            <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
-          </td>
-          <td>
-          <v-edit-dialog class="text-center pr-1">0</v-edit-dialog>
-          </td>
-          <td>
-            {{this.player_scores}}
-          </td>
-        </tr>
+      <template slot="no-data">
+        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+      </template>
+      <template slot="headers" class="text-xs-center"></template>
+      <template slot="items" slot-scope="props">
+        <td :ref="'id_'+props.index">#</td>
+        <td>
+          <v-select :required="true" v-model="props.selected" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
+          <v-select :required="true" v-model="props.selected" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
+        </td>
+        <td><v-text-field :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">0</td>
       </template>
     </v-data-table>
   </v-card>
 </template>
 <style scoped>
-td {
-  padding: 0 !important;
-  text-align: center !important;
-}
+
+  td {
+    padding: 0 !important;
+    text-align: center !important;
+  }
+
+  .centered-input >>> input {
+    text-align: center
+  }
+
 </style>
 
 
@@ -124,16 +122,17 @@ export default {
             pagination: {
               rowsPerPage: 4
             },
+            selected: [],
             home_team: '',
             away_team: '',
+            total_throw_score: 0,
             round_score: '',
-            player_scores: 0,
             color: '',
             is_validated: '',
-            throw_score: 0,
             home_players: [],
             away_players: [],
             data: [],
+            plain_data: [],
             headers: [
                 {
                     text: this.teamSide,
@@ -147,10 +146,10 @@ export default {
                     sortable: false,
                     width: '35%'
                 },
-                { value: 'score_first', sortable: false, width: '10%'},
-                { value: 'score_second', sortable: false, width: '10%'},
-                { value: 'score_third', sortable: false, width: '10%'},
-                { value: 'score_fourth', sortable: false, width: '10%'},
+                { text: 1, value: 'score_first', sortable: false, width: '10%'},
+                { text: 2, value: 'score_second', sortable: false, width: '10%'},
+                { text: 3, value: 'score_third', sortable: false, width: '10%'},
+                { text: 4, value: 'score_fourth', sortable: false, width: '10%'},
                 { text: 'Pts.', align: 'center',value: 'score_total', width: '5%'}
             ],
             options: {
@@ -159,18 +158,40 @@ export default {
         };
     },
     methods: {
-        countTotal: function(val) {
-          this.player_scores += val
+        isNumber: function(evt, index) {
+          // Checks that the value is an H or a numeric value from the ASCII table.
+          evt = (evt) ? evt : window.event;
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72) {
+            evt.preventDefault();;
+          } else {
+            return true;
+          }
         },
-        disablePlayer: function(player) {
-          // this.selected.push(player)
-          // this.players = this.players.filter( ( el ) => !this.selected.includes( el ) );
+        sumTotal: function(value, index) {
+          // Counts all the throw values and adds them to the total column.
+          const array = [
+            'first_throw_',
+            'second_throw_',
+            'third_throw_',
+            'fourth_throw_'
+          ]
+          let total = 0
+          array.forEach(function (item) {
+            if (!isNaN(parseInt(this.$refs[item+index].$refs.input.value))) {
+              total += parseInt(this.$refs[item+index].$refs.input.value)
+            } else {
+              total += 0
+            }
+          }, this);
+          this.$refs['throw_sum_'+index].firstChild.data = total
         },
-        increment: function() {
-            this.throw_score = parseInt(this.throw_score, 10) + 1;
-        },
-        decrement: function() {
-            this.throw_score = parseInt(this.throw_score, 10) - 1;
+        loadPlayer: function(player, index) {
+          // Finds the selected player object from the dataset and sets it's id to the id field. 
+          let obj = this.plain_data.body[this.teamSide + "_team"].players.find(o => o.player_name === player)
+          console.log(this.$refs['id_'+index])
+          this.$refs['id_'+index].innerHTML=obj.id
+          this.selected = []
         },
         getMatch: function() {
             this.$http
@@ -182,6 +203,7 @@ export default {
                 )
                 .then(
                     function(data) {
+                        this.plain_data = data
                         this.is_validated = data.body.is_validated;
                         if (this.roundNumber == 1 && this.teamSide == 'home') {
                             this.data = data.body.first_round.home;
@@ -253,7 +275,6 @@ export default {
                         });
                         this.home_players = arr_home;
                         this.away_players = arr_away;
-                        console.log(this.data)
                     },
                     function(error) {
                         console.log(error.statusText);
