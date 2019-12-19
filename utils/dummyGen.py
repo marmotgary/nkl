@@ -2,9 +2,8 @@ import django
 from faker import Faker
 from tqdm import tqdm
 from django.contrib.auth.models import User
-from kyykka.models import *
-import random
-import pytz
+from kyykka.models import Team, Season, PlayersInTeam, CurrentSeason, Match, Throw, Player
+import random, pytz
 
 fake = Faker('fi_FI')
 
@@ -29,6 +28,7 @@ def seasonGen(amount=3):
         year = year - 1
 
 
+
 # Generate Users
 
 
@@ -44,7 +44,7 @@ def userGen(amount, return_users=False):
             user.last_name = last_name
             user.save()
             # user.player.number = random.randint(1,100)
-            Player.objects.create(user=user, number=random.randint(1,100))
+            Player.objects.create(user=user, number=random.randint(1, 100))
             users.append(user)
         except Exception as e:
             print(e)
@@ -69,6 +69,7 @@ def teamGen(amount):
 
 
 def populateTeam(team):
+    print('Generating fake users for team ', team)
     players = userGen(6, True)
     season = CurrentSeason.objects.first().season
     PlayersInTeam.objects.create(
@@ -86,17 +87,16 @@ def matchGen():
         for away in Team.objects.all().exclude(id__in=exclude):
             match = Match.objects.create(
                 season=season,
-                match_time=fake.date_time_between(
-                    start_date="-60y",
-                    end_date="now",
-                    tzinfo=pytz.timezone("Europe/Helsinki")),
+                match_time=fake.date_time_between(start_date="-60y", end_date="now",
+                                                  tzinfo=pytz.timezone("Europe/Helsinki")),
                 home_first_round_score=random.randint(0, 100),
                 home_second_round_score=random.randint(0, 100),
                 away_first_round_score=random.randint(0, 100),
                 away_second_round_score=random.randint(0, 100),
                 home_team=home,
                 away_team=away,
-                is_validated=random.choice([True, False]))
+                is_validated=random.choice([True, False])
+            )
             throwGen(match)
 
 
@@ -108,8 +108,7 @@ def throwGen(match):
     season = CurrentSeason.objects.first().season
     for team in [match.home_team, match.away_team]:
         for throw_round in range(1, 3):
-            for throw_turn, player in enumerate(
-                    team.players.all().order_by('?')[:4]):
+            for throw_turn, player in enumerate(team.players.all().order_by('?')[:4]):
                 Throw.objects.create(
                     match=match,
                     player=player,

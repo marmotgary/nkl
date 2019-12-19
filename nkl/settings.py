@@ -151,4 +151,4 @@ try:
         os.path.dirname(__file__), "local_settings.py"
     )).read())
 except Exception as e:
-    print(e)
+    print("Error reading local_settings", e)

@@ -28,3 +28,4 @@ yarn-error.log*
 *.sln
 *.sw*
 local_settings.py
+.idea
