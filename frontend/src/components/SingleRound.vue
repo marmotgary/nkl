@@ -169,7 +169,9 @@ export default {
           }
         },
         sumTotal: function(value, index) {
-          // Counts all the throw values and adds them to the total column.
+          /* The function loops through all the column elements of the corresponding row
+          and adds them up as total to the last column. The function also updates the database
+          accordingly on each runthrough. */
           let throws;
           if (this.teamSide == 'home') {
             throws = (this.roundNumber==1) ? [0,1,2,3] : [8,9,10,11];
@@ -194,6 +196,11 @@ export default {
           }, this);
           this.data[index]['score_total'] = total
           this.$refs['throw_sum_'+index].firstChild.data = total
+
+          let post_url = 'http://localhost:8000/api/throws/update/'+this.data[index].id+'/'
+          this.$http.post(post_url, this.data[index]).then(function (response) {
+            console.log(response.data)
+          })
         },
         loadPlayer: function(player, index) {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
