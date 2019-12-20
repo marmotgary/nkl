@@ -178,11 +178,9 @@ export default {
           ]
           let total = 0
           array.forEach(function (item) {
-            if (!isNaN(parseInt(this.$refs[item+index].$refs.input.value))) {
-              total += parseInt(this.$refs[item+index].$refs.input.value)
-            } else {
-              total += 0
-            }
+            const element = this.$refs[item+index].$refs.input.value
+            var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
+            total += score
           }, this);
           this.$refs['throw_sum_'+index].firstChild.data = total
         },
