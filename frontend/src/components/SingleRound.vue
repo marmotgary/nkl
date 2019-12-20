@@ -170,18 +170,29 @@ export default {
         },
         sumTotal: function(value, index) {
           // Counts all the throw values and adds them to the total column.
+          let throws;
+          if (this.teamSide == 'home') {
+            throws = (this.roundNumber==1) ? [0,1,2,3] : [8,9,10,11];
+          } else if (this.teamSide == 'away') {
+            throws = (this.roundNumber==1) ? [4,5,6,7] : [12,13,14,15];
+          }
           const array = [
-            'first_throw_',
-            'second_throw_',
-            'third_throw_',
-            'fourth_throw_'
+            'first',
+            'second',
+            'third',
+            'fourth'
           ]
           let total = 0
           array.forEach(function (item) {
-            const element = this.$refs[item+index].$refs.input.value
+            const element = this.$refs[item+'_throw_'+index].$refs.input.value
             var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
             total += score
+            if (element.length > 0) {
+              this.data[index]['score_'+item] = score
+              this.$http.post()
+            }
           }, this);
+          this.data[index]['score_total'] = total
           this.$refs['throw_sum_'+index].firstChild.data = total
         },
         loadPlayer: function(player, index) {
