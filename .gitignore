@@ -2,6 +2,7 @@
 *.sqlite3
 *.swp
 *~
+*.vscode
 venv*
 *.log
 static_files
