@@ -1,3 +1,5 @@
+# Generate a new SECRET_KEY for production.
+# SECRET_KEY = '&clagu7m@fo_*sfr^&i$56r_b-46=$15h83iv68r*^t^5c8r*5'
 DEBUG = True
 ALLOWED_HOSTS = []
 INTERNAL_IPS = ['localhost', '127.0.0.1']
@@ -5,8 +7,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'nkl',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'nkladmin',
+        'PASSWORD': 'password',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         }
