@@ -7,6 +7,7 @@
 <body>
 {% block content %}
   <h2>Rekisteröinti</h2>
+    <p class="murmeli">SEASON 2020 HYPE!!</p>
   <form method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -26,3 +27,35 @@
 {% endblock %}
 </body>
 </html>
+
+<style>
+    @-webkit-keyframes blackWhite {
+      0% { background-color: white; }
+      50% { background-color: white; }
+      51% { background-color: black; }
+      100% { background-color: black; }
+    }
+
+    .blinkdiv {
+        height: 100px;
+        background-color: black;
+        -webkit-animation-name: blackWhite;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-duration: 2s;
+    }
+    .murmeli {
+      display: inline-block;
+      white-space: nowrap;
+      animation: floatText 15s infinite linear;
+      padding-left: 100%;
+      color:crimson;
+    }
+    .murmeli:hover {
+      animation-play-state: paused;
+    }
+    @keyframes floatText {
+      to {
+        transform: translateX(-100%);
+      }
+    }
+</style>
