@@ -6,9 +6,9 @@
 </head>
 <body>
 {% block content %}
-  <h2>Rekisteröinti</h2>
+  <h2 style="text-align: center">Rekisteröinti</h2>
     <p class="murmeli">SEASON 2020 HYPE!!</p>
-  <form method="post">
+  <form id="registrationForm" method="post">
     {% csrf_token %}
     {% for field in form %}
       <p>
@@ -29,19 +29,17 @@
 </html>
 
 <style>
-    @-webkit-keyframes blackWhite {
-      0% { background-color: white; }
-      50% { background-color: white; }
-      51% { background-color: black; }
-      100% { background-color: black; }
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
-
-    .blinkdiv {
-        height: 100px;
-        background-color: black;
-        -webkit-animation-name: blackWhite;
-        -webkit-animation-iteration-count: infinite;
-        -webkit-animation-duration: 2s;
+    #registrationForm {
+        width: 500px;
+        max-width: 90%;
+        margin: auto;
+    }
+    #registrationForm input {
+        width: 100%;
+        height: 34px;
     }
     .murmeli {
       display: inline-block;
