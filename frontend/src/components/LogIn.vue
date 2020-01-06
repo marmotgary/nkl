@@ -54,7 +54,7 @@ export default {
         changeLogin: function(username) {
             eventBus.$emit('loginChanged', username);
         },
-        login() {
+        login: function() {
             this.$http
                 .get('http://localhost:8000/api/csrf')
                 .then(response => {
