@@ -83,8 +83,8 @@
       <template slot="items" slot-scope="props">
         <td :ref="'id_'+props.index">#</td>
         <td>
-          <v-select :required="true" v-model="props.selected" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
-          <v-select :required="true" v-model="props.selected" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
+          <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
+          <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
         <td><v-text-field :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
         <td><v-text-field :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
@@ -173,34 +173,42 @@ export default {
           and adds them up as total to the last column. The function also updates the database
           accordingly on each runthrough. */
           let throws;
-          if (this.teamSide == 'home') {
-            throws = (this.roundNumber==1) ? [0,1,2,3] : [8,9,10,11];
-          } else if (this.teamSide == 'away') {
-            throws = (this.roundNumber==1) ? [4,5,6,7] : [12,13,14,15];
-          }
+          let total = 0;
           const array = [
             'first',
             'second',
             'third',
             'fourth'
           ]
-          let total = 0
+
+          let post_data = 
+          {
+          "score_first": 0,
+          "score_second": 0,
+          "score_third": 0,
+          "score_fourth": 0,
+          "player": this.$refs['id_'+index].firstChild.data
+          }
+
+          if (this.teamSide == 'home') {
+            throws = (this.roundNumber==1) ? [0,1,2,3] : [8,9,10,11];
+          } else if (this.teamSide == 'away') {
+            throws = (this.roundNumber==1) ? [4,5,6,7] : [12,13,14,15];
+          }
+
           array.forEach(function (item) {
             const element = this.$refs[item+'_throw_'+index].$refs.input.value
             var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
             total += score
             if (element.length > 0) {
-              this.data[index]['score_'+item] = score
-              this.$http.post()
+              post_data['score_'+item] = score
             }
           }, this);
-          this.data[index]['score_total'] = total
+
           this.$refs['throw_sum_'+index].firstChild.data = total
 
           let post_url = 'http://localhost:8000/api/throws/update/'+this.data[index].id+'/'
-          this.$http.post(post_url, this.data[index]).then(function (response) {
-            console.log(response.data)
-          })
+          this.$http.patch(post_url, post_data, {headers: {'X-CSRFToken': this.$session.get('csrf')}}) 
         },
         loadPlayer: function(player, index) {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
