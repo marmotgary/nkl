@@ -86,10 +86,10 @@
           <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
           <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
-        <td><v-text-field :disabled="disabled[teamSide+roundNumber][props.index]" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[teamSide+roundNumber][props.index]" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[teamSide+roundNumber][props.index]" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[teamSide+roundNumber][props.index]" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">0</td>
       </template>
     </v-data-table>
@@ -123,12 +123,7 @@ export default {
               rowsPerPage: 4
             },
             selected: [],
-            disabled: {
-              'home1': [true, true, true, true],
-              'home2': [true, true, true, true],
-              'away1': [true, true, true, true],
-              'away2': [true, true, true, true],
-            },
+            disabled: [true, true, true, true],
             home_team: '',
             away_team: '',
             total_throw_score: 0,
@@ -221,7 +216,7 @@ export default {
           let obj = this.plain_data.body[this.teamSide + "_team"].players.find(o => o.player_name === player)
           this.$refs['id_'+index].innerHTML=obj.id
           this.selected = []
-          this.disabled[this.teamSide+this.roundNumber][index] = false
+          this.disabled[index] = false
         },
         getMatch: function() {
             this.$http
