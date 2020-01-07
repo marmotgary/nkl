@@ -46,10 +46,7 @@ def userGen(amount, return_users=False):
             # user.player.number = random.randint(1,100)
             Player.objects.create(user=user, number=random.randint(1, 100))
             users.append(user)
-<<<<<<< HEAD
-=======
             # print(first_name, last_name, email)
->>>>>>> backend
         except Exception as e:
             print(e)
             pass
@@ -59,18 +56,6 @@ def userGen(amount, return_users=False):
 
 def teamGen(amount):
     print('Generating fake teams\n')
-<<<<<<< HEAD
-    for i in tqdm(range(amount)):
-        try:
-            name = fake.company()
-            abbreviation = fake.company_suffix()
-            team = Team.objects.create(name=name, abbreviation=abbreviation)
-        except:
-            name = fake.ean13()
-            abbreviation = fake.ean8()
-            team = Team.objects.create(name=name, abbreviation=abbreviation)
-            pass
-=======
     teams = [
         "Alcohooligans (Alco)",
         "Bitches Out Of Booze, Saatana! (BooB's)",
@@ -102,7 +87,6 @@ def teamGen(amount):
         abbreviation = t[t.find("(") + 1 : t.find(")")]
         team = Team.objects.create(name=name, abbreviation=abbreviation)
         print('\n Generated team', name, abbreviation, '\n')
->>>>>>> backend
         populateTeam(team)
 
 
