@@ -2,11 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.db.models import Q
-from rest_framework import status, viewsets, generics
+from rest_framework import status, viewsets, generics, permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.mixins import UpdateModelMixin
+from rest_framework.throttling import AnonRateThrottle
 from kyykka.models import User, Team
 from kyykka.serializers import *
 from django.views.decorators.csrf import csrf_exempt
@@ -42,6 +44,26 @@ def csrf(request):
 
 def ping(request):
     return JsonResponse({'result:': 'pong'})
+
+
+class IsCaptain(permissions.BasePermission):
+    """
+    Permission check to verify that user is captain in the right team.
+    """
+    def has_permission(self, request, view):
+        try:
+            return request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain
+        except PlayersInTeam.DoesNotExist as e:
+            print(e, request.user.id)
+            return False
+
+
+class IsCaptainForThrow(permissions.BasePermission):
+    """
+    Permission check to verify if user is captain in the right team for a throw
+    """
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.team.playersinteam_set.filter(season=CurrentSeason.objects.first().season, is_captain=True).first().player
 
 
 class LoginAPI(generics.GenericAPIView):
@@ -87,6 +109,7 @@ class RegistrationAPI(generics.GenericAPIView):
 class ReservePlayerAPI(generics.GenericAPIView):
     serializer_class = ReserveCreateSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated, IsCaptain]
 
     def get(self, request):
         season = getSeason(request)
@@ -95,11 +118,6 @@ class ReservePlayerAPI(generics.GenericAPIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        try:
-            if not request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain:
-                return Response(status.HTTP_403_FORBIDDEN)
-        except PlayersInTeam.DoesNotExist:
-            return Response(status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         success, message = serializer.save()
@@ -188,6 +206,7 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
+    # throttle_classes = [AnonRateThrottle]
     queryset = Match.objects.all()
 
     def list(self, request):
@@ -202,11 +221,14 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = MatchDetailSerializer(match, context={'season': season})
         return Response(serializer.data)
 
+    # def patch(self, request):
+    #     return
+
 
 class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
     serializer_class = ThrowSerializer
     queryset = Throw.objects.all()
+    permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
 
     def patch(self, request, *args, **kwargs):
-
         return self.partial_update(request, *args, **kwargs)
