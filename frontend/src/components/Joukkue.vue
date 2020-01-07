@@ -7,8 +7,7 @@
             <v-flex xs4 mb-4 d-flex offset-sm4>
               <v-card flat tile class="d-flex">
                 <v-img
-                  :src="`https://picsum.photos/500/300?image=15`"
-                  :lazy-src="`https://picsum.photos/10/6?image=15`"
+                  :src="`https://picsum.photos/id/237/200/300`"
                   aspect-ratio="1"
                   max-height="200"
                   max-width="300"
