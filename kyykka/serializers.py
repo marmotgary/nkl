@@ -230,6 +230,7 @@ class ReserveListSerializer(SharedPlayerSerializer):
         fields = ('id', 'number', 'player_name', 'team')
 
 
+# TODO Figure a proper way to validate Unique Together between season and player
 class ReserveCreateSerializer(serializers.ModelSerializer):
     player = serializers.PrimaryKeyRelatedField(validators=[required], queryset=User.objects.all())
     # season = serializers.SerializerMethodField()
