@@ -208,4 +208,5 @@ class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
     queryset = Throw.objects.all()
 
     def patch(self, request, *args, **kwargs):
+
         return self.partial_update(request, *args, **kwargs)

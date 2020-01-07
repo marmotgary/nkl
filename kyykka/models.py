@@ -12,7 +12,7 @@ class Player(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    abbreviation = models.CharField(max_length=10, unique=True)
+    abbreviation = models.CharField(max_length=15, unique=True)
     players = models.ManyToManyField(User, through='PlayersInTeam')
 
     def __str__(self):
@@ -110,14 +110,14 @@ class News(models.Model):
 def match_post_save_handler(sender, instance, created, **kwargs):
     if created and instance:
         for team in [instance.home_team, instance.away_team]:
-            for round in range(1, 3):
+            for r in range(1, 3):
                 for turn in range(1, 5):
                     Throw.objects.create(
                         match=instance,
                         team=team,
                         season=instance.season,
                         throw_turn=turn,
-                        throw_round=round
+                        throw_round=r
                     )
 
 
