@@ -4,7 +4,10 @@
         "es6": true,
         "node": true
     },
-    "extends": ["plugin:vue/essential", "@vue/prettier"],
+    "extends": [
+        "plugin:vue/essential",
+        "@vue/prettier"
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -14,7 +17,11 @@
         "sourceType": "module",
         "parser": "babel-eslint"
     },
-    "plugins": ["vue"],
-    "rules": { "no-console": "off" },
+    "plugins": [
+        "vue"
+    ],
+    "rules": {
+        "no-console": "off"
+    },
     "root": true
 }
