@@ -25,9 +25,9 @@
           </v-flex>
           <v-flex pt-5 text-xm-center class="justify-center align-center">
             <h2>
-              <span>{{this.home_team.name}}</span>
-              <span style="padding-left: 10%;padding-right: 10%">vs.</span>
-              <span>{{this.away_team.name}}</span>
+              <span class="third">{{this.home_team.name}}</span>
+              <span class="third">vs.</span>
+              <span class="third">{{this.away_team.name}}</span>
             </h2>
           </v-flex>
           <v-flex>
@@ -100,4 +100,9 @@ export default {
 </script>
 
 <style scoped>
+.third {
+  float: left;
+  width: 33%;
+  text-align: center;
+}
 </style>
