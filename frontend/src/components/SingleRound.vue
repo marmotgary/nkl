@@ -70,7 +70,7 @@
     <v-data-table
       v-if="!is_validated"
       disable-initial-sort
-      v-model="selected"
+      v-model="select"
       :headers="headers"
       :items="data"
       hide-actions
@@ -81,16 +81,17 @@
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td :ref="'id_'+props.index">#</td>
+        <td :ref="'id_'+props.index">{{selected[props.index].player.id}}</td>
         <td>
-          <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
-          <v-select v-model="props.selected" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
+          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
+          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">0</td>
+        
+        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
       </template>
     </v-data-table>
   </v-card>
@@ -122,11 +123,11 @@ export default {
             pagination: {
               rowsPerPage: 4
             },
+            select: [],
             selected: [],
-            disabled: [true, true, true, true],
+            disabled: [Boolean, Boolean, Boolean, Boolean],
             home_team: '',
             away_team: '',
-            total_throw_score: 0,
             round_score: '',
             color: '',
             is_validated: '',
@@ -164,7 +165,7 @@ export default {
           evt = (evt) ? evt : window.event;
           var charCode = (evt.which) ? evt.which : evt.keyCode;
           if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72) {
-            evt.preventDefault();;
+            evt.preventDefault();
           } else {
             return true;
           }
@@ -215,7 +216,7 @@ export default {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
           let obj = this.plain_data.body[this.teamSide + "_team"].players.find(o => o.player_name === player)
           this.$refs['id_'+index].innerHTML=obj.id
-          this.selected = []
+          this.select = []
           this.disabled[index] = false
         },
         getMatch: function() {
@@ -290,14 +291,20 @@ export default {
                                 this.color = 'green';
                             }
                         }
+                        var arr_selected = [];
                         var arr_home = [];
                         var arr_away = [];
+
+                        this.data.forEach(function (item) {
+                          arr_selected.push(item)
+                        })
                         data.body.home_team.players.forEach(function(player) {
                             arr_home.push(player.player_name);
                         });
                         data.body.away_team.players.forEach(function(player) {
                           arr_away.push(player.player_name);
                         });
+                        this.selected = arr_selected;
                         this.home_players = arr_home;
                         this.away_players = arr_away;
                     },
