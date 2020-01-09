@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Erä {{this.roundNumber}}</v-card-title>
+    <v-card-title>Erä {{this.roundNumber}}<v-spacer></v-spacer><v-progress-circular :size=20 :width=2 indeterminate color="red" v-if="loading"/></v-card-title>
     <v-layout v-if="is_validated" row wrap>
       <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
@@ -131,6 +131,7 @@ export default {
             select: [],
             selected: [],
             disabled: [Boolean, Boolean, Boolean, Boolean],
+            loading: false,
             home_team: '',
             away_team: '',
             round_score: '',
@@ -179,6 +180,8 @@ export default {
           /* The function loops through all the column elements of the corresponding row
           and adds them up as total to the last column. The function also updates the database
           accordingly on each runthrough. */
+          this.loading = true
+
           let throws;
           let total = 0;
           const array = [
@@ -215,7 +218,20 @@ export default {
           this.$refs['throw_sum_'+index].firstChild.data = total
 
           let post_url = 'http://localhost:8000/api/throws/update/'+this.data[index].id+'/'
-          this.$http.patch(post_url, post_data, {headers: {'X-CSRFToken': this.$session.get('csrf')}}) 
+
+          this.$http.patch(post_url, post_data, {
+            headers: {
+              'X-CSRFToken': this.$session.get('csrf')
+            }
+            }).then(
+              setTimeout(() => {
+                this.loading = false
+              }, 500)
+            ).catch(error => {
+              setTimeout(() => {
+                this.loading = false
+              }, 500);
+            })
         },
         loadPlayer: function(player, index) {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
