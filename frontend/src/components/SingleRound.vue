@@ -92,6 +92,11 @@
         <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
         <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
+
+        <!-- <td><v-text-field :disabled="disabled[props.index]" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td> -->
       </template>
     </v-data-table>
   </v-card>
@@ -299,7 +304,7 @@ export default {
                           arr_selected.push(item)
                         })
                         data.body.home_team.players.forEach(function(player) {
-                            arr_home.push(player.player_name);
+                          arr_home.push(player.player_name);
                         });
                         data.body.away_team.players.forEach(function(player) {
                           arr_away.push(player.player_name);
