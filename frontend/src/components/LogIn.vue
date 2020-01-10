@@ -69,8 +69,9 @@ export default {
             this.$http
                 .post('http://localhost:8000/api/login/', this.credentials, {
                     headers: {
-                        'X-CSRFToken': this.$session.get('csrf')
-                    }
+                        'X-CSRFToken': this.$session.get('csrf'),
+                    },
+                  'withCredentials': true,
                 })
                 .then(
                     response => {
