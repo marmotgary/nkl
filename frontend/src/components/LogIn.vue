@@ -72,11 +72,13 @@ export default {
                 })
                 .then(
                     response => {
+                        this.dialog = !this.dialog;
+                        this.alert = false;
+
                         localStorage.role_id = response.body.role;
                         localStorage.user_id = response.body.user.id;
                         localStorage.player_name = response.body.user.player_name;
-                        this.dialog = !this.dialog;
-                        this.alert = false;
+
                         this.$session.set('role_id', response.body.role);
                         this.$session.set('user_id', response.body.user.id);
                         this.changeLogin(response.body.user.player_name);
