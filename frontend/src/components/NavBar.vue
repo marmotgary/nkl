@@ -32,7 +32,7 @@
         flat
         class="hidden-sm-and-down"
         :to="'joukkue/'+this.team_id"
-      >Joukkueeni</v-btn>
+      >oma joukkue</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <div v-if="!loggedIn">
         <log-in class="hidden-sm-and-down"></log-in>
