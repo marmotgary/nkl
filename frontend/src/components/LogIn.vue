@@ -58,12 +58,10 @@ export default {
             this.$http
                 .get('http://localhost:8000/api/csrf')
                 .then(response => {
-                    if (
-                        response.status === 200 &&
-                        'csrfToken' in response.body
-                    ) {
+                    if (response.status === 200 && 'csrfToken' in response.body) {
                         this.$session.start();
                         this.$session.set('csrf', response.body.csrfToken);
+                        localStorage.csrfToken = response.body.csrfToken;
                     }
                 });
             this.$http
@@ -74,6 +72,9 @@ export default {
                 })
                 .then(
                     response => {
+                        localStorage.role_id = response.body.role;
+                        localStorage.user_id = response.body.user.id;
+                        localStorage.player_name = response.body.user.player_name;
                         this.dialog = !this.dialog;
                         this.alert = false;
                         this.$session.set('role_id', response.body.role);
@@ -85,6 +86,17 @@ export default {
                     }
                 );
         }
+    },
+    mounted() {
+      if (localStorage.role_id && localStorage.user_id) {
+        this.$session.set('role_id', localStorage.role_id);
+        this.$session.set('user_id', localStorage.user_id);
+        this.changeLogin(localStorage.player_name)
+      }
+      if (localStorage.csrfToken) {
+        this.$session.set('csrf', localStorage.csrfToken);
+      }
+
     }
 };
 </script>
