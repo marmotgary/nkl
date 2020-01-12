@@ -102,7 +102,7 @@
     </v-layout>
     <v-data-table :headers="headers" :items="players" hide-actions>
       <template slot="no-data">
-        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+        <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
@@ -128,7 +128,7 @@
           <v-card>
             <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
               <template slot="no-data">
-                <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+                <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
               <template slot="items" slot-scope="props">
                 <div class="row">
@@ -275,7 +275,8 @@ export default {
                     .post('http://localhost:8000/api/reserve/', post_data, {
                       headers: {
                         'X-CSRFToken': this.$session.get('csrf')
-                      }
+                      },
+                      'withCredentials': true,
                     })
                     .then(function(response) {
                         console.log(response);

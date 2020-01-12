@@ -109,7 +109,7 @@ class RegistrationAPI(generics.GenericAPIView):
 class ReservePlayerAPI(generics.GenericAPIView):
     serializer_class = ReserveCreateSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated, IsCaptain]
+    # permission_classes = [IsAuthenticated, IsCaptain]
 
     def get(self, request):
         season = getSeason(request)
@@ -228,7 +228,7 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
 class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
     serializer_class = ThrowSerializer
     queryset = Throw.objects.all()
-    permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
+    # permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)

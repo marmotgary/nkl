@@ -7,7 +7,7 @@
     <v-flex xs12>
       <v-data-table :headers="headers" :items="teams" hide-actions>
         <template slot="no-data">
-          <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+          <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
         <template bind:key="team.id" slot="items" slot-scope="props">
           <td class="block">{{ props.item.abbreviation }}</td>

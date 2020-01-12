@@ -359,7 +359,7 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
         total_count = self.throws
         try:
             pike_percentage = round((zero_count / total_count) * 100, 2)
-        except ZeroDivisionError:
+        except (ZeroDivisionError, TypeError):
             pike_percentage = 0
         return pike_percentage
 
