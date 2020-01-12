@@ -56,19 +56,10 @@ export default {
         },
         login: function() {
             this.$http
-                .get('http://localhost:8000/api/csrf')
-                .then(response => {
-                    if (response.status === 200 && 'csrfToken' in response.body) {
-                        this.$session.start();
-                        this.$session.set('csrf', response.body.csrfToken);
-                        localStorage.csrfToken = response.body.csrfToken;
-                    }
-                });
-            this.$http
                 .post('http://localhost:8000/api/login/', this.credentials, {
-                    headers: {
-                        'X-CSRFToken': this.$session.get('csrf'),
-                    },
+                    // headers: {
+                    //     'X-CSRFToken': this.$session.get('csrf'),
+                    // },
                   'withCredentials': true,
                 })
                 .then(
@@ -83,6 +74,15 @@ export default {
                         this.$session.set('role_id', response.body.role);
                         this.$session.set('user_id', response.body.user.id);
                         this.changeLogin(response.body.user.player_name);
+                        this.$http
+                            .get('http://localhost:8000/api/csrf', {withCredentials: true})
+                            .then(response => {
+                                if (response.status === 200 && 'csrfToken' in response.body) {
+                                    this.$session.start();
+                                    this.$session.set('csrf', response.body.csrfToken);
+                                    localStorage.csrfToken = response.body.csrfToken;
+                                }
+                            });
                     },
                     response => {
                         this.alert = !this.alert;

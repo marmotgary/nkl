@@ -222,7 +222,8 @@ export default {
           this.$http.patch(post_url, post_data, {
             headers: {
               'X-CSRFToken': this.$session.get('csrf')
-            }
+            },
+            'withCredentials': true,
             }).then(
               setTimeout(() => {
                 this.loading = false

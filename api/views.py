@@ -63,7 +63,11 @@ class IsCaptainForThrow(permissions.BasePermission):
     Permission check to verify if user is captain in the right team for a throw
     """
     def has_object_permission(self, request, view, obj):
-        return request.user == obj.team.playersinteam_set.filter(season=CurrentSeason.objects.first().season, is_captain=True).first().player
+        try:
+            return request.user == obj.match.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season, is_captain=True).first().player
+        except AttributeError as e:
+            print('has_object_permission', request.user.id, obj)
+            return False
 
 
 class LoginAPI(generics.GenericAPIView):
@@ -228,7 +232,7 @@ class MatchViewSet(viewsets.ReadOnlyModelViewSet):
 class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
     serializer_class = ThrowSerializer
     queryset = Throw.objects.all()
-    # permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
+    permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
