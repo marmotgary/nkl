@@ -49,12 +49,7 @@ LOGOUT_URL = '/api/logout/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
-<<<<<<< HEAD
-        'rest_framework.authentication.SessionAuthentication',
-    ),
-=======
         'rest_framework.authentication.SessionAuthentication', ),
->>>>>>> fad570fc9879cb9ca0332173479f3ab2966e258a
     # TODO: Add throttles to views.
     'DEFAULT_THROTTLE_RATES': {
         'anon': '30/minute'
