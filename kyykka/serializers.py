@@ -612,7 +612,7 @@ class MatchListSerializer(SharedMatchSerializer):
 
     class Meta:
         model = Match
-        fields = ('id', 'match_time', 'home_team', 'away_team', 'home_score_total', 'away_score_total')
+        fields = ('id', 'match_time', 'field', 'home_team', 'away_team', 'home_score_total', 'away_score_total')
 
 
 class MatchDetailSerializer(SharedMatchSerializer):
@@ -640,7 +640,7 @@ class MatchDetailSerializer(SharedMatchSerializer):
     class Meta:
         model = Match
         fields = (
-            'id', 'match_time', 'home_score_total', 'away_score_total', 'home_first_round_score',
+            'id', 'match_time', 'field', 'home_score_total', 'away_score_total', 'home_first_round_score',
             'home_second_round_score',
             'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team',
             'away_team',
