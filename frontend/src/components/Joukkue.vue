@@ -268,23 +268,39 @@ export default {
                 }
             );
         },
-        reserveButton: function(index) {
-            if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
-                let post_data = {'player': this.reserve[index].id}
-                this.$http
-                    .post('http://localhost:8000/api/reserve/', post_data, {
-                      headers: {
-                        'X-CSRFToken': this.$session.get('csrf')
-                      },
-                      'withCredentials': true,
-                    })
-                    .then(function(response) {
-                        console.log(response);
-                        if (response.status == 200) {
-                          this.getPlayers();
-                          this.reserve.splice(index, 1);
+        reservePost: function(data) {
+            this.$http
+            .post('http://localhost:8000/api/reserve/', data, {
+              headers: {
+                'X-CSRFToken': this.$session.get('csrf')
+              },
+              'withCredentials': true,
+            }).then(function(response) {
+                console.log(response.status)
+                if (response.status == 200) {
+                  this.getPlayers();
+                  this.reserve.splice(index, 1);
+                }
+            }, response => {
+                console.log(response.status)
+                if (response.status == 403) {
+                  console.log('jajjajaja')
+                  this.$http
+                    .get('http://localhost:8000/api/csrf')
+                    .then(response => {
+                        if (response.status === 200 && 'csrfToken' in response.body) {
+                            this.$session.set('csrf', response.body.csrfToken);
+                            localStorage.csrfToken = response.body.csrfToken;
+                            this.reservePost(data)
                         }
                     });
+                }
+            })
+        },
+        reserveButton: function(index) {
+            if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
+              let post_data = {'player': this.reserve[index].id}
+              this.reservePost(post_data)
             }
         }
     },

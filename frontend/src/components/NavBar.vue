@@ -1,7 +1,7 @@
 <template>
   <span>
     <v-flex mt-5></v-flex>
-    <v-navigation-drawer app v-model="drawer" class="gray lighten-2" dark disable-resize-watcher>
+    <v-navigation-drawer app v-model="drawer" class="gray lighten-1" dark disable-resize-watcher>
       <v-list>
         <template v-for="(item, index) in items">
           <v-list-tile :key="index">
@@ -13,7 +13,7 @@
         <register></register>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app color="grey darken-3" dark>
+    <v-toolbar app color="grey darken-2" dark>
       <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <router-link
@@ -39,8 +39,8 @@
         <register class="hidden-sm-and-down"></register>
       </div>
       <div v-if="loggedIn">
-        Logged in as {{ name }}
-        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()">Logout</v-btn>
+        {{ name }}
+        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()">Kirjaudu ulos</v-btn>
       </div>
 
       <v-spacer></v-spacer>
