@@ -31,7 +31,7 @@
         v-if="loggedIn && team_id"
         flat
         class="hidden-sm-and-down"
-        :to="'joukkue/'+this.team_id"
+        :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
       <div v-if="!loggedIn">
