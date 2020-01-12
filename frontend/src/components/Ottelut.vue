@@ -7,7 +7,7 @@
     </v-card-title>
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="no-data">
-        <v-progress-linear slot="progress" indeterminate></v-progress-linear>
+        <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
