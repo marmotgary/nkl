@@ -89,15 +89,6 @@ class Throw(models.Model):
     score_fourth = models.IntegerField(null=True, blank=True, db_index=True)
 
 
-# TBD if used
-# class UserRoles(models.Model):
-#     ROLES = (
-#         (1,'Admin'),
-#         (2,'captain'),
-#         (3,'player'),
-#         )
-#     role = models.CharField(max_length=6,choices=ROLES)
-
 class News(models.Model):
     header = models.TextField()
     date = models.DateTimeField()
