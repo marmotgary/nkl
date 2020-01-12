@@ -13,13 +13,15 @@ urlpatterns = [
     path('logout/', views.LogoutAPI.as_view()),
     path('register/', views.RegistrationAPI.as_view()),
     path('reserve/', views.ReservePlayerAPI.as_view()),
+    path('matches/', views.MatchList.as_view()),
+    path('matches/<int:pk>', views.MatchDetail.as_view()),
     path('throws/update/<int:pk>/', views.ThrowAPI.as_view()),
 ]
 
 router = SimpleRouter()
 router.register(r'players', views.PlayerViewSet)
 router.register(r'teams', views.TeamViewSet)
-router.register(r'matches', views.MatchViewSet)
+# router.register(r'matches', views.MatchViewSet)
 # router.register(r'reserve', views.ReservePlayerViewSet)
 urlpatterns = router.urls + urlpatterns
 if settings.DEBUG:

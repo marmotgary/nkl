@@ -131,6 +131,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
         })
 
 
+#  NOT USED
 class ReservePlayerViewSet(viewsets.ViewSet):
     """
     This viewset provides `list` and `detail` actions.
@@ -206,27 +207,40 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-class MatchViewSet(viewsets.ReadOnlyModelViewSet):
+class MatchList(APIView):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    List all matches
     """
     # throttle_classes = [AnonRateThrottle]
     queryset = Match.objects.all()
 
-    def list(self, request):
+    def get(self, request):
         season = getSeason(request)
         self.queryset = self.queryset.filter(season=season)
         serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
+
+class MatchDetail(APIView):
+    """
+    Retrieve or update a Match instance
+    """
+    # throttle_classes = [AnonRateThrottle]
+    queryset = Match.objects.all()
+
+    def get(self, request, pk):
         season = getSeason(request)
         match = get_object_or_404(self.queryset, pk=pk)
         serializer = MatchDetailSerializer(match, context={'season': season})
         return Response(serializer.data)
 
-    # def patch(self, request):
-    #     return
+    def patch(self, request, pk ,format=None):
+        match = get_object_or_404(self.queryset, pk=pk)
+        serializer = MatchScoreSerializer(match, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):

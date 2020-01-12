@@ -676,6 +676,12 @@ class MatchRoundSerializer(serializers.ModelSerializer):
         fields = ('home', 'away')
 
 
+class MatchScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = ('home_first_round_score', 'home_second_round_score', 'away_first_round_score', 'away_second_round_score')
+
+
 class ThrowScoreSerialzier(serializers.ModelSerializer):
     player = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
