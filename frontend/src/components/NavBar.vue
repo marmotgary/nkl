@@ -28,7 +28,7 @@
       <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
 
       <v-btn
-        v-if="loggedIn"
+        v-if="loggedIn && team_id"
         flat
         class="hidden-sm-and-down"
         :to="'joukkue/'+this.team_id"
@@ -86,7 +86,10 @@ export default {
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
-            if (this.$session.get('user_id')) {
+            if (localStorage.team_id) {
+              this.team_id = localStorage.team_id
+            }
+            else {
                 this.$http
                     .get(
                         'http://localhost:8000/api/players/' +
@@ -94,7 +97,7 @@ export default {
                     )
                     .then(function(response) {
                         this.team_id = response.body.team.id;
-                        console.log(response);
+                        localStorage.team_id = this.team_id;
                     });
             }
         });
