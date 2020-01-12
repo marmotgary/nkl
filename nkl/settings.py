@@ -49,8 +49,12 @@ LOGOUT_URL = '/api/logout/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
+<<<<<<< HEAD
         'rest_framework.authentication.SessionAuthentication',
     ),
+=======
+        'rest_framework.authentication.SessionAuthentication', ),
+>>>>>>> fad570fc9879cb9ca0332173479f3ab2966e258a
     # TODO: Add throttles to views.
     'DEFAULT_THROTTLE_RATES': {
         'anon': '30/minute'
@@ -142,8 +146,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-CORS_ORIGIN_ALLOW_ALL=True
-
+# CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+    'https://kyykka.com'
+]
+CORS_ALLOW_CREDENTIALS = True
 ADMINS = []
 MAILER_LIST = []
 EMAIL_HOST = ''

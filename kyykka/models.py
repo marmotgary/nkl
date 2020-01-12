@@ -21,7 +21,7 @@ class Team(models.Model):
 
 class Season(models.Model):
     year = models.CharField(max_length=4, unique=True)
-    teams = models.ManyToManyField(Team, blank=True) # CURRENTLY NOT IN USE
+    #teams = models.ManyToManyField(Team, blank=True)  # CURRENTLY NOT IN USE
 
     def __str__(self):
         return 'Season %s' % (self.year)
@@ -54,6 +54,7 @@ class PlayersInTeam(models.Model):
 class Match(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     match_time = models.DateTimeField()
+    field = models.IntegerField(blank=True, null=True)
     home_first_round_score = models.IntegerField(blank=True, null=True)
     home_second_round_score = models.IntegerField(blank=True, null=True)
     away_first_round_score = models.IntegerField(blank=True, null=True)
@@ -68,9 +69,6 @@ class Match(models.Model):
     def __str__(self):
         return '%s | %s - %s' % (self.match_time.strftime("%m/%d/%Y, %H:%M"), self.home_team, self.away_team,)
 
-
-# class ThrowType(models.Model):
-#     throw_order_ingame = models.CharField()
 
 class Throw(models.Model):
     '''
