@@ -270,16 +270,20 @@ export default {
         },
         reserveButton: function(index) {
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
+                let post_data = {'player': this.reserve[index].id}
                 this.$http
-                    .post(
-                        'http://localhost:8000/api/reserve',
-                        this.reserve[index].id
-                    )
+                    .post('http://localhost:8000/api/reserve/', post_data, {
+                      headers: {
+                        'X-CSRFToken': this.$session.get('csrf')
+                      }
+                    })
                     .then(function(response) {
                         console.log(response);
+                        if (response.status == 200) {
+                          this.getPlayers();
+                          this.reserve.splice(index, 1);
+                        }
                     });
-                this.getPlayers();
-                this.reserve.splice(index, 1);
             }
         }
     },
