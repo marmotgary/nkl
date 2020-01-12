@@ -79,7 +79,7 @@ export default {
             this.loggedIn = false;
             this.name = '';
             this.$session.destroy();
-            // window.location.reload();
+            localStorage.clear();
         }
     },
     created() {
