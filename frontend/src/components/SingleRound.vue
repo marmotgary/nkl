@@ -187,7 +187,7 @@ export default {
             }).then().catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('http://localhost:8000/api/csrf')
+                  .get('http://localhost:8000/api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {
@@ -260,7 +260,7 @@ export default {
             }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('http://localhost:8000/api/csrf')
+                  .get('http://localhost:8000/api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {

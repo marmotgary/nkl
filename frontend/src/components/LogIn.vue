@@ -56,14 +56,7 @@ export default {
         },
         login: function() {
             this.$session.start();
-            this.$http
-            .get('http://localhost:8000/api/csrf', {withCredentials: true})
-            .then(response => {
-                if (response.status === 200 && 'csrfToken' in response.body) {
-                    this.$session.set('csrf', response.body.csrfToken);
-                    localStorage.csrfToken = response.body.csrfToken;
-                }
-            });
+            this.$http.get('http://localhost:8000/api/csrf', {'withCredentials': true})
             this.$http
                 .post('http://localhost:8000/api/login/', this.credentials, {
                     headers: {
@@ -90,7 +83,7 @@ export default {
                     }).catch(function(response) {
                       if (response.status == 403) {
                         this.$http
-                          .get('http://localhost:8000/api/csrf')
+                          .get('http://localhost:8000/api/csrf', {'withCredentials': true})
                           .then(function(response) {
                               if (response.status === 200) {
                                   this.$http.patch(post_url, post_data, {
