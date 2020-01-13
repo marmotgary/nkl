@@ -5,6 +5,7 @@
 *.vscode
 venv*
 *.log
+*.json
 static_files
 
 .DS_Store
