@@ -247,9 +247,6 @@ export default {
                         this.players = data.body.players;
                         this.header = data.body.name;
                     },
-                    function(error) {
-                        console.log(error.statusText);
-                    }
                 );
         },
         getReserve: function() {
@@ -274,27 +271,32 @@ export default {
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
               this.$http.post(post_url, post_data, {
                 headers: {
-                  'X-CSRFToken': this.$session.get('csrf')
-                }
-                // 'withCredentials': true,        
-                }, function(response) {
-                    if (response.status == 403) {
-                      this.$http
-                        .get('http://localhost:8000/api/csrf')
-                        .then(function(response) {
-                            if (response.status === 200 && 'csrfToken' in response.body) {
-                                this.$session.set('csrf', response.body.csrfToken);
-                                localStorage.csrfToken = response.body.csrfToken;
-                                this.$http.post(post_url, post_data, {
-                                headers: {
-                                  'X-CSRFToken': this.$session.get('csrf')
-                                },
+                  'X-CSRFToken': this.getCookie('csrftoken')
+                },
+                  'withCredentials': true,        
+                }).then(function(response) {
+                  if (response.status === 200) {
+                      this.getPlayers();
+                      this.reserve.splice(index, 1);
+                  }
+                }).catch(function(response) {
+                  if (response.status == 403) {
+                    this.$http
+                      .get('http://localhost:8000/api/csrf')
+                      .then(function(response) {
+                          if (response.status === 200) {
+                              this.getPlayers();
+                              this.reserve.splice(index, 1);
+                              this.$http.patch(post_url, post_data, {
+                              headers: {
+                                'X-CSRFToken': this.getCookie('csrftoken')
+                              },
                                 'withCredentials': true,
-                                })
-                            }
-                        });
-                    }
-                })
+                              })
+                          }
+                      });
+                  }
+              })
             }
         }
     },
