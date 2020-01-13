@@ -11,7 +11,7 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.throttling import AnonRateThrottle
 from kyykka.models import User, Team
 from kyykka.serializers import *
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth import authenticate, login, logout
 import json
 
@@ -38,8 +38,9 @@ def getRole(user):
     return role
 
 
+@ensure_csrf_cookie
 def csrf(request):
-    return JsonResponse({'csrfToken': get_token(request)})
+    return HttpResponse(status=status.HTTP_200_OK)
 
 
 def ping(request):
@@ -128,30 +129,6 @@ class ReservePlayerAPI(generics.GenericAPIView):
             'success': success,
             'message': message,
         })
-
-
-#  NOT USED
-class ReservePlayerViewSet(viewsets.ViewSet):
-    """
-    This viewset provides `list` and `detail` actions.
-    NOT CURRENTLY IN USE, ReservePlayerAPI is.
-    """
-    queryset = User.objects.all()
-
-    def list(self, request):
-        season = getSeason(request)
-        self.queryset.filter(playersinteam__season=season)
-        serializer = ReserveListSerializer(self.queryset, many=True, context={'season': season})
-        return Response(serializer.data)
-
-    def create(self, request):
-        serializer = ReserveCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        return Response(None)
-        # serializer = ReserveCreateSerializer
-        # serializer.is_valid(raise_exception=True)
-        # success, message = serializer.save()
 
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
