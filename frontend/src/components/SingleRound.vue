@@ -155,7 +155,7 @@ export default {
         };
     },
     methods: {
-        isNumber: function(evt, index) {
+        isNumber: function(evt) {
           // Checks that the value is an H or a numeric value from the ASCII table.
           evt = (evt) ? evt : window.event;
           var charCode = (evt.which) ? evt.which : evt.keyCode;
