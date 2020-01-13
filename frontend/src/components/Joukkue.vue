@@ -126,7 +126,8 @@
             <div>Varaa pelaajia</div>
           </template>
           <v-card>
-            <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
+            <v-text-field style="width: 50%; margin-left: 20px" v-model="search" label="Search" single-line hide-details/>
+            <v-data-table :items="reserve" :search="search" :headers="reserveHeaders" hide-actions>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
@@ -158,6 +159,7 @@
 export default {
     data: function() {
         return {
+            search: '',
             header: '',
             isCaptain: false,
             team_id: this.$route.fullPath.substr(
@@ -170,7 +172,7 @@ export default {
                     width: '1%',
                     align: 'left'
                 },
-                { text: '#', value: 'id' },
+                { text: '#', value: 'id'},
                 { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
