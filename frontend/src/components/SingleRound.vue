@@ -24,7 +24,7 @@
       </v-card-text>
     </v-layout>
     <v-layout v-if="!is_validated" row wrap>
-      <v-card-text v-if="this.round_score">
+      <v-card-text v-if="loaded">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
@@ -121,6 +121,7 @@ export default {
             selected: [],
             disabled: [Boolean, Boolean, Boolean, Boolean],
             loading: false,
+            loaded: false,
             home_team: '',
             away_team: '',
             round_score: '',
@@ -353,6 +354,7 @@ export default {
                         this.selected = arr_selected;
                         this.home_players = arr_home;
                         this.away_players = arr_away;
+                        this.loaded = true
                     },
                     function(error) {
                         console.log(error.statusText);
