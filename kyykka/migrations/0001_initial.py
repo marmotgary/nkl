@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -102,12 +101,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='match',
             name='away_team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='away_team', to='kyykka.Team'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='away_team',
+                                    to='kyykka.Team'),
         ),
         migrations.AddField(
             model_name='match',
             name='home_team',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='home_team', to='kyykka.Team'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='home_team',
+                                    to='kyykka.Team'),
         ),
         migrations.AddField(
             model_name='match',
