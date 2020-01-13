@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size=20 :width=2 indeterminate color="red" v-if="loading"/></v-card-title>
+    <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
     <v-layout v-if="is_validated" row wrap>
       <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
@@ -23,7 +23,7 @@
         </p>
       </v-card-text>
     </v-layout>
-    <v-layout v-if="!is_validated" row wrap>
+    <v-layout v-if="!is_validated && show_input" row wrap>
       <v-card-text v-if="loaded">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
@@ -57,7 +57,7 @@
       </template>
     </v-data-table>
     <v-data-table
-      v-if="!is_validated"
+      v-if="!is_validated && show_input"
       disable-initial-sort
       v-model="select"
       :headers="headers"
@@ -75,19 +75,16 @@
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
-        
-        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
-
-        <!-- <td><v-text-field :disabled="disabled[props.index]" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal($event, props.index)" v-on:keypress="isNumber($event)"/></td> -->
       </template>
     </v-data-table>
+    <span v-else-if="!is_validated">
+        <v-card-title v-if="loaded">Tietoja ei vielä ole syötetty.</v-card-title>
+    </span>
   </v-card>
 </template>
 <style scoped>
@@ -101,6 +98,9 @@
     text-align: center
   }
 
+  .v-text-field {
+    font-size: 1.1em !important;
+  }
 </style>
 
 
@@ -109,8 +109,9 @@
 export default {
     name: 'match-round',
     props: {
+        matchData: Object,
         roundNumber: String,
-        teamSide: String
+        teamSide: String,
     },
     data: function() {
         return {
@@ -119,7 +120,8 @@ export default {
             },
             select: [],
             selected: [],
-            disabled: [Boolean, Boolean, Boolean, Boolean],
+            disabled: [false, false, false, false],
+            show_input: false,
             loading: false,
             loaded: false,
             home_team: '',
@@ -183,22 +185,22 @@ export default {
             },
             'withCredentials': true,        
             }).then().catch(function(response) {
-                if (response.status == 403) {
-                  this.$http
-                    .get('http://localhost:8000/api/csrf')
-                    .then(function(response) {
-                        if (response.status === 200) {
-                            this.$session.set('csrf', response.body.csrfToken);
-                            localStorage.csrfToken = response.body.csrfToken;
-                            this.$http.patch(post_url, post_data, {
-                            headers: {
-                              'X-CSRFToken': this.$session.get('csrf')
-                            },
-                            'withCredentials': true,
-                            })
-                        }
-                    });
-                }
+              if (response.status == 403) {
+                this.$http
+                  .get('http://localhost:8000/api/csrf')
+                  .then(function(response) {
+                      if (response.status === 200) {
+                          this.$session.set('csrf', response.body.csrfToken);
+                          localStorage.csrfToken = response.body.csrfToken;
+                          this.$http.patch(post_url, post_data, {
+                          headers: {
+                            'X-CSRFToken': this.$session.get('csrf')
+                          },
+                          'withCredentials': true,
+                          })
+                      }
+                  });
+              }
             })
         },
         sumTotal: function(value, index) {
@@ -257,6 +259,23 @@ export default {
               setTimeout(() => {
                 this.loading = false
               }, 500);
+            }).catch(function(response) {
+              if (response.status == 403) {
+                this.$http
+                  .get('http://localhost:8000/api/csrf')
+                  .then(function(response) {
+                      if (response.status === 200) {
+                          this.$session.set('csrf', response.body.csrfToken);
+                          localStorage.csrfToken = response.body.csrfToken;
+                          this.$http.patch(post_url, post_data, {
+                          headers: {
+                            'X-CSRFToken': this.$session.get('csrf')
+                          },
+                          'withCredentials': true,
+                          })
+                      }
+                  });
+              }
             })
         },
         loadPlayer: function(player, index) {
@@ -267,103 +286,100 @@ export default {
           this.disabled[index] = false
         },
         getMatch: function() {
-            this.$http
-                .get(
-                    'http://localhost:8000/api/matches/' +
-                        this.$route.fullPath.substr(
-                            this.$route.fullPath.lastIndexOf('/') + 1
-                        )
-                )
-                .then(
-                    function(data) {
-                        this.plain_data = data
-                        this.is_validated = data.body.is_validated;
-                        if (this.roundNumber == 1 && this.teamSide == 'home') {
-                            this.data = data.body.first_round.home;
-                            this.home_team = data.body.home_team.name;
-                            this.round_score = data.body.home_first_round_score;
-                            if (
-                                this.round_score >
-                                data.body.away_first_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 2 &&
-                            this.teamSide == 'home'
-                        ) {
-                            this.data = data.body.second_round.home;
-                            this.home_team = data.body.home_team.name;
-                            this.round_score =
-                                data.body.home_second_round_score;
-                            if (
-                                this.round_score >
-                                data.body.away_second_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 1 &&
-                            this.teamSide == 'away'
-                        ) {
-                            this.data = data.body.first_round.away;
-                            this.away_team = data.body.away_team.name;
-                            this.round_score = data.body.away_first_round_score;
-                            if (
-                                this.round_score >
-                                data.body.home_first_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 2 &&
-                            this.teamSide == 'away'
-                        ) {
-                            this.data = data.body.second_round.away;
-                            this.away_team = data.body.away_team.name;
-                            this.round_score =
-                                data.body.away_second_round_score;
-                            if (
-                                this.round_score >
-                                data.body.home_second_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        }
-                        var arr_selected = [];
-                        var arr_home = [];
-                        var arr_away = [];
+          this.plain_data = this.matchData
+          this.is_validated = this.matchData.body.is_validated;
+          if (this.roundNumber == 1 && this.teamSide == 'home') {
+              this.data = this.matchData.body.first_round.home;
+              this.home_team = this.matchData.body.home_team.name;
+              this.round_score = this.matchData.body.home_first_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.away_first_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 2 &&
+              this.teamSide == 'home'
+          ) {
+              this.data = this.matchData.body.second_round.home;
+              this.home_team = this.matchData.body.home_team.name;
+              this.round_score =
+                  this.matchData.body.home_second_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.away_second_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 1 &&
+              this.teamSide == 'away'
+          ) {
+              this.data = this.matchData.body.first_round.away;
+              this.away_team = this.matchData.body.away_team.name;
+              this.round_score = this.matchData.body.away_first_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.home_first_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 2 &&
+              this.teamSide == 'away'
+          ) {
+              this.data = this.matchData.body.second_round.away;
+              this.away_team = this.matchData.body.away_team.name;
+              this.round_score =
+                  this.matchData.body.away_second_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.home_second_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          }
+          var arr_selected = [];
+          var arr_home = [];
+          var arr_away = [];
 
-                        this.data.forEach(function (item) {
-                          arr_selected.push(item)
-                        })
-                        data.body.home_team.players.forEach(function(player) {
-                          arr_home.push(player.player_name);
-                        });
-                        data.body.away_team.players.forEach(function(player) {
-                          arr_away.push(player.player_name);
-                        });
-                        this.selected = arr_selected;
-                        this.home_players = arr_home;
-                        this.away_players = arr_away;
-                        this.loaded = true
-                    },
-                    function(error) {
-                        console.log(error.statusText);
-                    }
-                );
+          this.data.forEach(function (item) {
+            arr_selected.push(item)
+          })
+          this.matchData.body.home_team.players.forEach(function(player) {
+            arr_home.push(player.player_name);
+          });
+          this.matchData.body.away_team.players.forEach(function(player) {
+            arr_away.push(player.player_name);
+          });
+          this.selected = arr_selected;
+          this.home_players = arr_home;
+          this.away_players = arr_away;
+          this.loaded = true
+          
+          if(!this.is_validated) {
+            let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.home_team.id]
+
+            team_ids.forEach(function (id) {
+              if (localStorage.team_id == id) {
+                this.show_input = (localStorage.role_id==1) ? true : false;
+              }
+
+            })
+          }
         }
     },
     mounted: function() {
-        this.getMatch();
+      this.getMatch();
     }
 };
 </script>

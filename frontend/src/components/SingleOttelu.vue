@@ -2,30 +2,30 @@
   <v-container grid-list-md>
     <v-layout row wrap align-center>
       <v-flex xm12>
-        <match></match>
+        <match v-if="data_ready" :matchData="data"></match>
       </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xm6>
         <v-card color="secondary">
-          <round roundNumber="1" teamSide="home"></round>
+          <round v-if="data_ready" :matchData="data" roundNumber="1" teamSide="home"></round>
         </v-card>
       </v-flex>
       <v-flex xm6>
         <v-card color="secondary">
-          <round roundNumber="1" teamSide="away"></round>
+          <round v-if="data_ready" :matchData="data" roundNumber="1" teamSide="away"></round>
         </v-card>
       </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xm6>
         <v-card color="secondary">
-          <round roundNumber="2" teamSide="home"></round>
+          <round v-if="data_ready" :matchData="data" roundNumber="2" teamSide="home"></round>
         </v-card>
       </v-flex>
       <v-flex xm6>
         <v-card color="secondary">
-          <round roundNumber="2" teamSide="away"></round>
+          <round v-if="data_ready" :matchData="data" roundNumber="2" teamSide="away"></round>
         </v-card>
       </v-flex>
     </v-layout>
@@ -41,6 +41,25 @@ export default {
     components: {
         Round,
         Match
+    },
+    data: function() {
+        return {
+          data: {},
+          data_ready: false,
+        };
+    },
+    created: function() {
+      this.$http
+      .get(
+          'http://localhost:8000/api/matches/' +
+              this.$route.fullPath.substr(
+                  this.$route.fullPath.lastIndexOf('/') + 1
+              )
+      )
+      .then(function(data) {
+        this.data = data
+        this.data_ready = true
+      })
     }
 };
 </script>
