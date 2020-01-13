@@ -50,6 +50,9 @@
 
 <script>
 export default {
+    props: {
+      matchData: Object,
+    },
     data: function() {
         return {
             match_time: '',
@@ -67,30 +70,21 @@ export default {
     },
     methods: {
         getMatch: function() {
-            this.$http
-                .get(
-                    'http://localhost:8000/api/matches/' +
-                        this.$route.fullPath.substr(
-                            this.$route.fullPath.lastIndexOf('/') + 1
-                        )
-                )
-                .then(function(response) {
-                    this.match_time = response.body.match_time;
-                    this.away_team.name = response.body.away_team.name;
-                    this.home_team.name = response.body.home_team.name;
-                    this.home_team.score_total = response.body.home_score_total;
-                    this.away_team.score_total = response.body.away_score_total;
+          this.match_time = this.matchData.body.match_time;
+          this.away_team.name = this.matchData.body.away_team.name;
+          this.home_team.name = this.matchData.body.home_team.name;
+          this.home_team.score_total = this.matchData.body.home_score_total;
+          this.away_team.score_total = this.matchData.body.away_score_total;
 
-                    if (
-                        this.home_team.score_total > this.away_team.score_total
-                    ) {
-                        this.home_team.color = 'red';
-                        this.away_team.color = 'green';
-                    } else {
-                        this.home_team.color = 'green';
-                        this.away_team.color = 'red';
-                    }
-                });
+          if (
+              this.home_team.score_total > this.away_team.score_total
+          ) {
+              this.home_team.color = 'red';
+              this.away_team.color = 'green';
+          } else {
+              this.home_team.color = 'green';
+              this.away_team.color = 'red';
+          }
         }
     },
     mounted: function() {

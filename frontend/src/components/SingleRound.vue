@@ -109,8 +109,9 @@
 export default {
     name: 'match-round',
     props: {
+        matchData: Object,
         roundNumber: String,
-        teamSide: String
+        teamSide: String,
     },
     data: function() {
         return {
@@ -285,110 +286,96 @@ export default {
           this.disabled[index] = false
         },
         getMatch: function() {
-            this.$http
-                .get(
-                    'http://localhost:8000/api/matches/' +
-                        this.$route.fullPath.substr(
-                            this.$route.fullPath.lastIndexOf('/') + 1
-                        )
-                )
-                .then(
-                    function(data) {
-                        this.plain_data = data
-                        this.is_validated = data.body.is_validated;
-                        if (this.roundNumber == 1 && this.teamSide == 'home') {
-                            this.data = data.body.first_round.home;
-                            this.home_team = data.body.home_team.name;
-                            this.round_score = data.body.home_first_round_score;
-                            if (
-                                this.round_score >
-                                data.body.away_first_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 2 &&
-                            this.teamSide == 'home'
-                        ) {
-                            this.data = data.body.second_round.home;
-                            this.home_team = data.body.home_team.name;
-                            this.round_score =
-                                data.body.home_second_round_score;
-                            if (
-                                this.round_score >
-                                data.body.away_second_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 1 &&
-                            this.teamSide == 'away'
-                        ) {
-                            this.data = data.body.first_round.away;
-                            this.away_team = data.body.away_team.name;
-                            this.round_score = data.body.away_first_round_score;
-                            if (
-                                this.round_score >
-                                data.body.home_first_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        } else if (
-                            this.roundNumber == 2 &&
-                            this.teamSide == 'away'
-                        ) {
-                            this.data = data.body.second_round.away;
-                            this.away_team = data.body.away_team.name;
-                            this.round_score =
-                                data.body.away_second_round_score;
-                            if (
-                                this.round_score >
-                                data.body.home_second_round_score
-                            ) {
-                                this.color = 'red';
-                            } else {
-                                this.color = 'green';
-                            }
-                        }
-                        var arr_selected = [];
-                        var arr_home = [];
-                        var arr_away = [];
+          this.plain_data = this.matchData
+          this.is_validated = this.matchData.body.is_validated;
+          if (this.roundNumber == 1 && this.teamSide == 'home') {
+              this.data = this.matchData.body.first_round.home;
+              this.home_team = this.matchData.body.home_team.name;
+              this.round_score = this.matchData.body.home_first_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.away_first_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 2 &&
+              this.teamSide == 'home'
+          ) {
+              this.data = this.matchData.body.second_round.home;
+              this.home_team = this.matchData.body.home_team.name;
+              this.round_score =
+                  this.matchData.body.home_second_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.away_second_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 1 &&
+              this.teamSide == 'away'
+          ) {
+              this.data = this.matchData.body.first_round.away;
+              this.away_team = this.matchData.body.away_team.name;
+              this.round_score = this.matchData.body.away_first_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.home_first_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          } else if (
+              this.roundNumber == 2 &&
+              this.teamSide == 'away'
+          ) {
+              this.data = this.matchData.body.second_round.away;
+              this.away_team = this.matchData.body.away_team.name;
+              this.round_score =
+                  this.matchData.body.away_second_round_score;
+              if (
+                  this.round_score >
+                  this.matchData.body.home_second_round_score
+              ) {
+                  this.color = 'red';
+              } else {
+                  this.color = 'green';
+              }
+          }
+          var arr_selected = [];
+          var arr_home = [];
+          var arr_away = [];
 
-                        this.data.forEach(function (item) {
-                          arr_selected.push(item)
-                        })
-                        data.body.home_team.players.forEach(function(player) {
-                          arr_home.push(player.player_name);
-                        });
-                        data.body.away_team.players.forEach(function(player) {
-                          arr_away.push(player.player_name);
-                        });
-                        this.selected = arr_selected;
-                        this.home_players = arr_home;
-                        this.away_players = arr_away;
-                        this.loaded = true
-                        
-                        if(!this.is_validated) {
-                          let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.home_team.id]
+          this.data.forEach(function (item) {
+            arr_selected.push(item)
+          })
+          this.matchData.body.home_team.players.forEach(function(player) {
+            arr_home.push(player.player_name);
+          });
+          this.matchData.body.away_team.players.forEach(function(player) {
+            arr_away.push(player.player_name);
+          });
+          this.selected = arr_selected;
+          this.home_players = arr_home;
+          this.away_players = arr_away;
+          this.loaded = true
+          
+          if(!this.is_validated) {
+            let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.home_team.id]
 
-                          team_ids.forEach(function (id) {
-                            if (localStorage.team_id == id) {
-                              this.show_input = (localStorage.role_id==1) ? true : false;
-                            }
+            team_ids.forEach(function (id) {
+              if (localStorage.team_id == id) {
+                this.show_input = (localStorage.role_id==1) ? true : false;
+              }
 
-                          })
-                        }
-                    },
-                    function(error) {
-                        console.log(error.statusText);
-                    }
-                );
+            })
+          }
         }
     },
     mounted: function() {
