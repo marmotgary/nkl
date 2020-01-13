@@ -679,7 +679,9 @@ class MatchRoundSerializer(serializers.ModelSerializer):
 class MatchScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
-        fields = ('home_first_round_score', 'home_second_round_score', 'away_first_round_score', 'away_second_round_score')
+        fields = ('home_first_round_score', 'home_second_round_score',
+                  'away_first_round_score', 'away_second_round_score',
+                  'is_validated')
 
 
 class ThrowScoreSerialzier(serializers.ModelSerializer):
