@@ -162,7 +162,7 @@ class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, format=None):
         season = getSeason(request)
-        self.queryset.filter(playersinteam__season=season)
+        self.queryset = self.queryset.filter(playersinteam__season=season)
         serializer = PlayerListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
