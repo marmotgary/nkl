@@ -73,6 +73,15 @@ export default {
           this.match_time = this.matchData.body.match_time;
           this.away_team.name = this.matchData.body.away_team.name;
           this.home_team.name = this.matchData.body.home_team.name;
+
+          if(!this.matchData.body.is_validated) {
+            this.home_team.score_total = '0'
+            this.away_team.score_total = '0'
+            this.home_team.color = 'red'
+            this.away_team.color = 'red'
+            return
+          }
+
           this.home_team.score_total = this.matchData.body.home_score_total;
           this.away_team.score_total = this.matchData.body.away_score_total;
 
