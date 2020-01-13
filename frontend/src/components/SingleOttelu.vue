@@ -56,8 +56,31 @@ export default {
     },
     methods: {
       validateClick: function() {
+        let post_url = 'http://localhost:8000/api/matches/'+this.data.body.id
+        let post_data = {"is_validated": true}
+
         if (confirm('Oletko tyytyväinen ottelun tuloksiin?')) {
-          console.log('jaujau')
+          this.$http.patch(post_url, post_data, {
+            headers: {
+              'X-CSRFToken': this.getCookie('csrftoken')
+            },
+            'withCredentials': true,
+          }).then(function(response){console.log(response)}).catch(function(response) {
+              if (response.status == 403) {
+                this.$http
+                  .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                  .then(function(response) {
+                      if (response.status === 200) {
+                          this.$http.patch(post_url, post_data, {
+                          headers: {
+                            'X-CSRFToken': this.getCookie('csrftoken')
+                          },
+                          'withCredentials': true,
+                          })
+                      }
+                  });
+              }
+          })
         }
       }
     },
