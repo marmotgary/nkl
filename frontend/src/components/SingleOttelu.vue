@@ -29,6 +29,11 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <v-layout row>
+    <v-flex class="text-xs-center" xm12>
+      <v-btn v-on:click="validateClick" x-large color="error">validate</v-btn>
+    </v-flex>
+    </v-layout row>
   </v-container>
 </template>
 
@@ -47,6 +52,13 @@ export default {
           data: {},
           data_ready: false,
         };
+    },
+    methods: {
+      validateClick: function() {
+        if (confirm('Oletko tyytyväinen ottelun tuloksiin?')) {
+          console.log('jaujau')
+        }
+      }
     },
     created: function() {
       this.$http
