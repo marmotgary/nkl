@@ -101,6 +101,9 @@
     text-align: center
   }
 
+  .v-text-field {
+    font-size: 1.1em !important;
+  }
 </style>
 
 
@@ -183,22 +186,22 @@ export default {
             },
             'withCredentials': true,        
             }).then().catch(function(response) {
-                if (response.status == 403) {
-                  this.$http
-                    .get('http://localhost:8000/api/csrf')
-                    .then(function(response) {
-                        if (response.status === 200) {
-                            this.$session.set('csrf', response.body.csrfToken);
-                            localStorage.csrfToken = response.body.csrfToken;
-                            this.$http.patch(post_url, post_data, {
-                            headers: {
-                              'X-CSRFToken': this.$session.get('csrf')
-                            },
-                            'withCredentials': true,
-                            })
-                        }
-                    });
-                }
+              if (response.status == 403) {
+                this.$http
+                  .get('http://localhost:8000/api/csrf')
+                  .then(function(response) {
+                      if (response.status === 200) {
+                          this.$session.set('csrf', response.body.csrfToken);
+                          localStorage.csrfToken = response.body.csrfToken;
+                          this.$http.patch(post_url, post_data, {
+                          headers: {
+                            'X-CSRFToken': this.$session.get('csrf')
+                          },
+                          'withCredentials': true,
+                          })
+                      }
+                  });
+              }
             })
         },
         sumTotal: function(value, index) {
