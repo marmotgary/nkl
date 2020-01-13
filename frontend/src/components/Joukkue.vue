@@ -6,12 +6,8 @@
           <v-container grid-list-sm fluid>
             <v-flex xs4 mb-4 d-flex offset-sm4>
               <v-card flat tile class="d-flex">
-                <v-img
-                  :src="`https://picsum.photos/id/237/200/300`"
-                  aspect-ratio="1"
-                  max-height="200"
-                  max-width="300"
-                  class="grey lighten-2"
+                <img
+                  src="../../public/kyykkalogo120px.png"
                 ></v-img>
               </v-card>
             </v-flex>
@@ -126,7 +122,8 @@
             <div>Varaa pelaajia</div>
           </template>
           <v-card>
-            <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
+            <v-text-field style="width: 50%; margin-left: 20px" v-model="search" label="Search" single-line hide-details/>
+            <v-data-table :items="reserve" :search="search" :headers="reserveHeaders" hide-actions>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
@@ -158,6 +155,7 @@
 export default {
     data: function() {
         return {
+            search: '',
             header: '',
             isCaptain: false,
             team_id: this.$route.fullPath.substr(
@@ -170,7 +168,7 @@ export default {
                     width: '1%',
                     align: 'left'
                 },
-                { text: '#', value: 'id' },
+                { text: '#', value: 'id'},
                 { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
@@ -247,9 +245,6 @@ export default {
                         this.players = data.body.players;
                         this.header = data.body.name;
                     },
-                    function(error) {
-                        console.log(error.statusText);
-                    }
                 );
         },
         getReserve: function() {
@@ -274,27 +269,32 @@ export default {
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
               this.$http.post(post_url, post_data, {
                 headers: {
-                  'X-CSRFToken': this.$session.get('csrf')
-                }
-                // 'withCredentials': true,        
-                }, function(response) {
-                    if (response.status == 403) {
-                      this.$http
-                        .get('http://localhost:8000/api/csrf')
-                        .then(function(response) {
-                            if (response.status === 200 && 'csrfToken' in response.body) {
-                                this.$session.set('csrf', response.body.csrfToken);
-                                localStorage.csrfToken = response.body.csrfToken;
-                                this.$http.post(post_url, post_data, {
-                                headers: {
-                                  'X-CSRFToken': this.$session.get('csrf')
-                                },
+                  'X-CSRFToken': this.getCookie('csrftoken')
+                },
+                  'withCredentials': true,        
+                }).then(function(response) {
+                  if (response.status === 200) {
+                      this.getPlayers();
+                      this.reserve.splice(index, 1);
+                  }
+                }).catch(function(response) {
+                  if (response.status == 403) {
+                    this.$http
+                      .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                      .then(function(response) {
+                          if (response.status === 200) {
+                              this.getPlayers();
+                              this.reserve.splice(index, 1);
+                              this.$http.patch(post_url, post_data, {
+                              headers: {
+                                'X-CSRFToken': this.getCookie('csrftoken')
+                              },
                                 'withCredentials': true,
-                                })
-                            }
-                        });
-                    }
-                })
+                              })
+                          }
+                      });
+                  }
+              })
             }
         }
     },

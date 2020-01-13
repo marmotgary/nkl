@@ -56,22 +56,16 @@ export default {
         },
         login: function() {
             this.$session.start();
-            this.$http
-            .get('http://localhost:8000/api/csrf', {withCredentials: true})
-            .then(response => {
-                if (response.status === 200 && 'csrfToken' in response.body) {
-                    this.$session.set('csrf', response.body.csrfToken);
-                    localStorage.csrfToken = response.body.csrfToken;
-                }
-            });
+            this.$http.get('http://localhost:8000/api/csrf', {'withCredentials': true})
             this.$http
                 .post('http://localhost:8000/api/login/', this.credentials, {
                     headers: {
-                        'X-CSRFToken': this.$session.get('csrf'),
+                        'X-CSRFToken': this.getCookie('csrftoken'),
                     },
                   'withCredentials': true,
                 })
                 .then(function(response) {
+                    if (response.status === 200) {
                         this.dialog = !this.dialog;
                         this.alert = false;
 
@@ -82,11 +76,26 @@ export default {
                         this.$session.set('role_id', response.body.role);
                         this.$session.set('user_id', response.body.user.id);
                         this.changeLogin(response.body.user.player_name);
+                    }
                     },
                     response => {
                         this.alert = !this.alert;
-                    }
-                );
+                    }).catch(function(response) {
+                      if (response.status == 403) {
+                        this.$http
+                          .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                          .then(function(response) {
+                              if (response.status === 200) {
+                                  this.$http.patch(post_url, post_data, {
+                                  headers: {
+                                    'X-CSRFToken': this.getCookie('csrftoken')
+                                  },
+                                  'withCredentials': true,
+                                  })
+                              }
+                          });
+                      }
+                  });
         }
     },
     mounted() {
