@@ -268,39 +268,107 @@ export default {
                 }
             );
         },
-        reservePost: function(data) {
-            this.$http
-            .post('http://localhost:8000/api/reserve/', data, {
-              headers: {
-                'X-CSRFToken': this.$session.get('csrf')
-              },
-              'withCredentials': true,
-            }).then(function(response) {
-                console.log(response.status)
-                if (response.status == 200) {
-                  this.getPlayers();
-                  this.reserve.splice(index, 1);
-                }
-            }, response => {
-                console.log(response.status)
-                if (response.status == 403) {
-                  console.log('jajjajaja')
-                  this.$http
-                    .get('http://localhost:8000/api/csrf')
-                    .then(response => {
-                        if (response.status === 200 && 'csrfToken' in response.body) {
-                            this.$session.set('csrf', response.body.csrfToken);
-                            localStorage.csrfToken = response.body.csrfToken;
-                            this.reservePost(data)
-                        }
-                    });
-                }
-            })
-        },
+        // reservePost: function(data) {
+        //     this.$http
+        //     .post('http://localhost:8000/api/reserve/', data, {
+        //       headers: {
+        //         'X-CSRFToken': this.$session.get('csrf')
+        //       },
+        //       'withCredentials': true,
+        //     }).then(function(response) {
+        //         if (response.status == 200) {
+        //           this.getPlayers();
+        //           this.reserve.splice(index, 1);
+        //         }
+        //     }, function(response) {
+        //         if (response.status == 403) {
+        //           this.$http
+        //             .get('http://localhost:8000/api/csrf')
+        //             .then(function(response) {
+        //                 if (response.status === 200 && 'csrfToken' in response.body) {
+        //                     this.$session.set('csrf', response.body.csrfToken);
+        //                     localStorage.csrfToken = response.body.csrfToken;
+        //                     this.$http
+        //                       .post('http://localhost:8000/api/reserve/', data, {
+        //                         headers: {
+        //                           'X-CSRFToken': this.$session.get('csrf')
+        //                         },
+        //                         'withCredentials': true,
+        //                       }).then(function(response) {
+        //                           if (response.status == 200) {
+        //                             this.getPlayers();
+        //                             this.reserve.splice(index, 1);
+        //                           }
+        //                       }, function(response) {
+        //                           if (response.status == 403) {
+        //                             this.$http
+        //                               .get('http://localhost:8000/api/csrf')
+        //                               .then(function(response) {
+        //                                   if (response.status === 200 && 'csrfToken' in response.body) {
+        //                                       this.$session.set('csrf', response.body.csrfToken);
+        //                                       localStorage.csrfToken = response.body.csrfToken;
+        //                                   let post_data = {'player': this.reserve[index].id}
+        //                                   let post_url = 'http://localhost:8000/api/reserve/'
+        //                                   this.$http.patch(post_url, post_data, {
+        //                                     headers: {
+        //                                       'X-CSRFToken': this.$session.get('csrf')
+        //                                     },
+        //                                     'withCredentials': true,        
+        //                                     }, function(response) {
+        //                                           if (response.status == 403) {
+        //                                             this.$http
+        //                                               .get('http://localhost:8000/api/csrf')
+        //                                               .then(function(response) {
+        //                                                   if (response.status === 200 && 'csrfToken' in response.body) {
+        //                                                       this.$session.set('csrf', response.body.csrfToken);
+        //                                                       localStorage.csrfToken = response.body.csrfToken;
+        //                                                       this.$http.patch(post_url, post_data, {
+        //                                                       headers: {
+        //                                                         'X-CSRFToken': this.$session.get('csrf')
+        //                                                       },
+        //                                                       'withCredentials': true,
+        //                                                       })
+        //                                                   }
+        //                                               });
+        //                                           }
+        //                                     })
+        //                                   }
+        //                               });
+        //                           }
+        //                       })
+        //                 }
+        //             });
+        //         }
+        //     })
+        // },
         reserveButton: function(index) {
+            let post_data = {'player': this.reserve[index].id}
+            let post_url = 'http://localhost:8000/api/reserve/'
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
-              let post_data = {'player': this.reserve[index].id}
-              this.reservePost(post_data)
+              this.$http.patch(post_url, post_data, {
+                headers: {
+                  'X-CSRFToken': this.$session.get('csrf')
+                },
+                'withCredentials': true,        
+                }, function(response) {
+                    console.log('jau')
+                    if (response.status == 403) {
+                      this.$http
+                        .get('http://localhost:8000/api/csrf')
+                        .then(function(response) {
+                            if (response.status === 200 && 'csrfToken' in response.body) {
+                                this.$session.set('csrf', response.body.csrfToken);
+                                localStorage.csrfToken = response.body.csrfToken;
+                                this.$http.patch(post_url, post_data, {
+                                headers: {
+                                  'X-CSRFToken': this.$session.get('csrf')
+                                },
+                                'withCredentials': true,
+                                })
+                            }
+                        });
+                    }
+                })
             }
         }
     },
