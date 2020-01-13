@@ -31,7 +31,7 @@
     </v-layout>
     <v-layout row>
     <v-flex class="text-xs-center" xm12>
-      <v-btn v-on:click="validateClick" x-large color="error">validate</v-btn>
+      <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">validate</v-btn>
     </v-flex>
     </v-layout row>
   </v-container>
@@ -51,6 +51,7 @@ export default {
         return {
           data: {},
           data_ready: false,
+          away_captain: false,
         };
     },
     methods: {
@@ -71,6 +72,9 @@ export default {
       .then(function(data) {
         this.data = data
         this.data_ready = true
+        if(!data.body.is_validated && localStorage.role_id == 1 && localStorage.team_id == data.body.away_team.id) {
+          this.away_captain = true
+        }
       })
     }
 };
