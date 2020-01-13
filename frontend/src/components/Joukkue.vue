@@ -6,12 +6,8 @@
           <v-container grid-list-sm fluid>
             <v-flex xs4 mb-4 d-flex offset-sm4>
               <v-card flat tile class="d-flex">
-                <v-img
-                  :src="`https://picsum.photos/id/237/200/300`"
-                  aspect-ratio="1"
-                  max-height="200"
-                  max-width="300"
-                  class="grey lighten-2"
+                <img
+                  src="../../public/kyykkalogo120px.png"
                 ></v-img>
               </v-card>
             </v-flex>
