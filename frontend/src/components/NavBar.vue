@@ -40,7 +40,7 @@
       </div>
       <div v-if="loggedIn">
         {{ name }}
-        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()">Kirjaudu ulos</v-btn>
+        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
 
       <v-spacer></v-spacer>
