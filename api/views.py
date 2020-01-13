@@ -93,7 +93,8 @@ class LogoutAPI(APIView):
     def post(self, request, *args, **kwargs):
         logout(request)
         response = HttpResponse(json.dumps({'success': True}))
-        response.delete_cookie('role')
+        # response.delete_cookie('role')
+        response.delete_cookie('csrftoken')
         return response
 
 
