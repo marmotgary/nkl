@@ -54,7 +54,6 @@ class IsCaptain(permissions.BasePermission):
         try:
             return request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain
         except PlayersInTeam.DoesNotExist as e:
-            print(e, request.user.id)
             return False
 
 
