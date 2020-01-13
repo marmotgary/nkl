@@ -63,26 +63,37 @@ export default {
     }),
     methods: {
         register() {
+            this.$http.get('http://localhost:8000/api/csrf', {'withCredentials': true});
+
+
             this.$http
-                .get('http://localhost:8000/api/csrf')
-                .then(response => {
-                    if (
-                        response.status === 200 &&
-                        'csrfToken' in response.body
-                    ) {
-                        this.$session.start();
-                        this.$session.set('csrf', response.body.csrfToken);
-                    }
-                });
-            this.$http
-                .post('http://localhost:8000/api/register/', this.credentials)
-                .then(res => {
+                .post('http://localhost:8000/api/register/', this.credentials, {
+                  headers: {
+                    'X-CSRFToken': this.getCookie('csrftoken')
+                  },
+                  'withCredentials': true,        
+                  })
+                .then(function(response) {
                     this.dialog = false;
                     this.alert = false;
                     this.changeLogin();
                 })
-                .catch(e => {
+                .catch(function(response) {
                     this.checkForm();
+                    if (response.status == 403) {
+                      this.$http
+                        .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                        .then(function(response) {
+                            if (response.status === 200) {
+                                this.$http.patch(post_url, post_data, {
+                                headers: {
+                                  'X-CSRFToken': this.getCookie('csrftoken')
+                                },
+                                  'withCredentials': true,
+                                })
+                            }
+                        });
+                    }
                 });
         },
         checkForm: function(e) {
