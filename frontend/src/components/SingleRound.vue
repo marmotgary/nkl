@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Erä {{this.roundNumber}}<v-spacer></v-spacer><v-progress-circular :size=20 :width=2 indeterminate color="red" v-if="loading"/></v-card-title>
+    <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size=20 :width=2 indeterminate color="red" v-if="loading"/></v-card-title>
     <v-layout v-if="is_validated" row wrap>
       <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
@@ -25,24 +25,13 @@
     </v-layout>
     <v-layout v-if="!is_validated" row wrap>
       <v-card-text v-if="this.round_score">
-        <!-- Tähän dynaaminen pisteiden lisäys -->
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
-          <v-chip
-            style="float:right;"
-            :color="`${this.color} lighten-2`"
-            label
-            small
-          >{{this.round_score}}</v-chip>
+          <v-text-field @change="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
         </p>
         <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
-          <v-chip
-            style="float:right;"
-            :color="`${this.color} lighten-2`"
-            label
-            small
-          >{{this.round_score}}</v-chip>
+          <v-text-field style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
         </p>
       </v-card-text>
     </v-layout>
@@ -175,6 +164,41 @@ export default {
           } else {
             return true;
           }
+        },
+        roundScore: function() {
+          let post_url = 'http://localhost:8000/api/matches/'+this.plain_data.body.id
+          let post_data = {}
+          let key = ''
+
+          if (this.teamSide == 'home') {
+            key = (this.roundNumber==1) ? "home_first_round_score" : "home_second_round_score";
+          } else if (this.teamSide == 'away') {
+            key = (this.roundNumber==1) ? "away_first_round_score" : "away_second_round_score";
+          }
+          post_data[key] = this.round_score
+          this.$http.patch(post_url, post_data, {
+            headers: {
+              'X-CSRFToken': this.$session.get('csrf')
+            },
+            'withCredentials': true,        
+            }).then().catch(function(response) {
+                if (response.status == 403) {
+                  this.$http
+                    .get('http://localhost:8000/api/csrf')
+                    .then(function(response) {
+                        if (response.status === 200) {
+                            this.$session.set('csrf', response.body.csrfToken);
+                            localStorage.csrfToken = response.body.csrfToken;
+                            this.$http.patch(post_url, post_data, {
+                            headers: {
+                              'X-CSRFToken': this.$session.get('csrf')
+                            },
+                            'withCredentials': true,
+                            })
+                        }
+                    });
+                }
+            })
         },
         sumTotal: function(value, index) {
           /* The function loops through all the column elements of the corresponding row
