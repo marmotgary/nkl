@@ -31,7 +31,7 @@
         </p>
         <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
-          <v-text-field style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
         </p>
       </v-card-text>
     </v-layout>
