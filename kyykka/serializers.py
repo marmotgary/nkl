@@ -289,7 +289,7 @@ class PlayerListSerializer(SharedPlayerSerializer):
         try:
             return PlayersInTeam.objects.get(player=obj, season=self.context.get("season")).is_captain
         except Exception as e:
-            print(e, obj)
+            return False
 
 
     class Meta:

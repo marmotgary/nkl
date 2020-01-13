@@ -54,7 +54,6 @@ class IsCaptain(permissions.BasePermission):
         try:
             return request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain
         except PlayersInTeam.DoesNotExist as e:
-            print(e, request.user.id)
             return False
 
 
@@ -163,7 +162,7 @@ class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, format=None):
         season = getSeason(request)
-        self.queryset.filter(playersinteam__season=season)
+        self.queryset = self.queryset.filter(playersinteam__season=season)
         serializer = PlayerListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
