@@ -181,22 +181,20 @@ export default {
           post_data[key] = this.round_score
           this.$http.patch(post_url, post_data, {
             headers: {
-              'X-CSRFToken': this.$session.get('csrf')
+              'X-CSRFToken': this.getCookie('csrftoken')
             },
-            'withCredentials': true,        
+              'withCredentials': true,        
             }).then().catch(function(response) {
               if (response.status == 403) {
                 this.$http
                   .get('http://localhost:8000/api/csrf')
                   .then(function(response) {
                       if (response.status === 200) {
-                          this.$session.set('csrf', response.body.csrfToken);
-                          localStorage.csrfToken = response.body.csrfToken;
                           this.$http.patch(post_url, post_data, {
                           headers: {
-                            'X-CSRFToken': this.$session.get('csrf')
+                            'X-CSRFToken': this.getCookie('csrftoken')
                           },
-                          'withCredentials': true,
+                            'withCredentials': true,
                           })
                       }
                   });
@@ -248,7 +246,7 @@ export default {
 
           this.$http.patch(post_url, post_data, {
             headers: {
-              'X-CSRFToken': this.$session.get('csrf')
+              'X-CSRFToken': this.getCookie('csrftoken')
             },
             'withCredentials': true,
             }).then(
@@ -265,11 +263,9 @@ export default {
                   .get('http://localhost:8000/api/csrf')
                   .then(function(response) {
                       if (response.status === 200) {
-                          this.$session.set('csrf', response.body.csrfToken);
-                          localStorage.csrfToken = response.body.csrfToken;
                           this.$http.patch(post_url, post_data, {
                           headers: {
-                            'X-CSRFToken': this.$session.get('csrf')
+                            'X-CSRFToken': this.getCookie('csrftoken')
                           },
                           'withCredentials': true,
                           })
@@ -373,8 +369,7 @@ export default {
               if (localStorage.team_id == id) {
                 this.show_input = (localStorage.role_id==1) ? true : false;
               }
-
-            })
+            }, this)
           }
         }
     },
