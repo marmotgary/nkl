@@ -4,5 +4,8 @@
 *~
 venv*
 *.log
+*.json
 static_files
 frontend
+
+local_settings.py
