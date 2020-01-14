@@ -63,7 +63,7 @@ export default {
     }),
     methods: {
         register() {
-            this.$http.get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true});
+            this.$http.get('http://localhost:8000/api/csrf', {'withCredentials': true});
             this.$http
                 .post('http://localhost:8000/api/register/', this.credentials, {
                   headers: {

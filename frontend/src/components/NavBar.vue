@@ -80,7 +80,7 @@ export default {
             this.name = '';
             this.$session.destroy();
             localStorage.clear();
-            this.$http.post('http://localhost:8000/api/logout/', {
+            this.$http.post('http://localhost:8000/api/logout/', {}, {
               headers: {
                 'X-CSRFToken': this.getCookie('csrftoken')
               },

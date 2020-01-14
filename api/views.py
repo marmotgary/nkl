@@ -31,9 +31,12 @@ def getSeason(request):
 
 
 def getRole(user):
-    if user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain:
-        role = '1'
-    else:
+    try:
+        if user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain:
+            role = '1'
+        else:
+            role = '0'
+    except PlayersInTeam.DoesNotExist as e:
         role = '0'
     return role
 

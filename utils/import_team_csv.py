@@ -29,6 +29,9 @@ def murmeli():
                     except User.DoesNotExist as e:
                         print('No User found', captain_name)
                         pass
+                    except User.MultipleObjectsReturned as e:
+                        print("MultibleObjects", captain_name)
+                        pass
                 team = Team.objects.create(
                     name=team_name,
                     abbreviation=team_abb
