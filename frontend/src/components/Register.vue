@@ -6,7 +6,7 @@
         <span class="headline">Rekisteröityminen</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="error" transition="scale-transition" outline>
+        <v-alert :value="alert" type="info" transition="scale-transition" outline>
           <b>Please correct the following error(s):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
@@ -16,28 +16,28 @@
           <v-layout wrap>
             <v-layout row>
               <v-flex xs5 sm6 md4>
-                <v-text-field error v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
+                <v-text-field info v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs5 sm6 md4 mr-5>
-                <v-text-field error v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
+                <v-text-field info v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select error v-model="credentials.number" required :items="numbers"></v-select>
+                <v-select info v-model="credentials.number" required :items="numbers"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
-              <v-text-field error v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
+              <v-text-field info v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                error
+                info
                 v-model="credentials.password"
                 label="salasana*"
                 type="password"
                 required
               ></v-text-field>
               <v-text-field
-                error
+                info
                 v-model="credentials.password_check"
                 label="salasana tarkistus*"
                 type="password"
@@ -50,8 +50,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="error darken-1" flat @click="dialog = false">Close</v-btn>
-        <v-btn color="error darken-1" flat @click="register">Register</v-btn>
+        <v-btn color="info darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn color="info darken-1" flat @click="register">Register</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
