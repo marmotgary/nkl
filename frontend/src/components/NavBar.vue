@@ -65,7 +65,7 @@ export default {
             drawer: false,
             loggedIn: false,
             name: '',
-            team_id: '',
+            team_id: null,
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
