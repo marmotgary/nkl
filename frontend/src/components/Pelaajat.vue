@@ -10,7 +10,6 @@
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template
-        v-if="props.item.rounds_total > 0"
         bind:key="props.item.id"
         slot="items"
         slot-scope="props"
@@ -115,7 +114,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('https://kyykka.rauko.la/api/players/').then(
+            this.$http.get('http://localhost:8000/api/players/').then(
                 function(data) {
                     this.players = data.body;
                 }
@@ -125,7 +124,7 @@ export default {
     mounted: function() {
         this.getPlayers();
         if (localStorage.user_id) {
-            this.$http.get('https://kyykka.rauko.la/api/players/' +localStorage.user_id)
+            this.$http.get('http://localhost:8000/api/players/' +localStorage.user_id)
         }
     }
 };

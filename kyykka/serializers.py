@@ -45,7 +45,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.save()
         Player.objects.create(user=user, number=validated_data['number'])
         msg = ""
-        return True, msg
+        return True, msg, user
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -101,6 +101,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         except TypeError:
             setToCache(key, 0)
             return 0
+        self.score_total = score_total
         return score_total
 
     def get_match_count(self, obj):
@@ -203,6 +204,13 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         return pike_percentage
 
     def get_score_per_throw(self, obj):
+        total_count = self.throws
+        total_score = self.score_total
+        key = 'player_' + str(obj.id) + '_score_per_throw'
+        score_per_throw = getFromCache(key)
+        # if score_per_throw = None:
+
+
         return None
 
     def get_avg_throw_turn(self, obj):
@@ -349,9 +357,6 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
             count=Count('pk', filter=Q(score_first=5)) + Count('pk', filter=Q(score_second=5)) + Count('pk', filter=Q(
                 score_third=5)) + Count('pk', filter=Q(score_fourth=5))).aggregate(Sum('count'))['count__sum']
 
-    # def get_gteSix_total(self, obj):
-    #     self.throws = Throw.objects.filter(season=self.context.get('season'), player=obj, score__gte=6).count()
-    #     return self.throws
 
     def get_zero_percentage(self, obj):
         zero_count = self.zeros
@@ -432,34 +437,34 @@ class TeamListSerializer(serializers.ModelSerializer):
     score_total = serializers.SerializerMethodField()
 
     def get_matches_won(self, obj):
-        home_wins = obj.home_matches.filter(season=self.context.get('season')).annotate(
+        home_wins = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(home__gt=F('away')).count()
-        away_wins = obj.away_matches.filter(season=self.context.get('season')).annotate(
+        away_wins = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(away__gt=F('home')).count()
         return home_wins + away_wins
 
     def get_matches_lost(self, obj):
-        home_loses = obj.home_matches.filter(season=self.context.get('season')).annotate(
+        home_loses = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(away__gt=F('home')).count()
-        away_loses = obj.away_matches.filter(season=self.context.get('season')).annotate(
+        away_loses = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(home__gt=F('away')).count()
         return home_loses + away_loses
 
     def get_matches_tie(self, obj):
-        home_ties = obj.home_matches.filter(season=self.context.get('season')).annotate(
+        home_ties = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(home__exact=F('away')).count()
-        away_ties = obj.away_matches.filter(season=self.context.get('season')).annotate(
+        away_ties = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(away__exact=F('home')).count()
         return home_ties + away_ties
 
     def get_matches_played(self, obj):
-        return Match.objects.filter(season=self.context.get('season')).filter(
+        return Match.objects.filter(is_validated=True, season=self.context.get('season')).filter(
             Q(home_team=obj) | Q(away_team=obj)).count()
 
     def get_score_total(self, obj):

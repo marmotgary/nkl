@@ -31,10 +31,10 @@ def getSeason(request):
 
 
 def getRole(user):
-    if user.groups.filter(name='captains').exists():
-        role = '2'
-    else:
+    if user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain:
         role = '1'
+    else:
+        role = '0'
     return role
 
 
@@ -120,10 +120,13 @@ class RegistrationAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        success, message = serializer.save()
+        success, message, user = serializer.save()
+        login(request, user)
         return Response({
             'success': success,
             'message': message,
+            'user': UserSerializer(user).data,
+            'role': '0'
         })
 
 
