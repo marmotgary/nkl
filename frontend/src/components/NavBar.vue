@@ -102,8 +102,10 @@ export default {
                             localStorage.user_id
                     )
                     .then(function(response) {
+                      if (response.body.team.id) {
                         this.team_id = response.body.team.id;
                         localStorage.team_id = this.team_id;
+                      }
                     });
             }
         });
