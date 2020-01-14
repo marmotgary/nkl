@@ -14,6 +14,7 @@
         <router-link :to="'ottelu/'+props.item.id">
           <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:MM') }}</td>
         </router-link>
+        <td class="text-xs-left">{{ props.item.field }}</td>
         <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
         <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
         <td
@@ -43,6 +44,7 @@ export default {
                     align: 'left',
                     value: 'match_time'
                 },
+                { text: 'Kenttä', value: 'field'},
                 { text: 'Koti', value: 'home_team.abbreviation' },
                 { text: 'Vieras', value: 'away_team.abbreviation' },
                 { text: 'Tulos', sortable: false }

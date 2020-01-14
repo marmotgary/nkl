@@ -48,9 +48,6 @@ export default {
             this.$http.get('http://localhost:8000/api/teams/').then(
                 function(data) {
                     this.teams = data.body;
-                },
-                function(error) {
-                    console.log(error.statusText);
                 }
             );
         }
