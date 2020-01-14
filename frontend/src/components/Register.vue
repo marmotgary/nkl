@@ -6,7 +6,7 @@
         <span class="headline">User Profile</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="info" transition="scale-transition" outline>
+        <v-alert :value="alert" type="error" transition="scale-transition" outline>
           <b>Please correct the following error(s):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
@@ -42,8 +42,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary darken-1" flat @click="dialog = false">Close</v-btn>
-        <v-btn color="primary darken-1" flat @click="register">Register</v-btn>
+        <v-btn color="error darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn color="error darken-1" flat @click="register">Register</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
