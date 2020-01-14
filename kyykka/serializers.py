@@ -209,7 +209,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         score_per_throw = getFromCache(key)
         if score_per_throw is None:
             try:
-                score_per_throw = self.score_total / self.throws
+                score_per_throw = round(self.score_total / self.throws, 2)
             except (ZeroDivisionError, TypeError):
                 score_per_throw = 0
             setToCache(key, score_per_throw)
@@ -611,7 +611,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
     def get_score_per_throw(self, obj):
         try:
-            return self.score_total / self.context.get('throws_total')
+            return round(self.score_total / self.context.get('throws_total'), 2)
         except (ZeroDivisionError, TypeError):
             return 0
 
@@ -750,10 +750,14 @@ class ThrowScoreSerialzier(serializers.ModelSerializer):
     def get_score_total(self, obj):
         score_total = 0
         for score in [obj.score_first, obj.score_second, obj.score_third, obj.score_fourth]:
-            if score is not None:
-                score = int(score)
-                if score > 0:
-                    score_total += score
+            try:
+                if score is not None and score != "h":
+                    score = int(score)
+                    if score > 0:
+                        score_total += score
+            except Exception as e:
+                print("getscoretoal ongelma?")
+                pass
         return score_total
 
     class Meta:

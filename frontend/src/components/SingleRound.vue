@@ -230,8 +230,13 @@ export default {
 
           array.forEach(function (item) {
             const element = this.$refs[item+'_throw_'+index].$refs.input.value
-            var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
-            total += score
+            if(element.toLowerCase() == "h") {
+              total += 0
+              var score = "h";
+            }else{
+              var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
+              total += score
+            }
             if (element.length > 0) {
               post_data['score_'+item] = score
             }
