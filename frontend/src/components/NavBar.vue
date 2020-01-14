@@ -26,9 +26,8 @@
       <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
-
       <v-btn
-        v-if="loggedIn && team_id"
+        v-if="loggedIn && team_id != 'null'"
         flat
         class="hidden-sm-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -65,7 +64,7 @@ export default {
             drawer: false,
             loggedIn: false,
             name: '',
-            team_id: null,
+            team_id: '',
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
