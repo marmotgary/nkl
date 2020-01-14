@@ -36,13 +36,6 @@
                 type="password"
                 required
               ></v-text-field>
-              <v-text-field
-                info
-                v-model="credentials.password_check"
-                label="salasana tarkistus*"
-                type="password"
-                required
-              ></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -50,8 +43,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="info darken-1" flat @click="dialog = false">Close</v-btn>
-        <v-btn color="info darken-1" flat @click="register">Register</v-btn>
+        <v-btn color="info darken-1" flat @click="dialog = false">Sulje</v-btn>
+        <v-btn color="info darken-1" flat @click="register">Valmis</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -66,6 +59,7 @@ export default {
         dialog: false,
         alert: false,
         errors: [],
+        response_errors: [],
         credentials: {},
         numbers: []
     }),
@@ -90,6 +84,7 @@ export default {
                     this.changeLogin();
                 })
                 .catch(function(response) {
+                    this.response_errors = response.body;
                     this.checkForm();
                     if (response.status == 403) {
                       this.$http
@@ -111,11 +106,15 @@ export default {
                     }
                 });
         },
-        checkForm: function(e) {
-            this.errors = [];
+        checkForm: function() {
+            this.errors = []
 
             if (!this.alert) {
                 this.alert = !this.alert;
+            }
+
+            if (this.response_errors.username == 'This field must be unique.') {
+              this.errors.push('Sähköposti on jo käytössä.')
             }
 
             if (!this.credentials.first_name) {
@@ -136,11 +135,11 @@ export default {
               this.errors.push('Pelaajanumero puuttuu.');
             }
 
-            if (this.credentials.password != this.credentials.password_check) {
-              this.errors.push('Tarkista salasana.')
-            }
+            // if (this.credentials.password !== this.credentials.password_check) {
+            //   this.errors.push('Tarkista salasana.')
+            // }
 
-            if (errors.length == 0) {
+            if (this.errors.length == 0) {
                 changeLogin();
                 return true;
             }
