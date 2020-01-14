@@ -71,9 +71,9 @@ export default {
     }),
     methods: {
         register() {
-            this.$http.get('http://localhost:8000/api/csrf', {'withCredentials': true});
+            this.$http.get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true});
             this.$http
-                .post('http://localhost:8000/api/register/', this.credentials, {
+                .post('https://kyykka.rauko.la/api/register/', this.credentials, {
                   headers: {
                     'X-CSRFToken': this.getCookie('csrftoken')
                   },
@@ -93,7 +93,7 @@ export default {
                     this.checkForm();
                     if (response.status == 403) {
                       this.$http
-                        .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                        .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
                         .then(function(response) {
                             if (response.status === 200) {
                                 this.$http.patch(post_url, post_data, {
