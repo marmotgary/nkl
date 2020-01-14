@@ -64,8 +64,6 @@ export default {
     methods: {
         register() {
             this.$http.get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true});
-
-
             this.$http
                 .post('https://kyykka.rauko.la/api/register/', this.credentials, {
                   headers: {
@@ -113,18 +111,21 @@ export default {
             }
 
             if (!this.credentials.first_name) {
-                this.errors.push('First name required.');
+                this.errors.push('Etunimi puuttuu.');
             }
             if (!this.credentials.last_name) {
-                this.errors.push('Last name required.');
+                this.errors.push('Sukunimi puuttuu.');
             }
             if (!this.credentials.username) {
-                this.errors.push('Email required.');
+                this.errors.push('Email puuttuu.');
             } else if (!this.validEmail(this.credentials.username)) {
-                this.errors.push('Valid email required.');
+                this.errors.push('Anna oikea sähköpostiosoite.');
             }
             if (!this.credentials.password) {
-                this.errors.push('Password required.');
+                this.errors.push('Salasana puuttuu.');
+            }
+            if (!this.credentials.number) {
+              this.errors.push('Pelaajanumero puuttuu.');
             }
 
             if (errors.length == 0) {
