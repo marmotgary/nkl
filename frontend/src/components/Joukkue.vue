@@ -238,7 +238,7 @@ export default {
     methods: {
         getPlayers: function() {
             this.$http
-                .get('http://localhost:8000/api/teams/' + this.team_id)
+                .get('https://kyykka.rauko.la/api/teams/' + this.team_id)
                 .then(
                     function(data) {
                         this.stats = [data.body];
@@ -248,7 +248,7 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('http://localhost:8000/api/reserve/').then(
+            this.$http.get('https://kyykka.rauko.la/api/reserve/').then(
                 function(data) {
                     var i = 0;
                     for (var player in data.body) {
@@ -265,7 +265,7 @@ export default {
         },
         reserveButton: function(index) {
             let post_data = {'player': this.reserve[index].id}
-            let post_url = 'http://localhost:8000/api/reserve/'
+            let post_url = 'https://kyykka.rauko.la/api/reserve/'
             if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
               this.$http.post(post_url, post_data, {
                 headers: {
@@ -280,7 +280,7 @@ export default {
                 }).catch(function(response) {
                   if (response.status == 403) {
                     this.$http
-                      .get('http://localhost:8000/api/csrf', {'withCredentials': true})
+                      .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
                       .then(function(response) {
                           if (response.status === 200) {
                               this.getPlayers();
