@@ -360,7 +360,7 @@ export default {
           this.loaded = true
           
           if(!this.is_validated) {
-            let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.home_team.id]
+            let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.away_team.id]
             team_ids.forEach(function (id) {
               if (localStorage.team_id == id) {
                 this.show_input = (localStorage.role_id==1) ? true : false;
