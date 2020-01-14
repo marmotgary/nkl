@@ -22,7 +22,7 @@
                 <v-text-field error v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select error v-model="credentials.number" required :items="numbers" label="#"></v-select>
+                <v-select error v-model="credentials.number" required :items="numbers"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
