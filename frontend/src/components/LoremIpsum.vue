@@ -9,6 +9,12 @@
           lisää tehdään ja vanhaa parannetaan pitkin kautta. Suosittelemme kapteeneja näin alkuun jatkamaan kuten ennenkin,
           eli ottakaa ottelutulokset pöytäkirjoille ylös!
 
+        <p>
+          Ohjeita kapteeneille: Voitte varata joukkueeseen pelaajia "Oma joukkue" sivun alalaidasta löytyvällä "Varaa pelaajia" toiminnolla.
+          Ottelutulos tallentuu syötettäessä reaaliaikaisesti, ja kun kaikki ottelun tiedot ovat syötetty, täytyy vierasjoukkueen kapteenin käydä ottelusivulla
+        vahvistamasa tulos "Vahvista" napilla.
+        </p>
+
         </p>
         <p>Havaittuja ongelmakohtia voi raportoida esimerkiksi #nkl @ircnet</p>
 
