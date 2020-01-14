@@ -1,8 +1,7 @@
 <template>
   <v-layout>
-    <v-flex xs9>
-      <h1 class="topic">Säännöt</h1>
-      <info></info>
+    <v-flex xs9 class="text-xs-center">
+      <h1 class="topic"><a href="/frontend/public/saannot.pdf" target="_blank">NKL Säännöt</a></h1>
     </v-flex>
     <v-flex xs4 class="right">
       <side-bar></side-bar>
@@ -11,13 +10,11 @@
 </template>
 
 <script>
-import Info from '@/components/Info';
 import SideBar from '@/components/SideBar';
 
 export default {
     name: 'info-view',
     components: {
-        Info,
         SideBar
     }
 };
@@ -25,6 +22,6 @@ export default {
 
 <style>
 .topic {
-    padding-top: 1em;
+    padding-top: 4em;
 }
 </style>
