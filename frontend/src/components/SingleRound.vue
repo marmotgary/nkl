@@ -166,7 +166,7 @@ export default {
           }
         },
         roundScore: function() {
-          let post_url = 'https://kyykka.rauko.la/api/matches/'+this.plain_data.body.id
+          let post_url = 'http://localhost:8000/api/matches/'+this.plain_data.body.id
           let post_data = {}
           let key = ''
 
@@ -184,7 +184,7 @@ export default {
             }).then().catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
+                  .get('http://localhost:8000/api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {
@@ -239,7 +239,7 @@ export default {
 
           this.$refs['throw_sum_'+index].firstChild.data = total
 
-          let post_url = 'https://kyykka.rauko.la/api/throws/update/'+this.data[index].id+'/'
+          let post_url = 'http://localhost:8000/api/throws/update/'+this.data[index].id+'/'
 
           this.$http.patch(post_url, post_data, {
             headers: {
@@ -257,7 +257,7 @@ export default {
             }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
+                  .get('http://localhost:8000/api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {

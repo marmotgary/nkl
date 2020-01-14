@@ -80,7 +80,7 @@ export default {
             this.name = '';
             this.$session.destroy();
             localStorage.clear();
-            this.$http.post('https://kyykka.rauko.la/api/logout/', {
+            this.$http.post('http://localhost:8000/api/logout/', {
               headers: {
                 'X-CSRFToken': this.getCookie('csrftoken')
               },
@@ -98,7 +98,7 @@ export default {
             else {
                 this.$http
                     .get(
-                        'https://kyykka.rauko.la/api/players/' +
+                        'http://localhost:8000/api/players/' +
                             this.$session.get('user_id')
                     )
                     .then(function(response) {

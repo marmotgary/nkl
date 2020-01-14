@@ -115,7 +115,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('https://kyykka.rauko.la/api/players/').then(
+            this.$http.get('http://localhost:8000/api/players/').then(
                 function(data) {
                     this.players = data.body;
                 }
@@ -125,7 +125,7 @@ export default {
     mounted: function() {
         this.getPlayers();
         if (localStorage.user_id) {
-            this.$http.get('https://kyykka.rauko.la/api/players/' +localStorage.user_id)
+            this.$http.get('http://localhost:8000/api/players/' +localStorage.user_id)
         }
     }
 };
