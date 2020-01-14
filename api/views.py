@@ -64,11 +64,27 @@ class IsCaptainForThrow(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         try:
-            return request.user == obj.match.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season, is_captain=True).first().player
+            return request.user == obj.match.home_team.playersinteam_set.filter(
+                season=CurrentSeason.objects.first().season,
+                is_captain=True
+            ).first().player
         except AttributeError as e:
             print('has_object_permission', request.user.id, obj)
             return False
 
+
+class MatchDetailPermission(permissions.BasePermission):
+    """
+    If patching is_validated, user needs to be captain of the away_team
+    Else user needs to be captain of the away_team (patchin round scores)
+    """
+    def has_object_permission(self, request, view, obj):
+        if 'is_validated' in request.data and len(request.data) == 1:
+            return request.user == obj.away_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
+                                                                          is_captain=True).first().player
+        if 'is_validated' not in request.data:
+            return request.user == obj.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
+                                                                          is_captain=True).first().player
 
 class LoginAPI(generics.GenericAPIView):
     """
@@ -204,6 +220,7 @@ class MatchDetail(APIView):
     """
     # throttle_classes = [AnonRateThrottle]
     queryset = Match.objects.all()
+    permission_classes = [MatchDetailPermission]
 
     def get(self, request, pk):
         season = getSeason(request)
@@ -213,6 +230,7 @@ class MatchDetail(APIView):
 
     def patch(self, request, pk ,format=None):
         match = get_object_or_404(self.queryset, pk=pk)
+        self.check_object_permissions(request, match)
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
