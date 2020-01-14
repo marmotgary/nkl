@@ -71,6 +71,7 @@ export default {
 
                         localStorage.role_id = response.body.role;
                         localStorage.user_id = response.body.user.id;
+                        localStorage.team_id = response.body.team_id
                         localStorage.player_name = response.body.user.player_name;
 
                         this.$session.set('role_id', response.body.role);
@@ -91,6 +92,14 @@ export default {
                                     'X-CSRFToken': this.getCookie('csrftoken')
                                   },
                                   'withCredentials': true,
+                                  }).then(function(response) {
+                                    this.dialog = !this.dialog;
+                                    this.alert = false;
+
+                                    localStorage.role_id = response.body.role;
+                                    localStorage.user_id = response.body.user.id;
+                                    localStorage.team_id = response.body.team_id
+                                    localStorage.player_name = response.body.user.player_name;
                                   })
                               }
                           });
