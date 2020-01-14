@@ -31,7 +31,7 @@
     </v-layout>
     <v-layout row>
     <v-flex class="text-xs-center" xm12>
-      <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">validate</v-btn>
+      <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">vahvista</v-btn>
     </v-flex>
     </v-layout row>
   </v-container>
