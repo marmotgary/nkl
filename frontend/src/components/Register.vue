@@ -76,6 +76,11 @@ export default {
                 .then(function(response) {
                     this.dialog = false;
                     this.alert = false;
+
+                    localStorage.role_id = response.body.role;
+                    localStorage.user_id = response.body.user.id;
+                    localStorage.player_name = response.body.user.player_name;
+
                     this.changeLogin();
                 })
                 .catch(function(response) {
@@ -90,6 +95,10 @@ export default {
                                   'X-CSRFToken': this.getCookie('csrftoken')
                                 },
                                   'withCredentials': true,
+                                }).then(function(response) {
+                                  localStorage.role_id = response.body.role;
+                                  localStorage.user_id = response.body.user.id;
+                                  localStorage.player_name = response.body.user.player_name;
                                 })
                             }
                         });
