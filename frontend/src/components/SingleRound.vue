@@ -159,7 +159,7 @@ export default {
           // Checks that the value is an H or a numeric value from the ASCII table.
           evt = (evt) ? evt : window.event;
           var charCode = (evt.which) ? evt.which : evt.keyCode;
-          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72) {
+          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72 && charcode !== 104) {
             evt.preventDefault();
           } else {
             return true;
