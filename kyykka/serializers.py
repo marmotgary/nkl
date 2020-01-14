@@ -135,10 +135,10 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         pikes_total = getFromCache(key)
         if pikes_total is None:
             pikes_total = Throw.objects.filter(season=self.context.get('season'), player=obj).annotate(
-                count=Count('pk', filter=Q(score_first=-1)) + Count('pk', filter=Q(score_second=-1)) + Count('pk',
+                count=Count('pk', filter=Q(score_first='h')) + Count('pk', filter=Q(score_second='h')) + Count('pk',
                                                                                                              filter=Q(
-                                                                                                                 score_third=-1)) + Count(
-                    'pk', filter=Q(score_fourth=-1))).aggregate(Sum('count'))['count__sum']
+                                                                                                                 score_third='h')) + Count(
+                    'pk', filter=Q(score_fourth='h'))).aggregate(Sum('count'))['count__sum']
             setToCache(key, pikes_total)
         # pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=-1)),second=Count('pk',filter=Q(score_second=-1)),third=Count('pk',filter=Q(score_third=-1)),fourth=Count('pk',filter=Q(score_fourth=-1)))
         # self.pikes = pikes['first'] + pikes['second'] + pikes['third'] + pikes['fourth']
@@ -543,7 +543,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         return Throw.objects.filter(season=self.context.get('season'), team=obj, score_first=0, throw_turn=1).count()
 
     def get_pike_first_throw_total(self, obj):
-        return Throw.objects.filter(season=self.context.get('season'), team=obj, score_first=-1, throw_turn=1).count()
+        return Throw.objects.filter(season=self.context.get('season'), team=obj, score_first='h', throw_turn=1).count()
 
     def get_gteSix_total(self, obj):
         return Throw.objects.filter(season=self.context.get('season'), team=obj).annotate(

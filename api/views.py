@@ -185,8 +185,8 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         # Do these querys only once here, instead of doing them 2 times at serializer.
         throws_total = Throw.objects.filter(season=season, team=team).count() * 4
         pikes_total = Throw.objects.filter(season=season, team=team).annotate(
-            count=Count('pk', filter=Q(score_first=-1)) + Count('pk', filter=Q(score_second=-1)) + Count('pk', filter=Q(
-                score_third=-1)) + Count('pk', filter=Q(score_fourth=-1))).aggregate(Sum('count'))['count__sum']
+            count=Count('pk', filter=Q(score_first='h')) + Count('pk', filter=Q(score_second='h')) + Count('pk', filter=Q(
+                score_third='h')) + Count('pk', filter=Q(score_fourth='h'))).aggregate(Sum('count'))['count__sum']
         zeros_total = Throw.objects.filter(season=season, team=team).annotate(
             count=Count('pk', filter=Q(score_first=0)) + Count('pk', filter=Q(score_second=0)) + Count('pk', filter=Q(
                 score_third=0)) + Count('pk', filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']

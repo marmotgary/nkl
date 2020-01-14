@@ -83,10 +83,10 @@ class Throw(models.Model):
     throw_round = models.IntegerField()
     throw_turn = models.IntegerField()
     # throw_number = models.IntegerField(null=True)
-    score_first = models.IntegerField(null=True, blank=True, db_index=True)
-    score_second = models.IntegerField(null=True, blank=True, db_index=True)
-    score_third = models.IntegerField(null=True, blank=True, db_index=True)
-    score_fourth = models.IntegerField(null=True, blank=True, db_index=True)
+    score_first = models.CharField(max_length=2, null=True, blank=True, db_index=True)
+    score_second = models.CharField(max_length=2, null=True, blank=True, db_index=True)
+    score_third = models.CharField(max_length=2, null=True, blank=True, db_index=True)
+    score_fourth = models.CharField(max_length=2, null=True, blank=True, db_index=True)
 
 
 class News(models.Model):
