@@ -249,7 +249,6 @@ class ReserveCreateSerializer(serializers.ModelSerializer):
         # ]
 
     def create(self, validated_data):
-        print("create")
         user = self.context.get("request").user
         add_player = validated_data['player']
         season = CurrentSeason.objects.first().season
