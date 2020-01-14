@@ -364,7 +364,7 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
         try:
             pike_percentage = round((zero_count / total_count) * 100, 2)
         except (ZeroDivisionError, TypeError):
-            pike_percentage = 0
+            pike_percentage = None
         return pike_percentage
 
     def get_matches(self, obj):
@@ -609,7 +609,7 @@ class MatchListSerializer(SharedMatchSerializer):
     away_team = serializers.SerializerMethodField()
 
     def get_home_team(self, obj):
-        key = 'team_' + str(obj.id) + '_list'
+        key = 'match_' + str(obj.id) + 'home_team'
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.home_team).data
@@ -617,7 +617,7 @@ class MatchListSerializer(SharedMatchSerializer):
         return team
 
     def get_away_team(self, obj):
-        key = 'team_' + str(obj.id) + '_list'
+        key = 'match_' + str(obj.id) + 'away_team'
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.away_team).data
