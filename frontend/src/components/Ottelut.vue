@@ -18,7 +18,9 @@
         <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
         <td
           class="text-xs-left"
+          v-if="props.item.home_score_total && props.item.away_score_total"
         >{{ props.item.home_score_total + '-' + props.item.away_score_total }}</td>
+        <td v-else class="text-xs-center">-</td>
       </template>
       <v-alert
         slot="no-results"
@@ -53,9 +55,6 @@ export default {
             this.$http.get('http://localhost:8000/api/matches/').then(
                 function(data) {
                     this.matches = data.body;
-                },
-                function(error) {
-                    console.log(error.statusText);
                 }
             );
         }
