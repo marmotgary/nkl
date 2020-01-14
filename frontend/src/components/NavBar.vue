@@ -99,7 +99,7 @@ export default {
                 this.$http
                     .get(
                         'http://localhost:8000/api/players/' +
-                            this.$session.get('user_id')
+                            localStorage.user_id
                     )
                     .then(function(response) {
                         this.team_id = response.body.team.id;
