@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
@@ -102,9 +104,14 @@ class LoginAPI(generics.GenericAPIView):
         user = serializer.validated_data
         login(request, user)
         role = getRole(user)
+        try:
+            team_id = user.playersinteam_set.filter(season=CurrentSeason.objects.first().season).first().team.id
+        except (PlayersInTeam.DoesNotExist, AttributeError) as e:
+            team_id = None
         response = HttpResponse(json.dumps({'success': True,
                                             'user': UserSerializer(user).data,
-                                            'role': role}))
+                                            'role': role,
+                                            'team_id': team_id}))
         return response
 
 
@@ -211,6 +218,8 @@ class MatchList(APIView):
     List all matches
     """
     # throttle_classes = [AnonRateThrottle]
+
+    # queryset = Match.objects.filter(match_time__lt=datetime.datetime.now() + datetime.timedelta(weeks=2))
     queryset = Match.objects.all()
 
     def get(self, request):

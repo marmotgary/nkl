@@ -609,10 +609,20 @@ class MatchListSerializer(SharedMatchSerializer):
     away_team = serializers.SerializerMethodField()
 
     def get_home_team(self, obj):
-        return TeamSerializer(obj.home_team).data
+        key = 'team_' + str(obj.id) + '_list'
+        team = getFromCache(key)
+        if team is None:
+            team = TeamSerializer(obj.home_team).data
+            setToCache(key, team)
+        return team
 
     def get_away_team(self, obj):
-        return TeamSerializer(obj.away_team).data
+        key = 'team_' + str(obj.id) + '_list'
+        team = getFromCache(key)
+        if team is None:
+            team = TeamSerializer(obj.away_team).data
+            setToCache(key, team)
+        return team
 
     class Meta:
         model = Match
