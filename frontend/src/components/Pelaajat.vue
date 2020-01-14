@@ -10,7 +10,6 @@
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template
-        v-if="props.item.rounds_total > 0"
         bind:key="props.item.id"
         slot="items"
         slot-scope="props"
