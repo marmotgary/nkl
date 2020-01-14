@@ -25,7 +25,7 @@
       <v-btn flat class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
-      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
+<!--      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>-->
       <v-btn
         v-if="loggedIn && team_id != 'null'"
         flat

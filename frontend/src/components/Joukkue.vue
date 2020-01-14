@@ -101,7 +101,7 @@
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
+        <td>{{ props.item.player_number }}</td>
         <td>{{ props.item.player_name }}</td>
         <td>{{ props.item.rounds_total }}</td>
         <td>{{ props.item.score_total }}</td>
@@ -140,7 +140,7 @@
                     </v-btn>
                   </td>
                 </div>
-                <td>{{ props.item.id }}</td>
+                <td>{{ props.item.player_number }}</td>
                 <td>{{ props.item.player_name }}</td>
               </template>
             </v-data-table>

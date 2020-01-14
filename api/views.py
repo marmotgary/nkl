@@ -196,11 +196,12 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         season = getSeason(request)
         team = get_object_or_404(self.queryset, pk=pk)
         # Do these querys only once here, instead of doing them 2 times at serializer.
-        throws_total = Throw.objects.filter(season=season, team=team).count() * 4
-        pikes_total = Throw.objects.filter(season=season, team=team).annotate(
+        throws = Throw.objects.filter(match__is_validated=True, season=season, team=team)
+        throws_total = throws.count() * 4
+        pikes_total = throws.annotate(
             count=Count('pk', filter=Q(score_first='h')) + Count('pk', filter=Q(score_second='h')) + Count('pk', filter=Q(
                 score_third='h')) + Count('pk', filter=Q(score_fourth='h'))).aggregate(Sum('count'))['count__sum']
-        zeros_total = Throw.objects.filter(season=season, team=team).annotate(
+        zeros_total = throws.annotate(
             count=Count('pk', filter=Q(score_first=0)) + Count('pk', filter=Q(score_second=0)) + Count('pk', filter=Q(
                 score_third=0)) + Count('pk', filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']
         context = {
@@ -208,6 +209,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             'throws_total': throws_total,
             'pikes_total': pikes_total,
             'zeros_total': zeros_total,
+            'throw_set':  throws,
         }
         serializer = TeamDetailSerializer(team, context=context)
         return Response(serializer.data)
