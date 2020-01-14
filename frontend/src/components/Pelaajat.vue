@@ -118,30 +118,14 @@ export default {
             this.$http.get('http://localhost:8000/api/players/').then(
                 function(data) {
                     this.players = data.body;
-                    console.log(this.players);
-                },
-                function(error) {
-                    console.log(error.statusText);
                 }
             );
         },
-        reservePlayer: function() {
-            this.$http
-                .post('http://localhost:8000/api/reserve/')
-                .then(function(response) {});
-        }
     },
     mounted: function() {
         this.getPlayers();
-        if (this.$session.get('user_id')) {
-            this.$http
-                .get(
-                    'http://localhost:8000/api/players/' +
-                        this.$session.get('user_id')
-                )
-                .then(function(response) {
-                    console.log(response);
-                });
+        if (localStorage.user_id) {
+            this.$http.get('http://localhost:8000/api/players/' +localStorage.user_id)
         }
     }
 };

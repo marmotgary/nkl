@@ -23,7 +23,7 @@
         </p>
       </v-card-text>
     </v-layout>
-    <v-layout v-if="!is_validated && show_input" row wrap>
+    <v-layout v-if="show_input" row wrap>
       <v-card-text v-if="loaded">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
@@ -36,7 +36,7 @@
       </v-card-text>
     </v-layout>
     <v-data-table
-      v-if="is_validated"
+      v-if="!show_input"
       disable-initial-sort
       :headers="headers"
       :items="data"
@@ -57,7 +57,7 @@
       </template>
     </v-data-table>
     <v-data-table
-      v-if="!is_validated && show_input"
+      v-if="show_input"
       disable-initial-sort
       v-model="select"
       :headers="headers"
@@ -82,9 +82,6 @@
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
       </template>
     </v-data-table>
-    <span v-else-if="!is_validated">
-        <v-card-title v-if="loaded">Tietoja ei vielä ole syötetty.</v-card-title>
-    </span>
   </v-card>
 </template>
 <style scoped>
@@ -162,7 +159,7 @@ export default {
           // Checks that the value is an H or a numeric value from the ASCII table.
           evt = (evt) ? evt : window.event;
           var charCode = (evt.which) ? evt.which : evt.keyCode;
-          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72) {
+          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72 && charcode !== 104) {
             evt.preventDefault();
           } else {
             return true;
@@ -363,13 +360,9 @@ export default {
           this.loaded = true
           
           if(!this.is_validated) {
-            let team_ids = [this.plain_data.body.home_team.id,this.plain_data.body.home_team.id]
-
-            team_ids.forEach(function (id) {
-              if (localStorage.team_id == id) {
-                this.show_input = (localStorage.role_id==1) ? true : false;
-              }
-            }, this)
+            if (localStorage.team_id == this.plain_data.body.home_team.id) {
+              this.show_input = (localStorage.role_id==1) ? true : false;
+            }
           }
         }
     },
