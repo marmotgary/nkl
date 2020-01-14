@@ -3,7 +3,7 @@
     <v-btn slot="activator">Register</v-btn>
     <v-card>
       <v-card-title>
-        <span class="headline">User Profile</span>
+        <span class="headline">Rekisteröityminen</span>
       </v-card-title>
       <v-card-text>
         <v-alert :value="alert" type="error" transition="scale-transition" outline>
@@ -16,22 +16,30 @@
           <v-layout wrap>
             <v-layout row>
               <v-flex xs5 sm6 md4>
-                <v-text-field v-model="credentials.first_name" label="First name*" required></v-text-field>
+                <v-text-field error v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs5 sm6 md4 mr-5>
-                <v-text-field v-model="credentials.last_name" label="Last name*" required></v-text-field>
+                <v-text-field error v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select v-model="credentials.number" required :items="numbers"></v-select>
+                <v-select error v-model="credentials.number" required :items="numbers" label="#"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
-              <v-text-field v-model="credentials.username" label="Email*" type="email" required></v-text-field>
+              <v-text-field error v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
+                error
                 v-model="credentials.password"
-                label="Password*"
+                label="salasana*"
+                type="password"
+                required
+              ></v-text-field>
+              <v-text-field
+                error
+                v-model="credentials.password_check"
+                label="salasana tarkistus*"
                 type="password"
                 required
               ></v-text-field>
@@ -126,6 +134,10 @@ export default {
             }
             if (!this.credentials.number) {
               this.errors.push('Pelaajanumero puuttuu.');
+            }
+
+            if (this.credentials.password != this.credentials.password_check) {
+              this.errors.push('Tarkista salasana.')
             }
 
             if (errors.length == 0) {
