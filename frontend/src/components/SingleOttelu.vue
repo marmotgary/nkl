@@ -58,7 +58,7 @@ export default {
       getData: function() {
         this.$http
         .get(
-            'https://kyykka.rauko.la/api/matches/' +
+            'https://kyykka.com/api/matches/' +
                 this.$route.fullPath.substr(
                     this.$route.fullPath.lastIndexOf('/') + 1
                 )
@@ -72,7 +72,7 @@ export default {
         })
       },
       validateClick: function() {
-        let post_url = 'https://kyykka.rauko.la/api/matches/'+this.data.body.id
+        let post_url = 'https://kyykka.com/api/matches/'+this.data.body.id
         let post_data = {"is_validated": true}
 
         if (confirm('Oletko tyytyväinen ottelun tuloksiin?')) {
@@ -87,7 +87,7 @@ export default {
             }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
+                  .get('https://kyykka.com/api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {

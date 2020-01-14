@@ -56,9 +56,9 @@ export default {
         },
         login: function() {
             this.$session.start();
-            this.$http.get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
+            this.$http.get('https://kyykka.com/api/csrf', {'withCredentials': true})
             this.$http
-                .post('https://kyykka.rauko.la/api/login/', this.credentials, {
+                .post('https://kyykka.com/api/login/', this.credentials, {
                     headers: {
                         'X-CSRFToken': this.getCookie('csrftoken'),
                     },
@@ -84,7 +84,7 @@ export default {
                     }).catch(function(response) {
                       if (response.status == 403) {
                         this.$http
-                          .get('https://kyykka.rauko.la/api/csrf', {'withCredentials': true})
+                          .get('https://kyykka.com/api/csrf', {'withCredentials': true})
                           .then(function(response) {
                               if (response.status === 200) {
                                   this.$http.patch(post_url, post_data, {
