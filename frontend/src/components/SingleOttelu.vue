@@ -55,6 +55,22 @@ export default {
         };
     },
     methods: {
+      getData: function() {
+        this.$http
+        .get(
+            'http://localhost:8000/api/matches/' +
+                this.$route.fullPath.substr(
+                    this.$route.fullPath.lastIndexOf('/') + 1
+                )
+        )
+        .then(function(data) {
+          this.data = data
+          this.data_ready = true
+          if(!data.body.is_validated && localStorage.role_id == 1 && localStorage.team_id == this.data.body.away_team.id) {
+            this.away_captain = true
+          }
+        })
+      },
       validateClick: function() {
         let post_url = 'http://localhost:8000/api/matches/'+this.data.body.id
         let post_data = {"is_validated": true}
@@ -65,7 +81,10 @@ export default {
               'X-CSRFToken': this.getCookie('csrftoken')
             },
             'withCredentials': true,
-          }).then(function(response){console.log(response)}).catch(function(response) {
+          }).then(function(response){
+            this.data.is_validated = true
+            window.location.reload()
+            }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
                   .get('http://localhost:8000/api/csrf', {'withCredentials': true})
@@ -85,21 +104,8 @@ export default {
       }
     },
     created: function() {
-      this.$http
-      .get(
-          'http://localhost:8000/api/matches/' +
-              this.$route.fullPath.substr(
-                  this.$route.fullPath.lastIndexOf('/') + 1
-              )
-      )
-      .then(function(data) {
-        this.data = data
-        this.data_ready = true
-        if(!data.body.is_validated && localStorage.role_id == 1 && localStorage.team_id == data.body.away_team.id) {
-          this.away_captain = true
-        }
-      })
-    }
+      this.getData()
+    },
 };
 </script>
 
