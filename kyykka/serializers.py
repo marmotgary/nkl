@@ -708,8 +708,10 @@ class ThrowScoreSerialzier(serializers.ModelSerializer):
     def get_score_total(self, obj):
         score_total = 0
         for score in [obj.score_first, obj.score_second, obj.score_third, obj.score_fourth]:
-            if score is not None and score > 0:
-                score_total += score
+            if score is not None:
+                score = int(score)
+                if score > 0:
+                    score_total += score
         return score_total
 
     class Meta:
