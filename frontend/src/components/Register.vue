@@ -140,7 +140,7 @@ export default {
             // }
 
             if (this.errors.length == 0) {
-                changeLogin();
+                this.changeLogin();
                 return true;
             }
         },
