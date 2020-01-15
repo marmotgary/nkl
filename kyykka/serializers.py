@@ -458,19 +458,19 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_matches_won(self, obj):
         home_wins = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
-            away=F('away_first_round_score') + F('away_second_round_score')).filter(home__gt=F('away')).count()
+            away=F('away_first_round_score') + F('away_second_round_score')).filter(home__lt=F('away')).count()
         away_wins = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
-            away=F('away_first_round_score') + F('away_second_round_score')).filter(away__gt=F('home')).count()
+            away=F('away_first_round_score') + F('away_second_round_score')).filter(away__lt=F('home')).count()
         return home_wins + away_wins
 
     def get_matches_lost(self, obj):
         home_loses = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
-            away=F('away_first_round_score') + F('away_second_round_score')).filter(away__gt=F('home')).count()
+            away=F('away_first_round_score') + F('away_second_round_score')).filter(away__lt=F('home')).count()
         away_loses = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
-            away=F('away_first_round_score') + F('away_second_round_score')).filter(home__gt=F('away')).count()
+            away=F('away_first_round_score') + F('away_second_round_score')).filter(home__lt=F('away')).count()
         return home_loses + away_loses
 
     def get_matches_tie(self, obj):
