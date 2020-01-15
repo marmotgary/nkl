@@ -131,7 +131,7 @@ export default {
             if (!this.credentials.password) {
                 this.errors.push('Salasana puuttuu.');
             }
-            if (!this.credentials.number) {
+            if (!this.credentials.number && this.credentials.number != 0) {
               this.errors.push('Pelaajanumero puuttuu.');
             }
 
