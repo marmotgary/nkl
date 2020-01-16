@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         getTeams: function() {
-            this.$http.get('https://kyykka.com/api/teams/').then(
+            this.$http.get('api/teams/').then(
                 function(data) {
                     this.teams = data.body;
                 }
