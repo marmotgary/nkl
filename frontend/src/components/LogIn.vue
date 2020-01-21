@@ -56,9 +56,9 @@ export default {
         },
         login: function() {
             this.$session.start();
-            this.$http.get('http://api/csrf', {'withCredentials': true})
+            this.$http.get('api/csrf', {'withCredentials': true})
             this.$http
-                .post('http://api/login/', this.credentials, {
+                .post('api/login/', this.credentials, {
                     headers: {
                         'X-CSRFToken': this.getCookie('csrftoken'),
                     },
