@@ -27,7 +27,7 @@
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
 <!--      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>-->
       <v-btn
-        v-if="loggedIn && team_id != 'null'"
+        v-if="loggedIn && team_id"
         flat
         class="hidden-sm-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -77,6 +77,7 @@ export default {
         logout() {
             this.loggedIn = false;
             this.name = '';
+            this.team_id = '';
             this.$session.destroy();
             localStorage.clear();
             this.$http.post('api/logout/', {}, {
@@ -101,9 +102,11 @@ export default {
                             localStorage.user_id
                     )
                     .then(function(response) {
-                      if (response.body.team.id) {
+                      if (response.body.team) {
                         this.team_id = response.body.team.id;
                         localStorage.team_id = this.team_id;
+                      } else {
+                        this.team_id = '';
                       }
                     });
             }
