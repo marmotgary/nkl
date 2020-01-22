@@ -25,9 +25,9 @@
           </v-flex>
           <v-flex pt-5 text-xm-center class="justify-center align-center">
             <h2>
-              <span class="third">{{this.home_team.name}}</span>
+              <span class="third"><a :href="'/joukkue/'+this.home_team.id">{{this.home_team.name}}</a></span>
               <span class="third">vs.</span>
-              <span class="third">{{this.away_team.name}}</span>
+              <span class="third"><a :href="'/joukkue/'+this.away_team.id">{{this.away_team.name}}</a></span>
             </h2>
           </v-flex>
           <v-flex>
@@ -73,6 +73,8 @@ export default {
           this.match_time = this.matchData.body.match_time;
           this.away_team.name = this.matchData.body.away_team.name;
           this.home_team.name = this.matchData.body.home_team.name;
+          this.home_team.id = this.matchData.body.home_team.id;
+          this.away_team.id = this.matchData.body.away_team.id;
 
           if(!this.matchData.body.is_validated) {
             this.home_team.score_total = '0'
@@ -107,5 +109,10 @@ export default {
   float: left;
   width: 33%;
   text-align: center;
+}
+
+a {
+  color: black;
+  text-decoration: none;
 }
 </style>
