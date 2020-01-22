@@ -3,7 +3,7 @@
     <v-card-title>
       Ottelut
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
+      <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="no-data">
