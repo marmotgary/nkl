@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
     </v-card-title>
     <v-flex xs12>
-      <v-data-table :headers="headers" :items="teams" hide-actions>
+      <v-data-table :headers="headers" :items="teams" :sort-by="['points_total']" :sort-desc="[false]" hide-actions>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
@@ -15,6 +15,7 @@
           <td class="block">{{ props.item.matches_won }}</td>
           <td class="block">{{ props.item.matches_lost }}</td>
           <td class="block">{{ props.item.matches_tie }}</td>
+          <td class="block">{{ props.item.points_total }}</td>
         </template>
       </v-data-table>
     </v-flex>
@@ -26,11 +27,12 @@ export default {
     data: function() {
         return {
             headers: [
-                { text: 'Joukkue', value: 'abbreviation' },
-                { text: 'O', value: 'matches_played' },
-                { text: 'V', value: 'matches_won' },
-                { text: 'H', value: 'matches_lost' },
-                { text: 'T', value: 'matches_tie' }
+                { text: 'Joukkue', value: 'abbreviation'},
+                { text: 'O', value: 'matches_played'},
+                { text: 'V', value: 'matches_won'},
+                { text: 'H', value: 'matches_lost'},
+                { text: 'T', value: 'matches_tie'},
+                { text: 'P', value: 'points_total'}
             ],
             teams: []
         };
