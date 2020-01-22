@@ -3,7 +3,7 @@
     <v-card-title>
       Joukkueet
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
+      <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table color='alert' :headers="headers" :search="search" :items="teams" hide-actions>
       <template slot="no-data">
@@ -11,9 +11,9 @@
       </template>
       <template bind:key="team.id" slot="items" slot-scope="props">
         <router-link :to="'joukkue/'+props.item.id">
-          <td>
-            <a>{{ props.item.name }}</a>
-          </td>
+        <td>
+          <a>{{ props.item.name }}</a>
+        </td>
         </router-link>
         <td>{{ props.item.abbreviation }}</td>
         <td>{{ props.item.matches_played }}</td>
@@ -32,7 +32,7 @@ export default {
         return {
             search: '',
             headers: [
-                { text: 'Nimi', value: 'name' },
+                { text: 'Nimi', value: 'name', align: 'center' },
                 { text: 'Lyhenne', value: 'abbreviation' },
                 { text: 'Ottelut', value: 'matches_played' },
                 { text: 'Voitot', value: 'matches_won' },
@@ -60,5 +60,10 @@ export default {
 <style scoped>
 .teams {
     margin-top: 2em;
+}
+a {
+  color: red;
+  text-decoration: none;
+  font-size: 130%;
 }
 </style>
