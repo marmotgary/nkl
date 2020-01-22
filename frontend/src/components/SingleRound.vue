@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
-    <v-layout v-if="is_validated" row wrap>
+    <v-layout v-if="!show_input" row wrap>
       <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
@@ -75,10 +75,10 @@
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
       </template>
     </v-data-table>
@@ -117,7 +117,6 @@ export default {
             },
             select: [],
             selected: [],
-            disabled: [false, false, false, false],
             show_input: false,
             loading: false,
             loaded: false,
@@ -147,7 +146,7 @@ export default {
                 { text: 2, value: 'score_second', sortable: false, width: '10%'},
                 { text: 3, value: 'score_third', sortable: false, width: '10%'},
                 { text: 4, value: 'score_fourth', sortable: false, width: '10%'},
-                { text: 'Pts.', align: 'center',value: 'score_total', width: '5%'}
+                { text: 'Pts.', align: 'center', sortable: false, value: 'score_total', width: '5%'}
             ],
             options: {
               itemsPerPage: 4,
