@@ -76,14 +76,6 @@ export default {
           this.home_team.id = this.matchData.body.home_team.id;
           this.away_team.id = this.matchData.body.away_team.id;
 
-          if(!this.matchData.body.is_validated) {
-            this.home_team.score_total = '0'
-            this.away_team.score_total = '0'
-            this.home_team.color = 'red'
-            this.away_team.color = 'red'
-            return
-          }
-
           this.home_team.score_total = this.matchData.body.home_score_total;
           this.away_team.score_total = this.matchData.body.away_score_total;
 
