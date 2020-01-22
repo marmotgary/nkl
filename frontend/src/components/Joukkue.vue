@@ -123,14 +123,15 @@
             <div>Varaa pelaajia</div>
           </template>
           <v-card>
-            <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
+          <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
+            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-actions>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
               <template slot="items" slot-scope="props">
                 <div class="row">
                   <td v-if="props.item.team == null">
-                    <v-btn v-on:click="reserveButton(props.index)" flat icon color="green">
+                    <v-btn v-on:click="reserveButton(props.item)" flat icon color="green">
                       <v-icon>fas fa-plus</v-icon>
                     </v-btn>
                   </td>
@@ -155,6 +156,7 @@
 export default {
     data: function() {
         return {
+            search: '',
             header: '',
             isCaptain: false,
             team_id: this.$route.fullPath.substr(
@@ -256,16 +258,19 @@ export default {
                         }
                         i++;
                     }
+                    console.log(this.reserve)
                 },
                 function(error) {
                     console.log(error.statusText);
                 }
             );
         },
-        reserveButton: function(index) {
-            let post_data = {'player': this.reserve[index].id}
+        reserveButton: function(item) {
+            let post_data = {'player': item.id}
             let post_url = 'api/reserve/'
-            if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
+            var index = this.reserve.findIndex(player => player.id === item.id);
+
+            if (confirm('Haluatko varmasti varata pelaajan "'+item.player_name+'"?')) {
               this.$http.post(post_url, post_data, {
                 headers: {
                   'X-CSRFToken': this.getCookie('csrftoken')
