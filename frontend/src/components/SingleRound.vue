@@ -35,6 +35,18 @@
         </p>
       </v-card-text>
     </v-layout>
+    <v-layout v-if="!show_input" row wrap>
+      <v-card-text v-if="loaded">
+        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+          {{this.home_team}}
+          <v-text-field disabled @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+        </p>
+        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+          {{this.away_team}}
+          <v-text-field disabled @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+        </p>
+      </v-card-text>
+    </v-layout>
     <v-data-table
       v-if="!show_input"
       disable-initial-sort
