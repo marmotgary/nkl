@@ -109,6 +109,7 @@
         <td>{{ props.item.scaled_points }}</td>
         <td>{{ props.item.scaled_points_per_round }}</td>
         <td>{{ props.item.avg_throw_turn }}</td>
+        <td>{{ props.item.pikes_total }}</td>
         <td>{{ props.item.pike_percentage }}</td>
         <td>{{ props.item.zeros_total }}</td>
         <td>{{ props.item.gteSix_total }}</td>
