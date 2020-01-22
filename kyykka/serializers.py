@@ -168,7 +168,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         key = 'player_' + str(obj.id) + '_gteSix_total'
         gteSix_total = getFromCache(key)
         if gteSix_total is None:
-            gteSix_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
+            gteSix_total = Throw.objects.exclude(Q(score_first='h')|Q(score_second='h')|Q(score_third='h')|Q(score_fourth='h')).filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
                 count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count(
                     'pk', filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(
                 Sum('count'))['count__sum']
@@ -454,6 +454,8 @@ class TeamListSerializer(serializers.ModelSerializer):
     matches_tie = serializers.SerializerMethodField()
     matches_played = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
+    points_total = serializers.SerializerMethodField()
+    points_average_difference = serializers.SerializerMethodField()
 
     def get_matches_won(self, obj):
         home_wins = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
@@ -462,7 +464,8 @@ class TeamListSerializer(serializers.ModelSerializer):
         away_wins = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(away__lt=F('home')).count()
-        return home_wins + away_wins
+        self.matches_won = home_wins + away_wins
+        return self.matches_won
 
     def get_matches_lost(self, obj):
         home_loses = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
@@ -471,7 +474,8 @@ class TeamListSerializer(serializers.ModelSerializer):
         away_loses = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(home__lt=F('away')).count()
-        return home_loses + away_loses
+        self.matches_lost = home_loses + away_loses
+        return self.matches_lost
 
     def get_matches_tie(self, obj):
         home_ties = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
@@ -480,11 +484,19 @@ class TeamListSerializer(serializers.ModelSerializer):
         away_ties = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
             home=F('home_first_round_score') + F('home_second_round_score'), \
             away=F('away_first_round_score') + F('away_second_round_score')).filter(away__exact=F('home')).count()
-        return home_ties + away_ties
+        self.matches_tie = home_ties + away_ties
+        return self.matches_tie
 
     def get_matches_played(self, obj):
         return Match.objects.filter(is_validated=True, season=self.context.get('season')).filter(
             Q(home_team=obj) | Q(away_team=obj)).count()
+
+    def get_points_total(self, obj):
+        return (self.matches_won * 2) + (self.matches_tie)
+
+    def points_average_difference(self, obj):
+        return None
+
 
     def get_score_total(self, obj):
         score_total = Throw.objects.filter(match__is_validated=True, team=obj, season=self.context.get('season')).annotate(
@@ -514,7 +526,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ('id', 'name', 'abbreviation', 'matches_won', 'matches_lost', 'matches_tie',
-                  'matches_played', 'score_total')
+                  'matches_played', 'points_total', 'score_total')
 
 
 class TeamDetailSerializer(serializers.ModelSerializer):
@@ -586,7 +598,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
     def get_gteSix_total(self, obj):
         throw_set = self.context.get('throw_set')
-        gteSix_total = throw_set.annotate(
+        gteSix_total = throw_set.exclude(Q(score_first='h')|Q(score_second='h')|Q(score_third='h')|Q(score_fourth='h')).annotate(
             count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count('pk',
                                                                                                                  filter=Q(
                                                                                                                      score_third__gte=6)) + Count(
@@ -632,16 +644,26 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
 class SharedMatchSerializer(serializers.ModelSerializer):
     def get_home_score_total(self, obj):
-        try:
-            return obj.home_first_round_score + obj.home_second_round_score
-        except TypeError:
-            return None
+        key = 'match_' + str(obj.id) + 'home_score_total'
+        home_score_total = getFromCache(key)
+        if home_score_total is None:
+            try:
+                home_score_total = obj.home_first_round_score + obj.home_second_round_score
+            except TypeError:
+                home_score_total = None
+            setToCache(key, home_score_total)
+        return home_score_total
 
     def get_away_score_total(self, obj):
-        try:
-            return obj.away_first_round_score + obj.away_second_round_score
-        except TypeError:
-            return None
+        key = 'match_' + str(obj.id) + 'away_score_total'
+        away_score_total = getFromCache(key)
+        if away_score_total is None:
+            try:
+                away_score_total = obj.away_first_round_score + obj.away_second_round_score
+            except TypeError:
+                away_score_total = None
+            setToCache(key, away_score_total)
+        return away_score_total
 
 
 class MatchListSerializer(SharedMatchSerializer):
@@ -655,7 +677,7 @@ class MatchListSerializer(SharedMatchSerializer):
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.home_team).data
-            setToCache(key, team)
+            setToCache(key, team, 86400)
         return team
 
     def get_away_team(self, obj):
@@ -663,7 +685,7 @@ class MatchListSerializer(SharedMatchSerializer):
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.away_team).data
-            setToCache(key, team)
+            setToCache(key, team, 86400)
         return team
 
     class Meta:

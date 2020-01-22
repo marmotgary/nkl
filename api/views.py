@@ -58,6 +58,8 @@ class IsCaptain(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         try:
+            if request.user.is_superuser:
+                return True
             return request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain
         except PlayersInTeam.DoesNotExist as e:
             return False
@@ -69,6 +71,8 @@ class IsCaptainForThrow(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         try:
+            if request.user.is_superuser:
+                return True
             return request.user == obj.match.home_team.playersinteam_set.filter(
                 season=CurrentSeason.objects.first().season,
                 is_captain=True
@@ -84,6 +88,8 @@ class MatchDetailPermission(permissions.BasePermission):
     Else user needs to be captain of the away_team (patchin round scores)
     """
     def has_object_permission(self, request, view, obj):
+        if request.user.is_superuser:
+            return True
         if 'is_validated' in request.data and len(request.data) == 1:
             return request.user == obj.away_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
                                                                           is_captain=True).first().player
