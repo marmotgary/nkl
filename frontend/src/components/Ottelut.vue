@@ -12,7 +12,7 @@
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
         <router-link :to="'ottelu/'+props.item.id">
-          <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</td>
+          <td class="time"><a>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</a></td>
         </router-link>
         <td class="text-xs-left">{{ props.item.field }}</td>
         <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
@@ -66,3 +66,4 @@ export default {
     }
 };
 </script>
+

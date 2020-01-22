@@ -57,7 +57,7 @@ export default {
     }
 };
 </script>
-<style scoped>
+<style>
 .teams {
     margin-top: 2em;
 }
