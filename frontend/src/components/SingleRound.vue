@@ -47,7 +47,7 @@
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>{{props.item.player.id}}</td>
+        <td>{{props.item.player.player_number}}</td>
         <td>{{props.item.player.player_name}}</td>
         <td>{{props.item.score_first}}</td>
         <td>{{props.item.score_second}}</td>
