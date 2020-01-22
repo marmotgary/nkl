@@ -258,7 +258,6 @@ export default {
                         }
                         i++;
                     }
-                    console.log(this.reserve)
                 },
                 function(error) {
                     console.log(error.statusText);
