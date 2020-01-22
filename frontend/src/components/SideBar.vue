@@ -5,17 +5,17 @@
       <v-spacer></v-spacer>
     </v-card-title>
     <v-flex xs12>
-      <v-data-table :headers="headers" :items="teams" :sort-by="['points_total']" :sort-desc="[false]" hide-actions>
+      <v-data-table :headers="headers" :items="teams" v-bind:pagination.sync="pagination" hide-actions>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
-        <template bind:key="team.id" slot="items" slot-scope="props">
-          <td class="block">{{ props.item.abbreviation }}</td>
-          <td class="block">{{ props.item.matches_played }}</td>
-          <td class="block">{{ props.item.matches_won }}</td>
-          <td class="block">{{ props.item.matches_lost }}</td>
-          <td class="block">{{ props.item.matches_tie }}</td>
-          <td class="block">{{ props.item.points_total }}</td>
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.abbreviation }}</td>
+          <td>{{ props.item.matches_played }}</td>
+          <td>{{ props.item.matches_won }}</td>
+          <td>{{ props.item.matches_lost }}</td>
+          <td>{{ props.item.matches_tie }}</td>
+          <td>{{ props.item.points_total }}</td>
         </template>
       </v-data-table>
     </v-flex>
@@ -27,13 +27,14 @@ export default {
     data: function() {
         return {
             headers: [
-                { text: 'Joukkue', value: 'abbreviation'},
-                { text: 'O', value: 'matches_played'},
-                { text: 'V', value: 'matches_won'},
-                { text: 'H', value: 'matches_lost'},
-                { text: 'T', value: 'matches_tie'},
+                { text: 'Joukkue', value: 'abbreviation', sortable: false},
+                { text: 'O', value: 'matches_played', sortable: false},
+                { text: 'V', value: 'matches_won', sortable: false},
+                { text: 'H', value: 'matches_lost', sortable: false},
+                { text: 'T', value: 'matches_tie', sortable: false},
                 { text: 'P', value: 'points_total'}
             ],
+            pagination: {'sortBy': 'points_total', 'descending': true, 'rowsPerPage': -1},
             teams: []
         };
     },
