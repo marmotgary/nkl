@@ -4,10 +4,8 @@
       <v-card>
         <v-flex px-2 mb-5>
           <h3 class="text-md-left headline">
-            Runkosarja kenttä 5
-            <span
-              style="float:right;"
-            >{{ this.match_time | moment('YYYY-MM-DD HH:MM') }}</span>
+            Runkosarja kenttä <span v-if="this.match_field">{{this.match_field}}</span><span v-else>TBD</span>
+            <span style="float:right;">{{ this.match_time | moment('YYYY-MM-DD HH:MM') }}</span>
           </h3>
         </v-flex>
         <v-layout mx-5 pb-5 px-5 row wrap>
@@ -56,6 +54,7 @@ export default {
     data: function() {
         return {
             match_time: '',
+            match_field: '',
             home_team: {
                 name: '',
                 score_total: '',
@@ -71,6 +70,7 @@ export default {
     methods: {
         getMatch: function() {
           this.match_time = this.matchData.body.match_time;
+          this.match_field = this.matchData.body.field;
           this.away_team.name = this.matchData.body.away_team.name;
           this.home_team.name = this.matchData.body.home_team.name;
           this.home_team.id = this.matchData.body.home_team.id;
