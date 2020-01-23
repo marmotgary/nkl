@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex class="text-xs-center">
-      <h1 class="topic"><a href="/static/saannot.pdf" download="saannot.pdf">NKL Säännöt (pdf)</a></h1>
+      <h1><a href="/static/saannot.pdf" download="saannot.pdf">NKL Säännöt (pdf)</a></h1>
     </v-flex>
   </v-layout>
 </template>
@@ -14,7 +14,10 @@ export default {
 </script>
 
 <style>
-.topic {
-    padding-top: 4em;
+a {
+  color: red;
+  text-decoration: none;
+  font-size: 130%;
 }
+
 </style>

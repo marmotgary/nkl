@@ -1,6 +1,6 @@
 <template>
   <v-app class="app">
-    <nav-bar></nav-bar>
+    <nav-bar class="mb-5"></nav-bar>
     <v-content transition="slide-x-transition" class="content pa-0 mx-auto">
       <router-view></router-view>
     </v-content>

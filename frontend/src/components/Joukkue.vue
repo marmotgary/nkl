@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teams">
+  <v-card>
     <v-layout>
       <v-flex xs12>
         <v-card>
@@ -311,8 +311,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.teams {
-    margin-top: 2em;
-}
-</style>
