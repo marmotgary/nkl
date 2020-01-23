@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex auto >
+    <v-flex auto>
       <joukkue></joukkue>
     </v-flex>
     <v-flex pl-2 class="hidden-md-and-down">
@@ -21,6 +21,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>
