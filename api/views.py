@@ -200,7 +200,11 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def retrieve(self, request, pk=None):
         season = getSeason(request)
-        team = get_object_or_404(self.queryset, pk=pk)
+        try:
+            team = get_object_or_404(self.queryset, pk=pk)
+        except ValueError:
+            # pk probably not integer?
+            raise Http404
         # Do these querys only once here, instead of doing them 2 times at serializer.
         throws = Throw.objects.filter(match__is_validated=True, season=season, team=team)
         throws_total = throws.count() * 4
