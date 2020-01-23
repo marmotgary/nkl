@@ -12,12 +12,3 @@ export default {
     name: 'info-view',
 };
 </script>
-
-<style>
-a {
-  color: red;
-  text-decoration: none;
-  font-size: 130%;
-}
-
-</style>
