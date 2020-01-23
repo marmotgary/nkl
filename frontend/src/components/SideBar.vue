@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teams">
+  <v-card>
     <v-card-title>
       Joukkueet
       <v-spacer></v-spacer>

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teams">
+  <v-card>
     <v-card-title>
       Joukkueet
       <v-spacer></v-spacer>
@@ -57,13 +57,3 @@ export default {
     }
 };
 </script>
-<style>
-.teams {
-    margin-top: 2em;
-}
-a {
-  color: red;
-  text-decoration: none;
-  font-size: 130%;
-}
-</style>

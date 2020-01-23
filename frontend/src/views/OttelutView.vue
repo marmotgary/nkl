@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="pt-5">
+  <v-layout>
     <v-flex auto>
       <ottelut></ottelut>
     </v-flex>
