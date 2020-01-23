@@ -31,11 +31,4 @@ export default {
 .layout {
     margin-bottom: 1em;
 }
-
-a {
-  color: red;
-  text-decoration: none;
-  font-size: 130%;
-}
-
 </style>

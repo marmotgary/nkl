@@ -114,6 +114,15 @@ export default {
     }
 };
 </script>
+<style>
+a {
+  color: red;
+  text-decoration: none;
+  font-size: 130%;
+}
+
+</style>
+
 
 <style scoped>
 .v-toolbar--fixed {
