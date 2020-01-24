@@ -30,10 +30,10 @@
       </v-flex>
     </v-layout>
     <v-layout row>
-    <v-flex class="text-xs-center" xm12>
-      <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">vahvista</v-btn>
-    </v-flex>
-    </v-layout row>
+      <v-flex class="text-xs-center" xm12>
+        <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">vahvista</v-btn>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -58,7 +58,7 @@ export default {
       getData: function() {
         this.$http
         .get(
-            'https://kyykka.com/api/matches/' +
+            'api/matches/' +
                 this.$route.fullPath.substr(
                     this.$route.fullPath.lastIndexOf('/') + 1
                 )
@@ -72,7 +72,7 @@ export default {
         })
       },
       validateClick: function() {
-        let post_url = 'https://kyykka.com/api/matches/'+this.data.body.id
+        let post_url = 'api/matches/'+this.data.body.id
         let post_data = {"is_validated": true}
 
         if (confirm('Oletko tyytyväinen ottelun tuloksiin?')) {
@@ -87,7 +87,7 @@ export default {
             }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.com/api/csrf', {'withCredentials': true})
+                  .get('api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {

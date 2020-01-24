@@ -19,7 +19,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "info" */ './views/Info.vue');
             }
         },
@@ -29,7 +29,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "ottelut" */ './views/OttelutView.vue');
             }
         },
@@ -39,7 +39,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "ottelut" */ './views/SingleOtteluView.vue');
             }
         },
@@ -49,7 +49,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "joukkueet" */ './views/Joukkueet.vue');
             }
         },
@@ -59,7 +59,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "pelaajat" */ './views/PelaajatView.vue');
             }
         },
@@ -69,7 +69,7 @@ export default new Router({
             // route level code-splitting
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: function() {
+            component: function () {
                 return import(/* webpackChunkName: "pelaajat" */ './views/JoukkueView.vue');
             }
         }

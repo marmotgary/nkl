@@ -58,6 +58,8 @@ class IsCaptain(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         try:
+            if request.user.is_superuser:
+                return True
             return request.user.playersinteam_set.get(season=CurrentSeason.objects.first().season).is_captain
         except PlayersInTeam.DoesNotExist as e:
             return False
@@ -69,6 +71,8 @@ class IsCaptainForThrow(permissions.BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         try:
+            if request.user.is_superuser:
+                return True
             return request.user == obj.match.home_team.playersinteam_set.filter(
                 season=CurrentSeason.objects.first().season,
                 is_captain=True
@@ -84,6 +88,8 @@ class MatchDetailPermission(permissions.BasePermission):
     Else user needs to be captain of the away_team (patchin round scores)
     """
     def has_object_permission(self, request, view, obj):
+        if request.user.is_superuser:
+            return True
         if 'is_validated' in request.data and len(request.data) == 1:
             return request.user == obj.away_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
                                                                           is_captain=True).first().player
@@ -194,7 +200,11 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def retrieve(self, request, pk=None):
         season = getSeason(request)
-        team = get_object_or_404(self.queryset, pk=pk)
+        try:
+            team = get_object_or_404(self.queryset, pk=pk)
+        except ValueError:
+            # pk probably not integer?
+            raise Http404
         # Do these querys only once here, instead of doing them 2 times at serializer.
         throws = Throw.objects.filter(match__is_validated=True, season=season, team=team)
         throws_total = throws.count() * 4

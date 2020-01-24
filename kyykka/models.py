@@ -126,5 +126,7 @@ def reset_player_cache(player):
         'player_' + str(player.id) + '_gteSix_total',
         'player_' + str(player.id) + '_throws_total',
         'player_' + str(player.id) + '_pike_percentage'
+        'player_' + str(player.id) + '_score_per_throw'
+        'player_' + str(player.id) + '_avg_throw_turn'
     ]
     cache.delete_many(caches)

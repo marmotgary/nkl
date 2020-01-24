@@ -3,7 +3,7 @@
     <v-card-title>
       Pelaajat
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
+      <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
       <template slot="no-data">
@@ -114,7 +114,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('https://kyykka.com/api/players/').then(
+            this.$http.get('api/players/').then(
                 function(data) {
                     this.players = data.body;
                 }
@@ -124,7 +124,7 @@ export default {
     mounted: function() {
         this.getPlayers();
         if (localStorage.user_id) {
-            this.$http.get('https://kyykka.com/api/players/' +localStorage.user_id)
+            this.$http.get('api/players/' +localStorage.user_id)
         }
     }
 };

@@ -25,9 +25,9 @@
       <v-btn flat class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
-<!--      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>-->
+      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
       <v-btn
-        v-if="loggedIn && team_id != 'null'"
+        v-if="loggedIn && team_id"
         flat
         class="hidden-sm-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -77,9 +77,10 @@ export default {
         logout() {
             this.loggedIn = false;
             this.name = '';
+            this.team_id = '';
             this.$session.destroy();
             localStorage.clear();
-            this.$http.post('https://kyykka.com/api/logout/', {}, {
+            this.$http.post('api/logout/', {}, {
               headers: {
                 'X-CSRFToken': this.getCookie('csrftoken')
               },
@@ -97,13 +98,15 @@ export default {
             else {
                 this.$http
                     .get(
-                        'https://kyykka.com/api/players/' +
+                        'api/players/' +
                             localStorage.user_id
                     )
                     .then(function(response) {
-                      if (response.body.team.id) {
+                      if (response.body.team) {
                         this.team_id = response.body.team.id;
                         localStorage.team_id = this.team_id;
+                      } else {
+                        this.team_id = '';
                       }
                     });
             }
@@ -111,6 +114,15 @@ export default {
     }
 };
 </script>
+<style>
+a {
+  color: red;
+  text-decoration: none;
+  font-size: 130%;
+}
+
+</style>
+
 
 <style scoped>
 .v-toolbar--fixed {

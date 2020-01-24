@@ -65,9 +65,9 @@ export default {
     }),
     methods: {
         register() {
-            this.$http.get('https://kyykka.com/api/csrf', {'withCredentials': true});
+            this.$http.get('api/csrf', {'withCredentials': true});
             this.$http
-                .post('https://kyykka.com/api/register/', this.credentials, {
+                .post('api/register/', this.credentials, {
                   headers: {
                     'X-CSRFToken': this.getCookie('csrftoken')
                   },
@@ -88,7 +88,7 @@ export default {
                     this.checkForm();
                     if (response.status == 403) {
                       this.$http
-                        .get('https://kyykka.com/api/csrf', {'withCredentials': true})
+                        .get('api/csrf', {'withCredentials': true})
                         .then(function(response) {
                             if (response.status === 200) {
                                 this.$http.patch(post_url, post_data, {

@@ -3,7 +3,7 @@
     <v-card-title>
       Ottelut
       <v-spacer></v-spacer>
-      <v-text-field v-model="search" label="Search" single-line hide-details></v-text-field>
+      <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="no-data">
@@ -12,7 +12,7 @@
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
         <router-link :to="'ottelu/'+props.item.id">
-          <td>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</td>
+          <td class="time"><a>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</a></td>
         </router-link>
         <td class="text-xs-left">{{ props.item.field }}</td>
         <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
@@ -54,7 +54,7 @@ export default {
     },
     methods: {
         getMatches: function() {
-            this.$http.get('https://kyykka.com/api/matches/').then(
+            this.$http.get('api/matches/').then(
                 function(data) {
                     this.matches = data.body;
                 }
@@ -66,3 +66,4 @@ export default {
     }
 };
 </script>
+

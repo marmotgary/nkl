@@ -1,9 +1,9 @@
 <template>
-  <v-layout pt-5>
-    <v-flex xs8>
+  <v-layout>
+    <v-flex auto>
       <joukkue></joukkue>
     </v-flex>
-    <v-flex xs4 mt-4 pt-1 pl-3>
+    <v-flex pl-2 class="hidden-md-and-down">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>
@@ -21,6 +21,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>

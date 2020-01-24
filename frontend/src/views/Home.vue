@@ -1,10 +1,10 @@
 <template>
   <v-layout>
-    <v-flex mt-5 xs8>
+    <v-flex mt-5 auto>
       <h1 class="topic">Nationaali Kyykkä Liiga</h1>
       <lorem-ipsum></lorem-ipsum>
     </v-flex>
-    <v-flex xs4 class="right">
+    <v-flex xs4 class="right hidden-md-and-down">
       <side-bar></side-bar>
     </v-flex>
   </v-layout>

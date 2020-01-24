@@ -1,5 +1,5 @@
 <template>
-  <v-card class="teams">
+  <v-card>
     <v-layout>
       <v-flex xs12>
         <v-card>
@@ -109,6 +109,7 @@
         <td>{{ props.item.scaled_points }}</td>
         <td>{{ props.item.scaled_points_per_round }}</td>
         <td>{{ props.item.avg_throw_turn }}</td>
+        <td>{{ props.item.pikes_total }}</td>
         <td>{{ props.item.pike_percentage }}</td>
         <td>{{ props.item.zeros_total }}</td>
         <td>{{ props.item.gteSix_total }}</td>
@@ -122,14 +123,15 @@
             <div>Varaa pelaajia</div>
           </template>
           <v-card>
-            <v-data-table :items="reserve" :headers="reserveHeaders" hide-actions>
+          <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
+            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-actions>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
               <template slot="items" slot-scope="props">
                 <div class="row">
                   <td v-if="props.item.team == null">
-                    <v-btn v-on:click="reserveButton(props.index)" flat icon color="green">
+                    <v-btn v-on:click="reserveButton(props.item)" flat icon color="green">
                       <v-icon>fas fa-plus</v-icon>
                     </v-btn>
                   </td>
@@ -154,6 +156,7 @@
 export default {
     data: function() {
         return {
+            search: '',
             header: '',
             isCaptain: false,
             team_id: this.$route.fullPath.substr(
@@ -236,7 +239,7 @@ export default {
     methods: {
         getPlayers: function() {
             this.$http
-                .get('https://kyykka.com/api/teams/' + this.team_id)
+                .get('api/teams/' + this.team_id)
                 .then(
                     function(data) {
                         this.stats = [data.body];
@@ -246,7 +249,7 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('https://kyykka.com/api/reserve/').then(
+            this.$http.get('api/reserve/').then(
                 function(data) {
                     var i = 0;
                     for (var player in data.body) {
@@ -261,10 +264,12 @@ export default {
                 }
             );
         },
-        reserveButton: function(index) {
-            let post_data = {'player': this.reserve[index].id}
-            let post_url = 'https://kyykka.com/api/reserve/'
-            if (confirm('Haluatko varmasti varata tämän pelaajan?')) {
+        reserveButton: function(item) {
+            let post_data = {'player': item.id}
+            let post_url = 'api/reserve/'
+            var index = this.reserve.findIndex(player => player.id === item.id);
+
+            if (confirm('Haluatko varmasti varata pelaajan "'+item.player_name+'"?')) {
               this.$http.post(post_url, post_data, {
                 headers: {
                   'X-CSRFToken': this.getCookie('csrftoken')
@@ -278,7 +283,7 @@ export default {
                 }).catch(function(response) {
                   if (response.status == 403) {
                     this.$http
-                      .get('https://kyykka.com/api/csrf', {'withCredentials': true})
+                      .get('api/csrf', {'withCredentials': true})
                       .then(function(response) {
                           if (response.status === 200) {
                               this.getPlayers();
@@ -306,8 +311,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.teams {
-    margin-top: 2em;
-}
-</style>

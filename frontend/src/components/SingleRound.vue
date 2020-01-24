@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
-    <v-layout v-if="is_validated" row wrap>
+    <v-layout v-if="!show_input" row wrap>
       <v-card-text v-if="this.round_score">
         <p class="text-xs-left" v-if="this.teamSide == 'home'">
           {{this.home_team}}
@@ -47,7 +47,7 @@
       </template>
       <template slot="headers" class="text-xs-center"></template>
       <template slot="items" slot-scope="props">
-        <td>{{props.item.player.id}}</td>
+        <td>{{props.item.player.player_number}}</td>
         <td>{{props.item.player.player_name}}</td>
         <td>{{props.item.score_first}}</td>
         <td>{{props.item.score_second}}</td>
@@ -75,10 +75,10 @@
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
           <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
         </td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field :disabled="disabled[props.index]" v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
         <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
       </template>
     </v-data-table>
@@ -117,7 +117,6 @@ export default {
             },
             select: [],
             selected: [],
-            disabled: [false, false, false, false],
             show_input: false,
             loading: false,
             loaded: false,
@@ -147,7 +146,7 @@ export default {
                 { text: 2, value: 'score_second', sortable: false, width: '10%'},
                 { text: 3, value: 'score_third', sortable: false, width: '10%'},
                 { text: 4, value: 'score_fourth', sortable: false, width: '10%'},
-                { text: 'Pts.', align: 'center',value: 'score_total', width: '5%'}
+                { text: 'Pts.', align: 'center', sortable: false, value: 'score_total', width: '5%'}
             ],
             options: {
               itemsPerPage: 4,
@@ -166,7 +165,7 @@ export default {
           }
         },
         roundScore: function() {
-          let post_url = 'https://kyykka.com/api/matches/'+this.plain_data.body.id
+          let post_url = 'api/matches/'+this.plain_data.body.id
           let post_data = {}
           let key = ''
 
@@ -184,7 +183,7 @@ export default {
             }).then().catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.com/api/csrf', {'withCredentials': true})
+                  .get('api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {
@@ -203,6 +202,8 @@ export default {
           and adds them up as total to the last column. The function also updates the database
           accordingly on each runthrough. */
           this.loading = true
+
+          console.log(index)
 
           let throws;
           let total = 0;
@@ -244,7 +245,7 @@ export default {
 
           this.$refs['throw_sum_'+index].firstChild.data = total
 
-          let post_url = 'https://kyykka.com/api/throws/update/'+this.data[index].id+'/'
+          let post_url = 'api/throws/update/'+this.data[index].id+'/'
 
           this.$http.patch(post_url, post_data, {
             headers: {
@@ -262,7 +263,7 @@ export default {
             }).catch(function(response) {
               if (response.status == 403) {
                 this.$http
-                  .get('https://kyykka.com/api/csrf', {'withCredentials': true})
+                  .get('api/csrf', {'withCredentials': true})
                   .then(function(response) {
                       if (response.status === 200) {
                           this.$http.patch(post_url, post_data, {
@@ -278,10 +279,12 @@ export default {
         },
         loadPlayer: function(player, index) {
           // Finds the selected player object from the dataset and sets it's id to the id field. 
+          
+          console.log(index)
           let obj = this.plain_data.body[this.teamSide + "_team"].players.find(o => o.player_name === player)
           this.$refs['id_'+index].innerHTML=obj.id
           this.select = []
-          this.disabled[index] = false
+
           this.sumTotal(index)
         },
         getMatch: function() {
