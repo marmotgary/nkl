@@ -203,8 +203,6 @@ export default {
           accordingly on each runthrough. */
           this.loading = true
 
-          console.log(index)
-
           let throws;
           let total = 0;
           const array = [
