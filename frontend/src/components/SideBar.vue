@@ -1,20 +1,18 @@
 <template>
   <v-card>
-    <v-flex xs12>
-      <v-data-table :headers="headers" :items="teams" v-bind:pagination.sync="pagination" hide-actions>
-        <template slot="no-data">
-          <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
-        </template>
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.abbreviation }}</td>
-          <td>{{ props.item.matches_played }}</td>
-          <td>{{ props.item.matches_won }}</td>
-          <td>{{ props.item.matches_lost }}</td>
-          <td>{{ props.item.matches_tie }}</td>
-          <td>{{ props.item.points_total }}</td>
-        </template>
-      </v-data-table>
-    </v-flex>
+    <v-data-table :headers="headers" :items="teams" v-bind:pagination.sync="pagination" hide-actions>
+      <template slot="no-data">
+        <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
+      </template>
+      <template slot="items" slot-scope="props">
+        <td>{{ props.item.abbreviation }}</td>
+        <td>{{ props.item.matches_played }}</td>
+        <td>{{ props.item.matches_won }}</td>
+        <td>{{ props.item.matches_lost }}</td>
+        <td>{{ props.item.matches_tie }}</td>
+        <td>{{ props.item.points_total }}</td>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
