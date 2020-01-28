@@ -1,9 +1,5 @@
 <template>
   <v-card>
-    <v-card-title>
-      Joukkueet
-      <v-spacer></v-spacer>
-    </v-card-title>
     <v-flex xs12>
       <v-data-table :headers="headers" :items="teams" v-bind:pagination.sync="pagination" hide-actions>
         <template slot="no-data">
