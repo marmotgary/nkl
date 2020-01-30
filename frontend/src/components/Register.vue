@@ -51,7 +51,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="info darken-1" flat @click="dialog = false">Sulje</v-btn>
-        <v-btn color="info darken-1" flat @click="register">Valmis</v-btn>
+        <v-btn color="info darken-1" flat @click="checkForm">Valmis</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -133,7 +133,7 @@ export default {
             if (!this.credentials.username) {
                 this.errors.push('Email puuttuu.');
             } else if (!this.validEmail(this.credentials.username)) {
-                this.errors.push('Anna oikea sähköpostiosoite.');
+                this.errors.push('Anna salasana mallia foo@bar.xyz.');
             }
             if (!this.credentials.password) {
                 this.errors.push('Salasana puuttuu.');
@@ -143,11 +143,12 @@ export default {
             }
 
             if (this.credentials.password !== this.credentials.password_check) {
-              this.errors.push('Tarkista salasana.')
+              this.errors.push('Salasanat eivät täsmää.')
             }
 
             if (this.errors.length == 0) {
                 this.changeLogin();
+                this.register();
             }
         },
         changeLogin: function(username) {
