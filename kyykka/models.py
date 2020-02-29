@@ -75,6 +75,7 @@ class Throw(models.Model):
     throw_round determines is it first(1) or second(2) round of the match.
     throw_turn determines players' throwing turn: 1, 2, 3 or 4.
     throw_number determines is it players' 1st, 2nd, 3rd or 4th throw.
+    scores can be an integer, or h indicating a hauki.
     '''
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     player = models.ForeignKey(User, null=True, on_delete=models.CASCADE)

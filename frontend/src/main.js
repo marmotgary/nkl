@@ -16,7 +16,7 @@ Vue.use(VueResource);
 Vue.use(VueSession);
 Vue.use(VueMoment);
 
-Vue.http.options.root = 'https://kyykka.com'
+Vue.http.options.root = 'http://localhost:8000'
 
 Vue.mixin({
     methods: {

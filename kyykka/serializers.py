@@ -456,6 +456,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     score_total = serializers.SerializerMethodField()
     points_total = serializers.SerializerMethodField()
     points_average_difference = serializers.SerializerMethodField()
+    points_round_average = serializers.SerializerMethodField()
 
     def get_matches_won(self, obj):
         home_wins = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
@@ -494,10 +495,25 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_points_total(self, obj):
         return (self.matches_won * 2) + (self.matches_tie)
 
+    def get_points_round_average(self, obj):
+        home_match_count = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).count()
+        away_match_count = obj.away_matches.filter(is_validated=True, season=self.context.get('season')).count()
+        match_count = home_match_count + away_match_count
+        print(home_match_count, away_match_count, match_count)
+        # Throw.objects.filter(player=obj).annotate(score = F('score_first') + F('score_second')+ F('score_third')+ F('score_fourth')).aggregate(Sum('score'))['score__sum'])
+
+        home_match_points = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
+            points= F('home_first_round_score') + F('home_second_round_score')
+        ).aggregate(Sum('points'))['points__sum']
+        away_matches = obj.away_matches.filter(is_validated=True, season=self.context.get('season'))
+        print(home_match_points)
+
+        return None
+
     def points_average_difference(self, obj):
         return None
 
-
+    # TODO: Change to exclude h, so that possible minus throws are also accounted.
     def get_score_total(self, obj):
         score_total = Throw.objects.filter(match__is_validated=True, team=obj, season=self.context.get('season')).annotate(
             score=Case(
@@ -526,7 +542,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ('id', 'name', 'abbreviation', 'matches_won', 'matches_lost', 'matches_tie',
-                  'matches_played', 'points_total', 'score_total')
+                  'matches_played', 'points_total', 'score_total', 'points_round_average')
 
 
 class TeamDetailSerializer(serializers.ModelSerializer):
