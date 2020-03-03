@@ -230,13 +230,13 @@ class MatchList(APIView):
     List all matches
     """
     # throttle_classes = [AnonRateThrottle]
-
     # queryset = Match.objects.filter(match_time__lt=datetime.datetime.now() + datetime.timedelta(weeks=2))
     queryset = Match.objects.all()
 
     def get(self, request):
         season = getSeason(request)
-        self.queryset = self.queryset.filter(season=season)
+        post_season = True if request.query_params.get('post_season') else False
+        self.queryset = self.queryset.filter(season=season, post_season=post_season)
         serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 

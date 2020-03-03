@@ -62,6 +62,7 @@ class Match(models.Model):
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches')
     is_validated = models.BooleanField(default=False)
+    post_season = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'Matches'
