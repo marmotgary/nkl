@@ -5,25 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db.models import Avg, Count, Min, Sum, F, Q, Case, Value, When, IntegerField
 from django.db import IntegrityError
-from django.core.cache import cache
+
+from utils.caching import getFromCache, setToCache
 
 
 def required(value):
     if value is None:
         raise serializers.ValidationError('This field is required')
-
-
-def getFromCache(key):
-    # print("Get cache", key)
-    return cache.get(key)
-
-
-def setToCache(key, value, timeout=3600):
-    # print("Set cache", key)
-    if value is None:
-        value = 0
-    cache.set(key, value, timeout)
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
     username = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
@@ -148,7 +136,6 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         return self.pikes
 
     def get_zeros_total(self, obj):
-
         key = 'player_' + str(obj.id) + '_zeros_total'
         zeros_total = getFromCache(key)
         if zeros_total is None:
@@ -644,7 +631,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 
 class SharedMatchSerializer(serializers.ModelSerializer):
     def get_home_score_total(self, obj):
-        key = 'match_' + str(obj.id) + 'home_score_total'
+        key = 'match_' + str(obj.id) + '_home_score_total'
         home_score_total = getFromCache(key)
         if home_score_total is None:
             try:
@@ -655,7 +642,7 @@ class SharedMatchSerializer(serializers.ModelSerializer):
         return home_score_total
 
     def get_away_score_total(self, obj):
-        key = 'match_' + str(obj.id) + 'away_score_total'
+        key = 'match_' + str(obj.id) + '_away_score_total'
         away_score_total = getFromCache(key)
         if away_score_total is None:
             try:
@@ -673,7 +660,7 @@ class MatchListSerializer(SharedMatchSerializer):
     away_team = serializers.SerializerMethodField()
 
     def get_home_team(self, obj):
-        key = 'match_' + str(obj.id) + 'home_team'
+        key = 'team_' + str(obj.home_team.id)
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.home_team).data
@@ -681,7 +668,7 @@ class MatchListSerializer(SharedMatchSerializer):
         return team
 
     def get_away_team(self, obj):
-        key = 'match_' + str(obj.id) + 'away_team'
+        key = 'team_' + str(obj.away_team.id)
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.away_team).data
@@ -690,7 +677,8 @@ class MatchListSerializer(SharedMatchSerializer):
 
     class Meta:
         model = Match
-        fields = ('id', 'match_time', 'field', 'home_team', 'away_team', 'home_score_total', 'away_score_total', 'post_season')
+        fields = ('id', 'match_time', 'field', 'home_team', 'away_team', 'home_score_total', 'away_score_total',
+                  'post_season',  'is_validated')
 
 
 class MatchDetailSerializer(SharedMatchSerializer):

@@ -17,6 +17,8 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth import authenticate, login, logout
 import json
 
+from utils.caching import getFromCache, setToCache, cache_reset_key, reset_match_cache
+
 schema_view = get_swagger_view(title='NKL API')
 
 
@@ -175,9 +177,14 @@ class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, format=None):
         season = getSeason(request)
-        self.queryset = self.queryset.filter(playersinteam__season=season)
-        serializer = PlayerListSerializer(self.queryset, many=True, context={'season': season})
-        return Response(serializer.data)
+        key = 'all_players'
+        all_players = getFromCache(key)
+        if all_players is None:
+            self.queryset = self.queryset.filter(playersinteam__season=season)
+            serializer = PlayerListSerializer(self.queryset, many=True, context={'season': season})
+            all_players = serializer.data
+            setToCache(key, all_players)
+        return Response(all_players)
 
     def retrieve(self, request, pk=None):
         season = getSeason(request)
@@ -194,9 +201,14 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request):
         season = getSeason(request)
-        self.queryset = self.queryset.filter(playersinteam__season=season).distinct()
-        serializer = TeamListSerializer(self.queryset, many=True, context={'season': season})
-        return Response(serializer.data)
+        key = 'all_teams'
+        all_teams = getFromCache(key)
+        if all_teams is None:
+            self.queryset = self.queryset.filter(playersinteam__season=season).distinct()
+            serializer = TeamListSerializer(self.queryset, many=True, context={'season': season})
+            all_teams = serializer.data
+            setToCache(key, all_teams)
+        return Response(all_teams)
 
     def retrieve(self, request, pk=None):
         season = getSeason(request)
@@ -235,14 +247,14 @@ class MatchList(APIView):
 
     def get(self, request):
         season = getSeason(request)
-        if request.query_params.get('regular_season'):
-            self.queryset = self.queryset.filter(season=season).exclude(post_season=True)
-        elif request.query_params.get('post_season'):
-            self.queryset = self.queryset.filter(season=season, post_season=True)
-        else:
-            self.queryset = self.queryset.filter(season=season)
-        serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
-        return Response(serializer.data)
+        self.queryset = self.queryset.filter(season=season)
+        key = 'all_matches'
+        all_matches = getFromCache(key)
+        if all_matches is None:
+            serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
+            all_matches = serializer.data
+            setToCache(key, all_matches)
+        return Response(all_matches)
 
 
 class MatchDetail(APIView):
@@ -265,6 +277,7 @@ class MatchDetail(APIView):
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            reset_match_cache(match)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -275,4 +288,5 @@ class ThrowAPI(generics.GenericAPIView, UpdateModelMixin):
     permission_classes = [IsAuthenticated, IsCaptain, IsCaptainForThrow]
 
     def patch(self, request, *args, **kwargs):
+        cache_reset_key('all_teams')  # Updating throw score affects total score of team.
         return self.partial_update(request, *args, **kwargs)

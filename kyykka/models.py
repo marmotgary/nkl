@@ -4,6 +4,8 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.cache import cache
 
+from utils.caching import reset_player_cache
+
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player')
@@ -115,19 +117,3 @@ def match_post_save_handler(sender, instance, created, **kwargs):
 def throw_post_save_handler(sender, instance, created, **kwargs):
     if instance and instance.match.is_validated and instance.player:
         reset_player_cache(instance.player)
-
-
-def reset_player_cache(player):
-    caches = [
-        'player_' + str(player.id) + '_score_total',
-        'player_' + str(player.id) + '_match_count',
-        'player_' + str(player.id) + '_rounds_total',
-        'player_' + str(player.id) + '_pikes_total',
-        'player_' + str(player.id) + '_zeros_total',
-        'player_' + str(player.id) + '_gteSix_total',
-        'player_' + str(player.id) + '_throws_total',
-        'player_' + str(player.id) + '_pike_percentage'
-        'player_' + str(player.id) + '_score_per_throw'
-        'player_' + str(player.id) + '_avg_throw_turn'
-    ]
-    cache.delete_many(caches)
