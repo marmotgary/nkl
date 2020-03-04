@@ -1,9 +1,14 @@
 <template>
   <v-card>
-    <v-card-title>
-      Ottelut
-      <v-spacer></v-spacer>
-      <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
+    <v-card-title class="d-flex flex-wrap-reverse">
+      <div class="order-1">
+        Ottelut
+        <v-select v-model="options[0]" style="width: 50%" :items="options">
+        </v-select>
+      </div>
+      <div class="order-2">
+        <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
+      </div>
     </v-card-title>
     <v-data-table :headers="headers" :items="matches" :search="search" hide-actions>
       <template slot="no-data">
@@ -34,6 +39,9 @@
 </template>
 
 <script>
+
+// /api/matches/?post_season=1
+
 export default {
     data: function() {
         return {
@@ -49,7 +57,8 @@ export default {
                 { text: 'Vieras', value: 'away_team.abbreviation' },
                 { text: 'Tulos', sortable: false }
             ],
-            matches: []
+            matches: [],
+            options: ['Kaikki ottelut','Runkosarja','Jatkosarja']
         };
     },
     methods: {
