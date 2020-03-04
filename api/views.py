@@ -235,12 +235,12 @@ class MatchList(APIView):
 
     def get(self, request):
         season = getSeason(request)
-        regular_season = True if request.query_params.get('regular_season') else False
-        if regular_season:
+        if request.query_params.get('regular_season'):
             self.queryset = self.queryset.filter(season=season).exclude(post_season=True)
+        elif request.query_params.get('post_season'):
+            self.queryset = self.queryset.filter(season=season, post_season=True)
         else:
-            post_season = True if request.query_params.get('post_season') else False
-            self.queryset = self.queryset.filter(season=season, post_season=post_season)
+            self.queryset = self.queryset.filter(season=season)
         serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
         return Response(serializer.data)
 

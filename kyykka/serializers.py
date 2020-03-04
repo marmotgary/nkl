@@ -677,7 +677,7 @@ class MatchListSerializer(SharedMatchSerializer):
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.home_team).data
-            setToCache(key, team, 86400)
+            setToCache(key, team, 3600)
         return team
 
     def get_away_team(self, obj):
@@ -685,12 +685,12 @@ class MatchListSerializer(SharedMatchSerializer):
         team = getFromCache(key)
         if team is None:
             team = TeamSerializer(obj.away_team).data
-            setToCache(key, team, 86400)
+            setToCache(key, team, 3600)
         return team
 
     class Meta:
         model = Match
-        fields = ('id', 'match_time', 'field', 'home_team', 'away_team', 'home_score_total', 'away_score_total')
+        fields = ('id', 'match_time', 'field', 'home_team', 'away_team', 'home_score_total', 'away_score_total', 'post_season')
 
 
 class MatchDetailSerializer(SharedMatchSerializer):
@@ -721,8 +721,7 @@ class MatchDetailSerializer(SharedMatchSerializer):
             'id', 'match_time', 'field', 'home_score_total', 'away_score_total', 'home_first_round_score',
             'home_second_round_score',
             'away_first_round_score', 'away_second_round_score', 'first_round', 'second_round', 'home_team',
-            'away_team',
-            'is_validated')
+            'away_team', 'is_validated', 'post_season')
 
 
 class MatchTeamSerializer(serializers.ModelSerializer):
