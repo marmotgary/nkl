@@ -145,7 +145,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Set in local_settings
 # CORS_ORIGIN_ALLOW_ALL=True
-# CORS_ORIGIN_WHITELIST = ["localhost:8080"]
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 ADMINS = []

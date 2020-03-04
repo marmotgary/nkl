@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', views.LoginAPI.as_view()),
     path('logout/', views.LogoutAPI.as_view()),
     path('register/', views.RegistrationAPI.as_view()),
+    path('change/', views.ChangePasswordAPI.as_view()),
     path('reserve/', views.ReservePlayerAPI.as_view()),
     path('matches/', views.MatchList.as_view()),
     path('matches/<int:pk>', views.MatchDetail.as_view()),

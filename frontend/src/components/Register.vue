@@ -7,7 +7,7 @@
       </v-card-title>
       <v-card-text>
         <v-alert :value="alert" type="info" transition="scale-transition" outline>
-          <b>Please correct the following error(s):</b>
+          <b>Korjaa seuraava(t):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
           </ul>
@@ -36,15 +36,22 @@
                 type="password"
                 required
               ></v-text-field>
+              <v-text-field
+                info
+                v-model="credentials.password_check"
+                label="salasana varmistus*"
+                type="password"
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
-        <small>*indicates required field</small>
+        <small>*pakollinen kenttä</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="info darken-1" flat @click="dialog = false">Sulje</v-btn>
-        <v-btn color="info darken-1" flat @click="register">Valmis</v-btn>
+        <v-btn color="info darken-1" flat @click="checkForm">Valmis</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -126,7 +133,7 @@ export default {
             if (!this.credentials.username) {
                 this.errors.push('Email puuttuu.');
             } else if (!this.validEmail(this.credentials.username)) {
-                this.errors.push('Anna oikea sähköpostiosoite.');
+                this.errors.push('Anna salasana mallia foo@bar.xyz.');
             }
             if (!this.credentials.password) {
                 this.errors.push('Salasana puuttuu.');
@@ -135,13 +142,13 @@ export default {
               this.errors.push('Pelaajanumero puuttuu.');
             }
 
-            // if (this.credentials.password !== this.credentials.password_check) {
-            //   this.errors.push('Tarkista salasana.')
-            // }
+            if (this.credentials.password !== this.credentials.password_check) {
+              this.errors.push('Salasanat eivät täsmää.')
+            }
 
             if (this.errors.length == 0) {
                 this.changeLogin();
-                return true;
+                this.register();
             }
         },
         changeLogin: function(username) {
