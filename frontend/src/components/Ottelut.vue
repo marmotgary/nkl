@@ -3,7 +3,7 @@
     <v-card-title class="d-flex flex-wrap-reverse">
       <div class="order-1">
         Ottelut
-        <v-select v-model="options[0]" style="width: 50%" :items="options">
+        <v-select v-on:input="selectChange(`${select.src}`)" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
         </v-select>
       </div>
       <div class="order-2">
@@ -58,6 +58,7 @@ export default {
                 { text: 'Tulos', sortable: false }
             ],
             matches: [],
+            defaultSelected: 'Kaikki ottelut',
             options: ['Kaikki ottelut','Runkosarja','Jatkosarja']
         };
     },
@@ -68,6 +69,10 @@ export default {
                     this.matches = data.body;
                 }
             );
+        },
+        selectChange: function(jau) {
+           console.log(this.defaultSelected)
+           console.log(jau)
         }
     },
     mounted: function() {
