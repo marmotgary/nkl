@@ -3,7 +3,7 @@
     <v-card-title class="d-flex flex-wrap-reverse">
       <div class="order-1">
         Ottelut
-        <v-select  v-on:input="getMatches()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
+        <v-select  v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
         </v-select>
       </div>
       <div class="order-2">
@@ -41,8 +41,6 @@
 
 <script>
 
-// /api/matches/?post_season=1
-
 export default {
     data: function() {
         return {
@@ -67,6 +65,15 @@ export default {
         };
     },
     methods: {
+        selectChange: function() {
+          if (this.defaultSelected == "Runkosarja") {
+            this.data = this.regular_season
+          } else if (this.defaultSelected == "Jatkosarja") {
+            this.data = this.post_season
+          } else {
+            this.data = this.matches
+          }
+        },
         getMatches: function() {
           let url = 'api/matches/';
           let i = 0;
@@ -85,15 +92,6 @@ export default {
                   }
               }
           );
-
-          if (this.defaultSelected == "Runkosarja") {
-            this.data = this.regular_season
-          } else if (this.defaultSelected == "Jatkosarja") {
-            this.data = this.post_season
-          } else {
-            this.data = this.matches
-          }
-
         },
     },
     mounted: function() {
