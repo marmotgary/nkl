@@ -2,7 +2,7 @@ from django.core.cache import cache
 
 
 def getFromCache(key):
-    print("Get cache", key)
+    # print("Get cache", key)
     # print(cache.get(key))
     return cache.get(key)
 
