@@ -63,7 +63,7 @@
       :headers="headers"
       :items="data"
       hide-actions
-      :pagination.sync="pagination"
+      :items-per-page="4"
       >
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
@@ -112,9 +112,6 @@ export default {
     },
     data: function() {
         return {
-            pagination: {
-              rowsPerPage: 4
-            },
             select: [],
             selected: [],
             show_input: false,

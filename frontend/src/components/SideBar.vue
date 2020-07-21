@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-data-table :headers="headers" :items="teams" v-bind:pagination.sync="pagination" hide-actions>
+    <v-data-table :headers="headers" :items="teams" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" hide-actions>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -20,6 +20,8 @@
 export default {
     data: function() {
         return {
+            sortBy: 'points_total',
+            sortDesc: true,
             headers: [
                 { text: 'Joukkue', value: 'abbreviation', sortable: false},
                 { text: 'O', value: 'matches_played', sortable: false},
@@ -28,7 +30,6 @@ export default {
                 { text: 'T', value: 'matches_tie', sortable: false},
                 { text: 'P', value: 'points_total'}
             ],
-            pagination: {'sortBy': 'points_total', 'descending': true, 'rowsPerPage': -1},
             teams: []
         };
     },
