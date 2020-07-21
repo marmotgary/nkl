@@ -8,17 +8,19 @@
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
-        "@babel/polyfill": "^7.10.1",
+        "@babel/polyfill": "^7.10.4",
+        "chokidar": "^3.4.1",
         "serialize-javascript": "^4.0.0",
         "vue": "^2.6.11",
+        "vue-loader": "^15.9.3",
         "vue-moment": "^4.1.0",
         "vue-resource": "^1.5.1",
-        "vue-router": "^3.3.2",
+        "vue-router": "^3.3.4",
         "vue-session": "^1.0.0",
-        "vuetify": "^2.2.33"
+        "vuetify": "^2.3.4"
     },
     "devDependencies": {
-        "@vue/cli-service": "^4.4.1",
+        "@vue/cli-service": "^4.4.6",
         "vue-template-compiler": "^2.6.11"
     },
     "postcss": {
