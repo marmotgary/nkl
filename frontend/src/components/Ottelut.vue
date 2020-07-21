@@ -10,7 +10,7 @@
         <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
       </div>
     </v-card-title>
-    <v-data-table :headers="headers" :items="data" :search="search" hide-actions>
+    <v-data-table :headers="headers" :items="data" :search="search" hide-default-footer>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>

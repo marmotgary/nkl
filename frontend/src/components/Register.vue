@@ -50,8 +50,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="info darken-1" flat @click="dialog = false">Sulje</v-btn>
-        <v-btn color="info darken-1" flat @click="checkForm">Valmis</v-btn>
+        <v-btn color="info darken-1" text @click="dialog = false">Sulje</v-btn>
+        <v-btn color="info darken-1" text @click="checkForm">Valmis</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

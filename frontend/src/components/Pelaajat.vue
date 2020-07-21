@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
+    <v-data-table :headers="headers" :items="players" :search="search" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>

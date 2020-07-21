@@ -1,7 +1,7 @@
 <template>
   <span>
     <v-flex mt-5></v-flex>
-    <v-navigation-drawer app v-model="drawer" class="gray lighten-1" dark disable-resize-watcher>
+    <v-navigation-drawer v-model="drawer" class="gray lighten-1" dark disable-resize-watcher>
       <v-list>
         <template v-for="(item, index) in items">
           <v-list-item :key="index">
@@ -13,8 +13,8 @@
         <register></register>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app color="grey darken-2" dark>
-      <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar color="grey darken-2" dark>
+      <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <router-link
         to="/"
@@ -22,13 +22,13 @@
       >
         <img src="../../public/kyykkalogo120px.png">
       </router-link>
-      <v-btn flat class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
-      <v-btn flat class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
-      <v-btn flat class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
-      <v-btn flat class="hidden-sm-and-down" to="/info">Info</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
+      <v-btn text class="hidden-sm-and-down" to="/info">Info</v-btn>
       <v-btn
         v-if="loggedIn && team_id"
-        flat
+        text
         class="hidden-sm-and-down"
         :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
@@ -39,7 +39,7 @@
       </div>
       <div v-if="loggedIn">
         {{ name }}
-        <v-btn flat class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
+        <v-btn text class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
 
       <v-spacer></v-spacer>

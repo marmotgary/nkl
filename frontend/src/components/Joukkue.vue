@@ -5,7 +5,7 @@
         <v-card>
           <v-container grid-list-sm fluid>
             <v-flex xs4 mb-4 d-flex offset-sm4>
-              <v-card flat tile class="d-flex">
+              <v-card text tile class="d-flex">
                 <img
                   src="../../public/kyykkalogo120px.png"
                 ></v-img>
@@ -16,12 +16,12 @@
                 :items="stats"
                 :headers="header"
                 content-tag="v-layout"
-                hide-actions
+                hide-default-footer
                 row
                 wrap
               >
                 <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
+                  <v-toolbar class="mb-2" color="red darken-5" dark text>
                     <v-toolbar-title>{{header}}</v-toolbar-title>
                   </v-toolbar>
                 </template>
@@ -56,9 +56,9 @@
                   </v-flex>
                 </template>
               </v-data-iterator>
-              <v-data-iterator :items="stats" content-tag="v-layout" hide-actions row wrap>
+              <v-data-iterator :items="stats" content-tag="v-layout" hide-default-footer row wrap>
                 <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
+                  <v-toolbar class="mb-2" color="red darken-5" dark text>
                     <v-toolbar-title></v-toolbar-title>
                   </v-toolbar>
                 </template>
@@ -96,7 +96,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-data-table :headers="headers" :items="players" hide-actions>
+    <v-data-table :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -124,19 +124,19 @@
           </template>
           <v-card>
           <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
-            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-actions>
+            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
               <template slot="items" slot-scope="props">
                 <div class="row">
                   <td v-if="props.item.team == null">
-                    <v-btn v-on:click="reserveButton(props.item)" flat icon color="green">
+                    <v-btn v-on:click="reserveButton(props.item)" text icon color="green">
                       <v-icon>fas fa-plus</v-icon>
                     </v-btn>
                   </td>
                   <td v-else>
-                    <v-btn flat disabled icon color="gray">
+                    <v-btn text disabled icon color="gray">
                       <v-icon>fas fa-lock</v-icon>
                     </v-btn>
                   </td>
