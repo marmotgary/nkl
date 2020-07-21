@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
-    <v-btn slot="activator">Log In</v-btn>
+    <template v-slot:activator="{on}">
+      <v-btn v-on="on">Log In</v-btn>
+    </template>
     <v-card>
       <v-card-title>
         <span class="headline">Log In</span>

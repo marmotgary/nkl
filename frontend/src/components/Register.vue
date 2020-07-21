@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
-    <v-btn slot="activator">Register</v-btn>
+    <template v-slot:activator="{on}">
+      <v-btn v-on="on">Register</v-btn>
+    </template>
     <v-card>
       <v-card-title>
         <span class="headline">Rekisteröityminen</span>
