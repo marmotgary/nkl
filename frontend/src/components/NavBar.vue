@@ -4,9 +4,9 @@
     <v-navigation-drawer app v-model="drawer" class="gray lighten-1" dark disable-resize-watcher>
       <v-list>
         <template v-for="(item, index) in items">
-          <v-list-tile :key="index">
-            <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-          </v-list-tile>
+          <v-list-item :key="index">
+            <v-list-item-content>{{ item.title }}</v-list-item-content>
+          </v-list-item>
           <v-divider :key="`divider-${index}`"></v-divider>
         </template>
         <log-in></log-in>

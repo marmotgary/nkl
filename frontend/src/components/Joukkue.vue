@@ -29,28 +29,28 @@
                   <v-flex xs12>
                     <v-card>
                       <v-list dense>
-                        <v-list-tile>
-                          <v-list-tile-content>Tehdyt pisteet:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.score_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Ottelut:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.match_count }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Hauet:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.pikes_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nolla heitot:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.zeros_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nolla aloitukset:</v-list-tile-content>
-                          <v-list-tile-content
+                        <v-list-item>
+                          <v-list-item-content>Tehdyt pisteet:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.score_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Ottelut:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.match_count }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Hauet:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.pikes_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Nolla heitot:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.zeros_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Nolla aloitukset:</v-list-item-content>
+                          <v-list-item-content
                             class="align-end"
-                          >{{ props.item.zero_first_throw_total }}</v-list-tile-content>
-                        </v-list-tile>
+                          >{{ props.item.zero_first_throw_total }}</v-list-item-content>
+                        </v-list-item>
                       </v-list>
                     </v-card>
                   </v-flex>
@@ -66,26 +66,26 @@
                   <v-flex xs12>
                     <v-card>
                       <v-list dense>
-                        <v-list-tile>
-                          <v-list-tile-content>Heitot:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.throws_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Pistettä per heitto:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.score_per_throw }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Haukiprosentti:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.pike_percentage }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nollaprosentti:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.zero_percentage }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Joulukuuset:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.gteSix_total }}</v-list-tile-content>
-                        </v-list-tile>
+                        <v-list-item>
+                          <v-list-item-content>Heitot:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.throws_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Pistettä per heitto:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.score_per_throw }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Haukiprosentti:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.pike_percentage }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Nollaprosentti:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.zero_percentage }}</v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-list-item-content>Joulukuuset:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.gteSix_total }}</v-list-item-content>
+                        </v-list-item>
                       </v-list>
                     </v-card>
                   </v-flex>
