@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-data-table :headers="headers" :items="teams" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" hide-actions>
+    <v-data-table :headers="headers" :items="teams" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>

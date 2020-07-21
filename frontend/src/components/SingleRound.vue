@@ -40,7 +40,7 @@
       disable-initial-sort
       :headers="headers"
       :items="data"
-      hide-actions
+      hide-default-footer
     >
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
@@ -62,7 +62,7 @@
       v-model="select"
       :headers="headers"
       :items="data"
-      hide-actions
+      hide-default-footer
       :items-per-page="4"
       >
       <template slot="no-data">
