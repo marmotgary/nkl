@@ -15,7 +15,7 @@
         slot-scope="props"
       >
         <td>{{ props.item.player_name }}</td>
-        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
+        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.abbreviation }}</td>
         <td v-else>Ei varausta</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
