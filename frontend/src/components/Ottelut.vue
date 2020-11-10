@@ -34,7 +34,6 @@
           color="error"
           icon="warning"
         >Your search for "{{ search }}" found no results.</v-alert>
-      </div>
     </v-data-table>
   </v-card>
 </template>
