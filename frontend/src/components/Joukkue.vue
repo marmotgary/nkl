@@ -96,7 +96,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-data-table :headers="headers" :items="players" hide-default-footer>
+    <v-data-table dense :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -124,7 +124,7 @@
           </template>
           <v-card>
           <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
-            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
+            <v-data-table dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
               <template slot="no-data">
                 <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
               </template>
