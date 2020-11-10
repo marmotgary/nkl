@@ -1,18 +1,6 @@
 <template>
   <span>
-    <v-flex mt-5></v-flex>
-    <v-navigation-drawer v-model="drawer" class="gray lighten-1" dark disable-resize-watcher>
-      <v-list>
-        <template v-for="(item, index) in items">
-          <v-list-item :key="index">
-            <v-list-item-content>{{ item.title }}</v-list-item-content>
-          </v-list-item>
-          <v-divider :key="`divider-${index}`"></v-divider>
-        </template>
-        <log-in></log-in>
-        <register></register>
-      </v-list>
-    </v-navigation-drawer>
+    <v-flex mt-10></v-flex>
     <v-toolbar color="grey darken-2" dark>
       <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
