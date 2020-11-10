@@ -48,12 +48,12 @@ export default {
                 {
                     text: 'Nimi',
                     value: 'player_name',
-                    width: '1%',
+                    width: '10%',
                     align: 'left'
                 },
                 {
                     text: 'Joukkue',
-                    value: 'team.name',
+                    value: 'team.abbreviation',
                     width: '1%',
                     align: 'left'
                 },
