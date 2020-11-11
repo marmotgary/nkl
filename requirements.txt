@@ -25,3 +25,4 @@ sqlparse==0.3.0
 text-unidecode==1.2
 uritemplate==3.0.0
 urllib3==1.25.7
+tdqm
