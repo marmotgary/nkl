@@ -10,6 +10,7 @@ DATABASES = {
         'USER': 'nkladmin',
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',
+        #FOR DOCKER 'HOST': 'DB',
         'PORT': '3306',
         }
 }
