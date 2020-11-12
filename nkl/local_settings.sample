@@ -14,7 +14,14 @@ DATABASES = {
         'PORT': '3306',
         }
 }
-
+# If running memcached in Docker
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'memcached:11211',
+        
+    }
+}
 INSTALLED_APPS = INSTALLED_APPS + ['debug_toolbar']
 MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
@@ -29,5 +36,7 @@ DEFAULT_FROM_EMAIL = 'kyykka@rauko.la'
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    CORS_ORIGIN_ALLOW_ALL=True
+    CORS_ORIGIN_WHITELIST = ["localhost:8080"]
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
