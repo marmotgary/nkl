@@ -8,9 +8,16 @@ services:
       - MYSQL_USER=nkladmin
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - './mysql:/var/lib/mysql'
   memcached:
     image: memcached
-  web:
+    ports:
+      - "11211:11211"
+    entrypoint:
+      - memcached
+      - -m 64
+  api:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -20,3 +27,13 @@ services:
     depends_on:
       - db
       - memcached
+  vue:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: vue-ui
+    volumes:
+        - ./frontend:/usr/src/app/my-app
+        - /usr/src/app/my-app/node_modules
