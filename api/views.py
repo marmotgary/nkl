@@ -102,7 +102,8 @@ class MatchDetailPermission(permissions.BasePermission):
 class LoginAPI(generics.GenericAPIView):
     """
     Creates session for user upon successful login
-    Set cookies sessionid and role (1 for player, 2 for captain)
+    Set sessionid and CSRF to cookies
+    Return User, role and team_id
     """
     serializer_class = LoginUserSerializer
 
