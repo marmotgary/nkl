@@ -56,12 +56,8 @@ export default {
         },
         login: function() {
             this.$session.start();
-            this.$http.get('api/csrf', {'withCredentials': true})
             this.$http
                 .post('api/login/', this.credentials, {
-                    headers: {
-                        'X-CSRFToken': this.getCookie('csrftoken'),
-                    },
                   'withCredentials': true,
                 })
                 .then(function(response) {
@@ -83,6 +79,7 @@ export default {
                         this.alert = !this.alert;
                     }).catch(function(response) {
                       if (response.status == 403) {
+                        // TODO: Should not happen, maybe change this for a notification. 
                         this.$http
                           .get('api/csrf', {'withCredentials': true})
                           .then(function(response) {

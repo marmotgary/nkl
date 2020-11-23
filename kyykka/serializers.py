@@ -442,7 +442,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     matches_played = serializers.SerializerMethodField()
     score_total = serializers.SerializerMethodField()
     points_total = serializers.SerializerMethodField()
-    points_average_difference = serializers.SerializerMethodField()
+    # points_average_difference = serializers.SerializerMethodField()
 
     def get_matches_won(self, obj):
         home_wins = obj.home_matches.filter(is_validated=True, season=self.context.get('season')).annotate(
@@ -481,8 +481,8 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_points_total(self, obj):
         return (self.matches_won * 2) + (self.matches_tie)
 
-    def get_points_average_difference(self, obj):
-        return None
+    # def get_points_average_difference(self, obj):
+    #     return None
 
 
     def get_score_total(self, obj):
