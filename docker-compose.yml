@@ -10,6 +10,8 @@ services:
       - MYSQL_ROOT_PASSWORD=password
     volumes:
       - './mysql:/var/lib/mysql'
+    ports:
+      - 3306:3306
   memcached:
     image: memcached
     ports:
