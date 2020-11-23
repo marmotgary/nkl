@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'kyykka.apps.KyykkaConfig',
-    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 LOGIN_URL = '/api/login/'

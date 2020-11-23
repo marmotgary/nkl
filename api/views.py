@@ -99,13 +99,14 @@ class MatchDetailPermission(permissions.BasePermission):
                                                                           is_captain=True).first().player
 
 class LoginAPI(generics.GenericAPIView):
+    # TODO: Verify what happens if eg. two browsers are used, and session ends in other one. 
     """
     Creates session for user upon successful login
     Set sessionid and CSRF to cookies
     Return User, role and team_id
     """
     serializer_class = LoginUserSerializer
-
+    
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

@@ -2,17 +2,20 @@ version: "3.8"
 
 services:
   db:
+    container_name: nkl-db
     image: mysql:5.7
     environment:
       - MYSQL_DATABASE=nkl
       - MYSQL_USER=nkladmin
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_HOST=localhost
     volumes:
       - './mysql:/var/lib/mysql'
     ports:
       - 3306:3306
   memcached:
+    container_name: nkl-memcached
     image: memcached
     ports:
       - "11211:11211"
@@ -20,6 +23,7 @@ services:
       - memcached
       - -m 64
   api:
+    container_name: nkl-django
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -30,6 +34,7 @@ services:
       - db
       - memcached
   vue:
+    container_name: nkl-vue
     build:
       context: ./frontend
       dockerfile: Dockerfile
