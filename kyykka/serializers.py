@@ -481,7 +481,7 @@ class TeamListSerializer(serializers.ModelSerializer):
     def get_points_total(self, obj):
         return (self.matches_won * 2) + (self.matches_tie)
 
-    def points_average_difference(self, obj):
+    def get_points_average_difference(self, obj):
         return None
 
 

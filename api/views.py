@@ -16,7 +16,6 @@ from kyykka.serializers import *
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.contrib.auth import authenticate, login, logout
 import json
-
 from utils.caching import getFromCache, setToCache, cache_reset_key, reset_match_cache
 
 schema_view = get_swagger_view(title='NKL API')
