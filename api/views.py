@@ -152,7 +152,7 @@ class RegistrationAPI(generics.GenericAPIView):
 class ReservePlayerAPI(generics.GenericAPIView):
     serializer_class = ReserveCreateSerializer
     queryset = User.objects.all()
-    # permission_classes = [IsAuthenticated, IsCaptain]
+    permission_classes = [IsAuthenticated, IsCaptain]
 
     def get(self, request):
         season = getSeason(request)
@@ -164,10 +164,16 @@ class ReservePlayerAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         success, message = serializer.save()
-        return Response({
+        if success is False:
+            return Response({
             'success': success,
             'message': message,
-        })
+            }, status=400)
+        else: # Success 200
+            return Response({
+                'success': success,
+                'message': message,
+            })
 
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
