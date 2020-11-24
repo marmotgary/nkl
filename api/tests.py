@@ -81,10 +81,12 @@ class PlayerReservation(APITestCase):
         CurrentSeason.objects.create(season = season)
         team1 = Team.objects.create(name="Team 1", abbreviation="T1")
         team2 = Team.objects.create(name="Team 2", abbreviation="T2")
+        User.objects.create_superuser('test', '', 'test')
         user1 = User.objects.create_user("email1", "email1", "password")
         user2 = User.objects.create_user("email2", "email2", "password")
         user3 = User.objects.create_user("email3", "email3", "password")
         user4 = User.objects.create_user("email4", "email4", "password")
+
         user1.first_name = "Captain"
         PlayersInTeam.objects.create(season=CurrentSeason.objects.first().season,
                                     team=team1, player=user1, is_captain=True)
@@ -92,6 +94,13 @@ class PlayerReservation(APITestCase):
                                     team=team1, player=user2, is_captain=False)
         PlayersInTeam.objects.create(season=CurrentSeason.objects.first().season,
                                     team=team2, player=user4, is_captain=False)
+
+    def test_get_reservation_list(self):
+        url = reverse("reserve")
+        self.client.login(username='email1', password='password')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(User.objects.filter(is_superuser=False).count(), len(response.data))
 
     def test_captain_reserve(self):
         url = reverse("reserve")

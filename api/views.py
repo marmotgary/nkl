@@ -156,7 +156,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 
     def get(self, request):
         season = getSeason(request)
-        queryset = User.objects.all()
+        queryset = User.objects.filter(is_superuser=False)
         serializer = ReserveListSerializer(queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
