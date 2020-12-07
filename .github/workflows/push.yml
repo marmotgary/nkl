@@ -20,16 +20,16 @@ jobs:
   #         issue_assignees: oke-py
   #         issue_labels: vulnerability,test
   #         dedupe_issues: true
-  njsscan:
-    runs-on: ubuntu-latest
-    name: njsscan check
-    steps:
-      - uses: actions/checkout@v1
-      - name: njsscan
-        id: njsscan
-        uses: ajinabraham/njsscan-action@v5
-        with:
-          args: '.'
+  # njsscan:
+  #   runs-on: ubuntu-latest
+  #   name: njsscan check
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: njsscan
+  #       id: njsscan
+  #       uses: ajinabraham/njsscan-action@v5
+  #       with:
+  #         args: '.'
   run_tests:
     name: Run Django Tests
     runs-on: ubuntu-latest
@@ -37,12 +37,11 @@ jobs:
       db:
         image: mysql:5.7
         env:
-            MYSQL_USER: test
-            MYSQL_PASSWORD: test
+            MYSQL_ALLOW_EMPTY_PASSWORD: yes
             MYSQL_DATABASE: nkl
         ports:
             - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=5s --health-retries=10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
