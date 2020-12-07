@@ -100,8 +100,8 @@ if SYSTEM_ENV == 'GITHUB_WORKFLOW':
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'nkl',
-            'USER': 'test',
-            'PASSWORD': 'test',
+            'USER': 'root',
+            'PASSWORD': '',
             'HOST': '127.0.0.1',
             'PORT': '3306',
             }
