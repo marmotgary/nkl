@@ -1,0 +1,55 @@
+
+name: NKL CI
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  # npmaudit:
+  #   name: npm audit
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: install dependencies
+  #       run: npm ci
+  #     - uses: oke-py/npm-audit-action@v1.5.2
+  #       with:
+  #         audit_level: moderate
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         issue_assignees: oke-py
+  #         issue_labels: vulnerability,test
+  #         dedupe_issues: true
+  njsscan:
+    runs-on: ubuntu-latest
+    name: njsscan check
+    steps:
+      - uses: actions/checkout@v1
+      - name: njsscan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@v5
+        with:
+          args: '.'
+  run_tests:
+    name: Run Django Tests
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mysql:5.7
+        env:
+            MYSQL_ALLOW_EMPTY_PASSWORD: yes
+            MYSQL_DATABASE: nkl
+        ports:
+            - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.9.0
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9.0
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: python manage.py test
