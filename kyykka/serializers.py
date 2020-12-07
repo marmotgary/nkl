@@ -259,10 +259,6 @@ class ReserveCreateSerializer(serializers.ModelSerializer):
         add_player = validated_data['player']
         season = CurrentSeason.objects.first().season
         try:
-            print('reserve', user.id, add_player)
-        except:
-            print('reserve kosahti')
-        try:
             team = user.team_set.get(playersinteam__season=season)
             PlayersInTeam.objects.create(season=season, team=team, player=add_player)
         except IntegrityError:

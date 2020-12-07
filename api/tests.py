@@ -11,7 +11,7 @@ import datetime
 class UserRegistration(APITestCase):
     """ Test user registration """
 
-    def test_user_registration(self):
+    def test_user_registration_success(self):
         url = reverse("register")
         data = {'username': '1@test.account',
                 'first_name': 'Test',
@@ -48,7 +48,7 @@ class UserRegistration(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
 
-    def test_incorrect_number(self):
+    def test_string_as_number(self):
         url = reverse("register")
         data = {'username': '1@test.account',
                 'first_name': 'Test',
@@ -59,7 +59,7 @@ class UserRegistration(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
 
-    def test_incorrect_number2(self):
+    def test_large_number(self):
         url = reverse("register")
         data = {'username': '1@test.account',
                 'first_name': 'Test',
@@ -121,7 +121,7 @@ class PlayerReservation(APITestCase):
         data = {"player": User.objects.get(email="email3").id}
         self.client.login(username='email2', password='password')
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)       
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 # class GetAllMatches(APITestCase):
