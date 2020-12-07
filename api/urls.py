@@ -33,12 +33,12 @@ urlpatterns = [
     path('register/', views.RegistrationAPI.as_view(), name="register"),
     path('reserve/', views.ReservePlayerAPI.as_view(), name="reserve"),
     path('matches/', views.MatchList.as_view(), name='matches-list'),
-    path('matches/<int:pk>', views.MatchDetail.as_view()),
+    path('matches/<int:pk>', views.MatchDetail.as_view(), name='matches-detail'),
     path('throws/update/<int:pk>/', views.ThrowAPI.as_view()),
 ]
 
 router = SimpleRouter()
-router.register(r'players', views.PlayerViewSet)
+router.register(r'players', views.PlayerViewSet, "player")
 router.register(r'teams', views.TeamViewSet)
 # router.register(r'matches', views.MatchViewSet)
 # router.register(r'reserve', views.ReservePlayerViewSet)
