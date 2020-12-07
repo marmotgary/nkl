@@ -102,7 +102,7 @@ if SYSTEM_ENV == 'GITHUB_WORKFLOW':
             'NAME': 'nkl',
             'USER': 'nkladmin',
             'PASSWORD': 'password',
-            'HOST': 'db',
+            'HOST': '127.0.0.1',
             'PORT': '3306',
             }
     }
