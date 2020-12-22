@@ -356,6 +356,27 @@ class GetStatsWhenNoThrows(APITestCase):
         # self.assertEqual(response.data[0]["scaled_points_per_round"], 0)
         self.assertEqual(response.data[0]["avg_throw_turn"], 0)
 
+    @override_settings(CACHES=TEST_CACHES)
+    def test_get_team(self):
+        player = User.objects.get(email="test@captain.1")
+        url = "/api/teams/"+str(Team.objects.get(name="Team 1").id)+"/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["score_total"], 0)
+        self.assertEqual(response.data["match_count"], 0)
+        self.assertEqual(response.data["pikes_total"], 0)
+        self.assertEqual(response.data["zeros_total"], 0)
+        self.assertEqual(response.data["zero_first_throw_total"], 0)
+        self.assertEqual(response.data["pike_first_throw_total"], 0)
+        self.assertEqual(response.data["throws_total"], 0)
+        self.assertEqual(response.data["gteSix_total"], 0)
+        self.assertEqual(response.data["pike_percentage"], 0)
+        self.assertEqual(response.data["zero_percentage"], 0)
+        self.assertEqual(response.data["score_per_throw"], 0)
+        for p in response.data["players"]:
+            if p["id"] == player.id:
+                self.assertEqual(int(p["gteSix_total"]), 0)
+
     # @override_settings(CACHES=TEST_CACHES)
     # def test_get_player_detail(self):
     #     player = User.objects.get(email="test@captain.1")
@@ -378,29 +399,6 @@ class GetStatsWhenNoThrows(APITestCase):
     #     self.assertEqual(response.data["zero_percentage"], 0)
     #     self.assertEqual(response.data["score_per_throw"], 0)
     #     self.assertEqual(response.data["avg_throw_turn"], 0)
-
-    @override_settings(CACHES=TEST_CACHES)
-    def test_get_team(self):
-        player = User.objects.get(email="test@captain.1")
-        url = "/api/teams/"+str(Team.objects.get(name="Team 1").id)+"/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["score_total"], 0)
-        self.assertEqual(response.data["match_count"], 0)
-        self.assertEqual(response.data["pikes_total"], 0)
-        self.assertEqual(response.data["zeros_total"], 0)
-        self.assertEqual(response.data["zero_first_throw_total"], 0)
-        self.assertEqual(response.data["pike_first_throw_total"], 0)
-        self.assertEqual(response.data["throws_total"], 0)
-        self.assertEqual(response.data["gteSix_total"], 0)
-        self.assertEqual(response.data["pike_percentage"], 0)
-        self.assertEqual(response.data["zero_percentage"], 0)
-        self.assertEqual(response.data["score_per_throw"], 0)
-        for p in response.data["players"]:
-            if p["id"] == player.id:
-                self.assertEqual(int(p["gteSix_total"]), 0)
-
-
 # class GetAllMatches(APITestCase):
 #     """ Test module for GET MatchList API  """
 
