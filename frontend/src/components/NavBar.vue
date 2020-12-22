@@ -1,9 +1,7 @@
 <template>
   <span>
     <v-flex mt-10></v-flex>
-    <v-toolbar color="grey darken-2" dark>
-      <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-spacer></v-spacer>
+    <v-app-bar color="grey darken-2" dark>
       <router-link
         to="/"
         style="text-decoration: none; color:white; padding-right:2em; padding-left:1em;"
@@ -21,17 +19,85 @@
         :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <div v-if="!loggedIn">
-        <log-in class="hidden-sm-and-down"></log-in>
-        <register class="hidden-sm-and-down"></register>
+      <div class="hidden-sm-and-down" v-if="!loggedIn">
+        <log-in></log-in>
+        <register></register>
       </div>
       <div v-if="loggedIn">
         {{ name }}
         <v-btn text class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
-
       <v-spacer></v-spacer>
-    </v-toolbar>
+      <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"/>
+    </v-app-bar>
+    
+      <v-navigation-drawer
+      v-model="drawer"
+      right
+      absolute
+      temporary
+      >
+      <v-layout column fill-height>
+        <v-list
+          nav
+          dense
+        >
+          <v-list-item-group
+            v-model="group"
+            active-class="text--accent-4"
+          >
+            <v-list-item to="/">
+              <v-list-item-icon>
+                <v-icon>mdi-home</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item to="/ottelut">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Ottelut</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item to="/joukkueet">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Joukkueet</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item to="/pelaajat">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Pelaajat</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item to="/info">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Info</v-list-item-title>
+            </v-list-item>
+
+          <v-list-item v-if="loggedIn && team_id" :to="'/joukkue/'+this.team_id">
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Oma joukkue</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+        <v-spacer></v-spacer>
+          <log-in v-if="!loggedIn" class="hidden-sm-and-down"></log-in>
+          <register v-if="!loggedIn" class="hidden-sm-and-down"></register>
+          <p v-if="loggedIn">{{ name }}</p>
+          <v-btn v-if="loggedIn" text class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
+        </div>
+      </v-layout>
+      </v-navigation-drawer>
+
   </span>
 </template>
 
@@ -51,6 +117,7 @@ export default {
             appTitle: 'NKL',
             drawer: false,
             loggedIn: false,
+            group: false,
             name: '',
             team_id: '',
             items: [
@@ -113,7 +180,7 @@ a {
 
 
 <style scoped>
-.v-toolbar--fixed {
+.v-app-bar--fixed {
     position: inherit;
 }
 </style>
