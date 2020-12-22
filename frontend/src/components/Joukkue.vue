@@ -21,9 +21,9 @@
                 wrap
               >
                 <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark text>
-                    <v-toolbar-title>{{header}}</v-toolbar-title>
-                  </v-toolbar>
+                  <v-app-bar class="mb-2" color="red darken-5" dark text>
+                    <v-app-bar-title>{{header}}</v-app-bar-title>
+                  </v-app-bar>
                 </template>
                 <template v-slot:item="props">
                   <v-flex xs12>
@@ -58,9 +58,9 @@
               </v-data-iterator>
               <v-data-iterator :items="stats" content-tag="v-layout" hide-default-footer row wrap>
                 <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark text>
-                    <v-toolbar-title></v-toolbar-title>
-                  </v-toolbar>
+                  <v-app-bar class="mb-2" color="red darken-5" dark text>
+                    <v-app-bar-title></v-app-bar-title>
+                  </v-app-bar>
                 </template>
                 <template v-slot:item="props">
                   <v-flex xs12>
