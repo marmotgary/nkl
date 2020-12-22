@@ -12,7 +12,7 @@
           :value="alert"
           type="info"
           transition="scale-transition"
-          outline
+          outlined
         >Invalid user credentials.</v-alert>
         <v-container grid-list-md>
           <v-layout wrap>

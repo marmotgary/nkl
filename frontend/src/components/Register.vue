@@ -8,7 +8,7 @@
         <span class="headline">Rekisteröityminen</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="info" transition="scale-transition" outline>
+        <v-alert :value="alert" type="info" transition="scale-transition" outlined>
           <b>Korjaa seuraava(t):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
