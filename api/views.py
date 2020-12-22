@@ -184,7 +184,7 @@ class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, format=None):
         season = getSeason(request)
-        key = 'all_players'
+        key = 'all_players_' + str(season.year)
         all_players = getFromCache(key)
         if all_players is None:
             self.queryset = self.queryset.filter(playersinteam__season=season)
@@ -208,7 +208,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request):
         season = getSeason(request)
-        key = 'all_teams'
+        key = 'all_teams_' + str(season.year)
         all_teams = getFromCache(key)
         if all_teams is None:
             self.queryset = self.queryset.filter(playersinteam__season=season).distinct()
@@ -254,10 +254,10 @@ class MatchList(APIView):
 
     def get(self, request):
         season = getSeason(request)
-        self.queryset = self.queryset.filter(season=season)
-        key = 'all_matches'
+        key = 'all_matches_' + str(season.year)
         all_matches = getFromCache(key)
         if all_matches is None:
+            self.queryset = self.queryset.filter(season=season)
             serializer = MatchListSerializer(self.queryset, many=True, context={'season': season})
             all_matches = serializer.data
             setToCache(key, all_matches)

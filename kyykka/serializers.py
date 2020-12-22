@@ -99,6 +99,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         match_count = getFromCache(key)
         if match_count is None:
             match_count = Match.objects.filter(season=self.context.get('season'), throw__player=obj).distinct().count()
+            if match_count is None:
+                match_count = 0
             setToCache(key, match_count)
         return match_count
 
@@ -129,6 +131,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                                                                                                              filter=Q(
                                                                                                                  score_third='h')) + Count(
                     'pk', filter=Q(score_fourth='h'))).aggregate(Sum('count'))['count__sum']
+            if pikes_total is None:
+                pikes_total = 0
             setToCache(key, pikes_total)
         # pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=-1)),second=Count('pk',filter=Q(score_second=-1)),third=Count('pk',filter=Q(score_third=-1)),fourth=Count('pk',filter=Q(score_fourth=-1)))
         # self.pikes = pikes['first'] + pikes['second'] + pikes['third'] + pikes['fourth']
@@ -144,6 +148,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                                                                                                            filter=Q(
                                                                                                                score_third=0)) + Count(
                     'pk', filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']
+            if zeros_total is None:
+                zeros_total = 0
             setToCache(key, zeros_total)
         # zeros = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=0)),second=Count('pk',filter=Q(score_second=0)),third=Count('pk',filter=Q(score_third=0)),fourth=Count('pk',filter=Q(score_fourth=0)))
         # self.zeros = zeros['first'] + zeros['second'] + zeros['third'] + zeros['fourth']
@@ -160,9 +166,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                     'pk', filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(
                 Sum('count'))['count__sum']
             if gteSix_total is None:
-                setToCache(key, 0)
-            else:
-                setToCache(key, gteSix_total)
+                gteSix_total = 0
+            setToCache(key, gteSix_total)
         return gteSix_total
 
     def get_throws_total(self, obj):
@@ -171,6 +176,8 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         throws_total = getFromCache(key)
         if throws_total is None:
             throws_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).count() * 4
+            if throws_total is None:
+                throws_total = 0
             setToCache(key, throws_total)
         self.throws = throws_total
         return self.throws
@@ -186,9 +193,9 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                 pike_percentage = round((pike_count / total_count) * 100, 2)
             except (ZeroDivisionError, TypeError):
                 pike_percentage = 0
+            if pike_percentage is None:
+                pike_percentage = 0
             setToCache(key, pike_percentage)
-        if pike_percentage is None:
-            return 0
         return pike_percentage
 
     def get_score_per_throw(self, obj):
