@@ -21,6 +21,7 @@ class UserRegistration(APITestCase):
                 'number': 1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["success"], True)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().username, '1@test.account')
         self.assertEqual(User.objects.get().first_name, 'Test')
@@ -109,6 +110,7 @@ class PlayerReservation(APITestCase):
         self.client.login(username='email1', password='password')
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["success"], True)
 
     def test_captain_reserve_reserved(self):
         url = reverse("reserve")
@@ -117,7 +119,7 @@ class PlayerReservation(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_not_captain_reserve(self):
+    def test_reserve_as_not_captain(self):
         url = reverse("reserve")
         data = {"player": User.objects.get(email="email3").id}
         self.client.login(username='email2', password='password')
@@ -125,8 +127,8 @@ class PlayerReservation(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class Stats(APITestCase):
-    """ Test stats """
+class PikeCountInStats(APITestCase):
+    """ Verify that pikes are counted and shown correctly in stats """
 
     TEST_CACHES = {
         'default': {
@@ -223,6 +225,180 @@ class Stats(APITestCase):
             if p["id"] == player.id:
                 self.assertEqual(int(p["pikes_total"]), 2)
 
+
+class SixCountInStats(APITestCase):
+    """ Verify that sixes are counted and shown correctly in stats """
+
+    TEST_CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+
+    def setUp(self):
+        Season.objects.create(year=2020)
+        currentSeason = Season.objects.create(year=2021)
+        CurrentSeason.objects.create(season = currentSeason)
+        team1 = Team.objects.create(name="Team 1", abbreviation="T1")
+        team2 = Team.objects.create(name="Team 2", abbreviation="T2")
+
+        user1 = User.objects.create_user("test@captain.1", "test@captain.1", "password")
+        PlayersInTeam.objects.create(season=currentSeason,
+                                    team=team1, player=user1, is_captain=True)
+        user2 = User.objects.create_user("test@captain.2", "test@captain.2", "password")
+        PlayersInTeam.objects.create(season=currentSeason,
+                                    team=team2, player=user2, is_captain=True)
+
+        match1 = Match.objects.create(
+            season=currentSeason,
+            match_time=datetime.datetime.now(),
+            home_team=team1,
+            away_team=team2,
+            is_validated=True
+        )
+        match2 = Match.objects.create(
+            season=currentSeason,
+            match_time=datetime.datetime.now(),
+            home_team=team2,
+            away_team=team1,
+            is_validated=True
+        )
+        match3 = Match.objects.create(
+            season=currentSeason,
+            match_time=datetime.datetime.now(),
+            home_team=team2,
+            away_team=team1,
+            is_validated=False
+        )
+        # Generate exactly 8 legal sixes.
+        Throw.objects.create(
+                    match=match1, player=user1, team=team1, season=currentSeason, throw_round=1,
+                    throw_turn=1, score_first=6, score_second=7
+        )
+        Throw.objects.create(
+                    match=match1, player=user1, team=team1, season=currentSeason, throw_round=2,
+                    throw_turn=4, score_third=8, score_fourth=9
+        )
+        Throw.objects.create(
+                    match=match2, player=user1, team=team1, season=currentSeason, throw_round=1,
+                    throw_turn=1, score_first=6, score_second=7, score_third=8, score_fourth=9
+        )
+        # Match not validated, these sixes should not show up in stats
+        Throw.objects.create(
+                    match=match3, player=user1, team=team1, season=currentSeason, throw_round=1,
+                    throw_turn=1, score_first=6, score_second=7
+        )
+           
+
+
+    @override_settings(CACHES=TEST_CACHES)
+    def test_sixes_from_player_list(self):
+        url = reverse("player-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["gteSix_total"], 8)
+
+    @override_settings(CACHES=TEST_CACHES)
+    def test_sixes_from_player_detail(self):
+        player = User.objects.get(email="test@captain.1")
+        url = "/api/players/"+str(player.id)+"/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["gteSix_total"], 8)
+
+    @override_settings(CACHES=TEST_CACHES)
+    def test_sixes_from_team_page(self):
+        player = User.objects.get(email="test@captain.1")
+        url = "/api/teams/"+str(Team.objects.get(name="Team 1").id)+"/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["gteSix_total"], 8)
+        for p in response.data["players"]:
+            if p["id"] == player.id:
+                self.assertEqual(int(p["gteSix_total"]), 8)
+
+
+class GetStatsWhenNoThrows(APITestCase):
+    """ Verify that API behaves as expected when no throw objects are not associated to user """
+
+    TEST_CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+
+    def setUp(self):
+        Season.objects.create(year=2020)
+        currentSeason = Season.objects.create(year=2021)
+        CurrentSeason.objects.create(season = currentSeason)
+        team1 = Team.objects.create(name="Team 1", abbreviation="T1")
+        team2 = Team.objects.create(name="Team 2", abbreviation="T2")
+
+        user1 = User.objects.create_user("test@captain.1", "test@captain.1", "password")
+        PlayersInTeam.objects.create(season=currentSeason,
+                                    team=team1, player=user1, is_captain=True)
+
+
+    @override_settings(CACHES=TEST_CACHES)
+    def test_get_player_list(self):
+        url = reverse("player-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["score_total"], 0)
+        self.assertEqual(response.data[0]["rounds_total"], 0)
+        self.assertEqual(response.data[0]["pikes_total"], 0)
+        self.assertEqual(response.data[0]["zeros_total"], 0)
+        self.assertEqual(response.data[0]["gteSix_total"], 0)
+        self.assertEqual(response.data[0]["throws_total"], 0)
+        self.assertEqual(response.data[0]["pike_percentage"], 0)
+        self.assertEqual(response.data[0]["score_per_throw"], 0)
+        # self.assertEqual(response.data[0]["scaled_points"], 0)
+        # self.assertEqual(response.data[0]["scaled_points_per_round"], 0)
+        self.assertEqual(response.data[0]["avg_throw_turn"], 0)
+
+    # @override_settings(CACHES=TEST_CACHES)
+    # def test_get_player_detail(self):
+    #     player = User.objects.get(email="test@captain.1")
+    #     url = "/api/players/"+str(player.id)+"/"
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(response.data["score_total"], 0)
+    #     self.assertEqual(response.data["match_count"], 0)
+    #     self.assertEqual(response.data["rounds_total"], 0)
+    #     self.assertEqual(response.data["zeros_total"], 0)
+    #     self.assertEqual(response.data["ones_total"], 0)
+    #     self.assertEqual(response.data["twos_total"], 0)
+    #     self.assertEqual(response.data["threes_total"], 0)
+    #     self.assertEqual(response.data["fours_total"], 0)
+    #     self.assertEqual(response.data["fives_total"], 0)
+    #     self.assertEqual(response.data["gteSix_total"], 0)
+    #     self.assertEqual(response.data["pikes_total"], 0)
+    #     self.assertEqual(response.data["throws_total"], 0)
+    #     self.assertEqual(response.data["pike_percentage"], 0)
+    #     self.assertEqual(response.data["zero_percentage"], 0)
+    #     self.assertEqual(response.data["score_per_throw"], 0)
+    #     self.assertEqual(response.data["avg_throw_turn"], 0)
+
+    @override_settings(CACHES=TEST_CACHES)
+    def test_get_team(self):
+        player = User.objects.get(email="test@captain.1")
+        url = "/api/teams/"+str(Team.objects.get(name="Team 1").id)+"/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["score_total"], 0)
+        self.assertEqual(response.data["match_count"], 0)
+        self.assertEqual(response.data["pikes_total"], 0)
+        self.assertEqual(response.data["zeros_total"], 0)
+        self.assertEqual(response.data["zero_first_throw_total"], 0)
+        self.assertEqual(response.data["pike_first_throw_total"], 0)
+        self.assertEqual(response.data["throws_total"], 0)
+        self.assertEqual(response.data["gteSix_total"], 0)
+        self.assertEqual(response.data["pike_percentage"], 0)
+        self.assertEqual(response.data["zero_percentage"], 0)
+        self.assertEqual(response.data["score_per_throw"], 0)
+        for p in response.data["players"]:
+            if p["id"] == player.id:
+                self.assertEqual(int(p["gteSix_total"]), 0)
 
 
 # class GetAllMatches(APITestCase):
