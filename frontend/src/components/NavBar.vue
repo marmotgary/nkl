@@ -1,7 +1,7 @@
 <template>
   <span>
     <v-flex mt-10></v-flex>
-    <v-app-bar color="grey darken-2" dark>
+    <v-app-bar style="z-index:999;" color="grey darken-2" dark>
       <router-link
         to="/"
         style="text-decoration: none; color:white; padding-right:2em; padding-left:1em;"
@@ -36,21 +36,17 @@
       right
       absolute
       temporary
+      dark
       >
-      <v-layout column fill-height>
-        <v-list
-          nav
-          dense
-        >
+        <v-list nav>
           <v-list-item-group
-            v-model="group"
             active-class="text--accent-4"
           >
             <v-list-item to="/">
               <v-list-item-icon>
                 <v-icon>mdi-home</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Home</v-list-item-title>
+              <v-list-item-title>Koti</v-list-item-title>
             </v-list-item>
 
             <v-list-item to="/ottelut">
@@ -81,25 +77,25 @@
               <v-list-item-title>Info</v-list-item-title>
             </v-list-item>
 
-          <v-list-item v-if="loggedIn && team_id" :to="'/joukkue/'+this.team_id">
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Oma joukkue</v-list-item-title>
+            <v-list-item v-if="loggedIn && team_id" :to="'/joukkue/'+this.team_id">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Oma joukkue</v-list-item-title>
             </v-list-item>
+
           </v-list-item-group>
         </v-list>
-        <v-spacer></v-spacer>
-          <log-in v-if="!loggedIn" class="hidden-sm-and-down"></log-in>
-          <register v-if="!loggedIn" class="hidden-sm-and-down"></register>
-          <p v-if="loggedIn">{{ name }}</p>
-          <v-btn v-if="loggedIn" text class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
-        </div>
-      </v-layout>
+        <!-- <v-spacer></v-spacer> -->
+        <log-in v-if="!loggedIn"></log-in>
+        <register v-if="!loggedIn"></register>
+        <p v-if="loggedIn">{{ name }}</p>
+        <v-btn v-if="loggedIn" text v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </v-navigation-drawer>
 
   </span>
 </template>
+
 
 <script>
 import LogIn from '@/components/LogIn';
