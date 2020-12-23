@@ -30,7 +30,6 @@
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"/>
     </v-app-bar>
-    
       <v-navigation-drawer
       v-model="drawer"
       right
@@ -87,10 +86,33 @@
           </v-list-item-group>
         </v-list>
         <!-- <v-spacer></v-spacer> -->
-        <log-in v-if="!loggedIn"></log-in>
-        <register v-if="!loggedIn"></register>
+        
         <p v-if="loggedIn">{{ name }}</p>
         <v-btn v-if="loggedIn" text v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
+        <template v-slot:append>
+          <div class="pa-2">
+            <log-in v-if="!loggedIn"></log-in>
+          </div>
+          <div class="pr-2 pl-2 pb-2">
+            <register v-if="!loggedIn"></register>
+          </div>
+          <div v-if="loggedIn" class="pa-2">
+            <v-btn width=100% v-on:click.native="logout()" :to="'/'">Log out</v-btn>
+          </div>
+        </template>
+
+        <template v-if="loggedIn" v-slot:prepend>
+        <v-list-item two-line>
+          <v-list-item-avatar>
+            <img src="https://randomuser.me/api/portraits/women/81.jpg">
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ name }}</v-list-item-title>
+            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
       </v-navigation-drawer>
 
   </span>
