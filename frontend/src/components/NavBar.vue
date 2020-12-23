@@ -88,20 +88,19 @@
               <v-list-item-title>Oma joukkue</v-list-item-title>
             </v-list-item>
 
+            <v-list-item style="margin-top: 190%;">
+              <div class="pa-2">
+                <log-in v-if="!loggedIn"></log-in>
+              </div>
+              <div class="pl-4">
+                <register v-if="!loggedIn"></register>
+              </div>
+              <div v-if="loggedIn" class="pa-2">
+                <v-btn width=100% v-on:click.native="logout()" :to="'/'">Log out</v-btn>
+              </div>
+            </v-list-item>
           </v-list-item-group>
         </v-list>
-        <template v-slot:append>
-          <div class="pa-2">
-            <log-in v-if="!loggedIn"></log-in>
-          </div>
-          <div class="pr-2 pl-2 pb-2">
-            <register v-if="!loggedIn"></register>
-          </div>
-          <div v-if="loggedIn" class="pa-2">
-            <v-btn width=100% v-on:click.native="logout()" :to="'/'">Log out</v-btn>
-          </div>
-        </template>
-
         <template v-if="loggedIn" v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
@@ -136,7 +135,6 @@ export default {
             appTitle: 'NKL',
             drawer: false,
             loggedIn: false,
-            group: false,
             name: '',
             team_id: '',
             items: [
