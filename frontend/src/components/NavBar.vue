@@ -1,7 +1,7 @@
 <template>
   <span>
     <v-flex mt-10></v-flex>
-    <v-app-bar style="z-index:2;" color="grey darken-2" dark>
+    <v-app-bar style="z-index:2;" color="grey darken-3" dark>
       <router-link
         to="/"
         style="text-decoration: none; color:white; padding-right:2em; padding-left:1em;"
