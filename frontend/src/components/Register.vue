@@ -1,14 +1,15 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{on}">
-      <v-btn v-on="on">Register</v-btn>
+      <v-btn class="hidden-md-and-up" width="100%" v-on="on">Register</v-btn>
+      <v-btn class="hidden-sm-and-down" v-on="on">Register</v-btn>
     </template>
     <v-card>
       <v-card-title>
         <span class="headline">Rekisteröityminen</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="info" transition="scale-transition" outlined>
+        <v-alert :value="alert" type="error" transition="scale-transition" outlined>
           <b>Korjaa seuraava(t):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
@@ -50,10 +51,9 @@
         </v-container>
         <small>*pakollinen kenttä</small>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="info darken-1" text @click="dialog = false">Sulje</v-btn>
-        <v-btn color="info darken-1" text @click="checkForm">Valmis</v-btn>
+      <v-card-actions class=justify-center>
+        <v-btn color="red darken-1" text @click="checkForm">Register</v-btn>
+        <v-btn color="red darken-1" text @click="dialog = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
