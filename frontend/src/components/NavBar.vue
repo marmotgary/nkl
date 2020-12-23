@@ -19,8 +19,13 @@
         :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
       <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <div class="hidden-sm-and-down" v-if="!loggedIn">
+      <v-spacer class="hidden-sm-and-down"></v-spacer>
+      <v-spacer class="hidden-sm-and-down"></v-spacer>
+      <v-spacer class="hidden-sm-and-down"></v-spacer>
+      <div class="hidden-sm-and-down pa-4" v-if="!loggedIn">
         <log-in></log-in>
+      </div>
+      <div class="hidden-sm-and-down">
         <register></register>
       </div>
       <div v-if="loggedIn">
@@ -85,10 +90,6 @@
 
           </v-list-item-group>
         </v-list>
-        <!-- <v-spacer></v-spacer> -->
-        
-        <p v-if="loggedIn">{{ name }}</p>
-        <v-btn v-if="loggedIn" text v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
         <template v-slot:append>
           <div class="pa-2">
             <log-in v-if="!loggedIn"></log-in>
