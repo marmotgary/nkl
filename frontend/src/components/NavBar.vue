@@ -55,28 +55,28 @@
 
             <v-list-item to="/ottelut">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-space-invaders</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Ottelut</v-list-item-title>
             </v-list-item>
 
             <v-list-item to="/joukkueet">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-emoticon-poop</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Joukkueet</v-list-item-title>
             </v-list-item>
 
             <v-list-item to="/pelaajat">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-account-group</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Pelaajat</v-list-item-title>
             </v-list-item>
 
             <v-list-item to="/info">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-information-outline</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Info</v-list-item-title>
             </v-list-item>
