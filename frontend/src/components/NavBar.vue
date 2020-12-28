@@ -88,7 +88,7 @@
               <v-list-item-title>Info</v-list-item-title>
             </v-list-item>
 
-            <v-list-item style="margin-top: 190%;">
+            <v-list-item>
               <div class="pa-2">
                 <log-in v-if="!loggedIn"></log-in>
               </div>
@@ -112,7 +112,7 @@
               <v-list-item-subtitle>Logged In</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-      </template>
+        </template>
       </v-navigation-drawer>
 
   </span>
