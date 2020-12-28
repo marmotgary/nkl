@@ -3,14 +3,14 @@
     <v-card-title class="d-flex flex-wrap-reverse">
       <div class="order-1">
         Ottelut
-        <v-select  v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
+        <v-select v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
         </v-select>
       </div>
       <div class="order-2">
         <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
       </div>
     </v-card-title>
-    <v-data-table dense :headers="headers" :items="data" :search="search" hide-default-footer>
+    <v-data-table disable-pagination @click:row="handleRedirect" dense :headers="headers" :items="data" :search="search" hide-default-footer>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
@@ -92,6 +92,9 @@ export default {
               }
           );
         },
+        handleRedirect: function(value) {
+          location.href = '/ottelu/'+value.id
+        }
     },
     mounted: function() {
         this.getMatches();

@@ -5,16 +5,14 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table dense color='alert' :headers="headers" :search="search" :items="teams" hide-default-footer>
+    <v-data-table disable-pagination @click:row="handleRedirect" dense color='alert' :headers="headers" :search="search" :items="teams" disable-pagination hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template bind:key="team.id" slot="items" slot-scope="props">
-        <router-link :to="'joukkue/'+props.item.id">
         <td>
-          <a>{{ props.item.name }}</a>
+          {{ props.item.name }}
         </td>
-        </router-link>
         <td>{{ props.item.abbreviation }}</td>
         <td>{{ props.item.matches_played }}</td>
         <td>{{ props.item.matches_won }}</td>
@@ -50,6 +48,9 @@ export default {
                     this.teams = data.body;
                 }
             );
+        },
+        handleRedirect: function(value) {
+          location.href = '/joukkue/'+value.id
         }
     },
     mounted: function() {

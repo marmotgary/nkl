@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-data-table dense :headers="headers" :items="teams" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" hide-default-footer>
+    <v-data-table disable-pagination @click:row="handleRedirect" dense :headers="headers" :items="teams" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -43,6 +43,9 @@ export default {
                     console.log(error.statusText);
                 }
             );
+        },
+        handleRedirect: function(value) {
+          location.href = '/joukkue/'+value.id
         }
     },
     mounted: function() {
@@ -51,7 +54,5 @@ export default {
 };
 </script>
 <style>
-tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
-}
+
 </style>

@@ -35,7 +35,7 @@
         </p>
       </v-card-text>
     </v-layout>
-    <v-data-table dense
+    <v-data-table disable-pagination dense
       v-if="!show_input"
       disable-initial-sort
       :headers="headers"
@@ -56,7 +56,7 @@
         <td>{{props.item.score_total}}</td>
       </template>
     </v-data-table>
-    <v-data-table dense
+    <v-data-table disable-pagination dense
       v-if="show_input"
       disable-initial-sort
       v-model="select"
