@@ -18,13 +18,14 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field v-model="credentials.username" label="Email*" required></v-text-field>
+              <v-text-field v-model="credentials.username" color="red darken-1" label="Email*" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
                 v-model="credentials.password"
                 label="Password*"
                 type="password"
+                color="red darken-1"
                 required
               ></v-text-field>
             </v-flex>
@@ -32,9 +33,8 @@
         </v-container>
         <small>*indicates required field</small>
       </v-card-text>
-
       <v-card-actions class=justify-center>
-        <v-btn color="red darken-1" v-on:keyup.enter="login" text @click="login">Log in</v-btn>
+        <v-btn color="red darken-1" text @click="login">Log in</v-btn>
         <v-btn color="red darken-1" text @click="dialog = false, alert=false">Close</v-btn>
       </v-card-actions>
     </v-card>
