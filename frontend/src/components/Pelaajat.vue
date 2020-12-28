@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table dense :headers="headers" :items="players" :search="search" hide-default-footer>
+    <v-data-table disable-pagination dense :headers="headers" :items="players" :search="search" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -129,8 +129,11 @@ export default {
     }
 };
 </script>
-<style>
-.v-table tbody td:not(:last-child) {
-    border-right: solid #c5c5c5 1px;
+<style scoped>
+
+tbody tr :hover {
+    cursor: unset;
 }
+
 </style>
+
