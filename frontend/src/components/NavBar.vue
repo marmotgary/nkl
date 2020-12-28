@@ -74,18 +74,18 @@
               <v-list-item-title>Pelaajat</v-list-item-title>
             </v-list-item>
 
-            <v-list-item to="/info">
-              <v-list-item-icon>
-                <v-icon>mdi-information-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Info</v-list-item-title>
-            </v-list-item>
-
             <v-list-item v-if="loggedIn && team_id" :to="'/joukkue/'+this.team_id">
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Oma joukkue</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item to="/info">
+              <v-list-item-icon>
+                <v-icon>mdi-information-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Info</v-list-item-title>
             </v-list-item>
 
             <v-list-item style="margin-top: 190%;">
