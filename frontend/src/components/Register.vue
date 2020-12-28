@@ -19,28 +19,28 @@
           <v-layout wrap>
             <v-layout row>
               <v-flex xs5 sm6 md4>
-                <v-text-field info v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
+                <v-text-field color="red darken-1" v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs5 sm6 md4 mr-5>
-                <v-text-field info v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
+                <v-text-field color="red darken-1" v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select info v-model="credentials.number" required :items="numbers"></v-select>
+                <v-select color="red darken-1" v-model="credentials.number" required :items="numbers"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
-              <v-text-field info v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
+              <v-text-field color="red darken-1" v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                info
+                color="red darken-1"
                 v-model="credentials.password"
                 label="salasana*"
                 type="password"
                 required
               ></v-text-field>
               <v-text-field
-                info
+                color="red darken-1"
                 v-model="credentials.password_check"
                 label="salasana varmistus*"
                 type="password"
