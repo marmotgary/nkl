@@ -10,6 +10,18 @@
                 -o-background-size: cover;
                 background-size: cover;
             }
+
+            tbody tr :hover {
+                cursor: pointer;
+            }
+
+            .v-table tbody td:not(:last-child) {
+                border-right: solid #c5c5c5 1px;
+            }
+
+            tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
         </style>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
