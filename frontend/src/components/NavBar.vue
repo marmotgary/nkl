@@ -91,13 +91,9 @@
             <v-list-item>
               <div class="pa-2">
                 <log-in v-if="!loggedIn"></log-in>
-              </div>
-              <div class="pl-4">
                 <register v-if="!loggedIn"></register>
               </div>
-              <div v-if="loggedIn" class="pa-2">
-                <v-btn width=100% v-on:click.native="logout()" :to="'/'">Log out</v-btn>
-              </div>
+              <v-btn style="position:absolute;" width="95%" v-if="loggedIn" v-on:click.native="logout()" :to="'/'">Log out</v-btn>
             </v-list-item>
           </v-list-item-group>
         </v-list>
