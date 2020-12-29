@@ -37,7 +37,6 @@
     </v-layout>
     <v-data-table disable-pagination dense
       v-if="!show_input"
-      sort-by
       :headers="headers"
       :items="data"
       hide-default-footer
@@ -45,7 +44,7 @@
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
-      <template slot="headers" class="text-xs-center"></template>
+
       <template slot="items" slot-scope="props">
         <td>{{props.item.player.player_number}}</td>
         <td>{{props.item.player.player_name}}</td>
@@ -129,13 +128,13 @@ export default {
             headers: [
                 {
                     text: this.teamSide,
-                    value: 'player_id',
+                    value: 'player.player_number',
                     sortable: false,
                     width: '5%'
                 },
                 {
                     text: 'player',
-                    value: 'player',
+                    value: 'player.player_name',
                     sortable: false,
                     width: '35%'
                 },
@@ -359,6 +358,8 @@ export default {
           this.home_players = arr_home;
           this.away_players = arr_away;
           this.loaded = true
+
+          console.log(this.data)
           
           if(!this.is_validated) {
             if (localStorage.team_id == this.plain_data.body.home_team.id) {
