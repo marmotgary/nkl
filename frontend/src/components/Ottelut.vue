@@ -84,7 +84,7 @@ export default {
                   this.matches = data.body;
 
                   for (let object in data.body) {
-                    // This is spaghetti to add a - to the column
+                    // This is spaghetti to add a - to the column between scores.
                     data.body[i].dash = '-';
 
                     if (data.body[i].post_season) {
