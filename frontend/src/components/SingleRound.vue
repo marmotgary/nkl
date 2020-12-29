@@ -1,40 +1,43 @@
 <template>
   <v-card>
-    <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
-    <v-layout v-if="!show_input" row wrap>
+    <v-card-title class="pa-0 pl-3 pt-3">Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
+    <v-row v-if="!show_input" row wrap>
       <v-card-text v-if="this.round_score">
-        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+        <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-chip
             style="float:right;"
             :color="`${this.color} lighten-2`"
             label
             small
+            class="mr-2"
           >{{this.round_score}}</v-chip>
         </p>
-        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+        <p :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
           <v-chip
             style="float:right;"
             :color="`${this.color} lighten-2`"
             label
             small
+            class="mr-2"
           >{{this.round_score}}</v-chip>
         </p>
       </v-card-text>
-    </v-layout>
-    <v-layout v-if="show_input" row wrap>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row v-if="show_input" row wrap>
       <v-card-text v-if="loaded">
-        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+        <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
         </p>
-        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+        <p :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
           <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
         </p>
       </v-card-text>
-    </v-layout>
+    </v-row>
     <v-data-table disable-pagination dense
       v-if="!show_input"
       :headers="headers"
@@ -84,6 +87,12 @@
   </v-card>
 </template>
 <style scoped>
+
+  p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    margin-left: .7em;
+  }
 
   td {
     padding: 0 !important;
