@@ -1,36 +1,36 @@
 <template>
   <v-container grid-list-md>
-    <v-row row wrap align-center>
-      <v-col xm12>
+    <v-row>
+      <v-col>
         <match v-if="data_ready" :matchData="data"></match>
       </v-col>
     </v-row>
-    <v-row row>
-      <v-col xm6>
+    <v-row>
+      <v-col>
         <v-card color="secondary">
           <round v-if="data_ready" :matchData="data" roundNumber="1" teamSide="home"></round>
         </v-card>
       </v-col>
-      <v-col xm6>
+      <v-col>
         <v-card color="secondary">
           <round v-if="data_ready" :matchData="data" roundNumber="1" teamSide="away"></round>
         </v-card>
       </v-col>
     </v-row>
-    <v-row row>
-      <v-col xm6>
+    <v-row>
+      <v-col>
         <v-card color="secondary">
           <round v-if="data_ready" :matchData="data" roundNumber="2" teamSide="home"></round>
         </v-card>
       </v-col>
-      <v-col xm6>
+      <v-col>
         <v-card color="secondary">
           <round v-if="data_ready" :matchData="data" roundNumber="2" teamSide="away"></round>
         </v-card>
       </v-col>
     </v-row>
-    <v-row row>
-      <v-col class="text-xs-center" xm12>
+    <v-row>
+      <v-col class="text-xs-center">
         <v-btn v-if="data_ready && away_captain" v-on:click="validateClick" x-large color="error">vahvista</v-btn>
       </v-col>
     </v-row>
