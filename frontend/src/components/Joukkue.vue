@@ -1,7 +1,7 @@
 <template>
   <v-card>
         <v-card elevation=0>
-            <v-row>
+            <v-row style="height:130px">
               <v-col align="center" justify="center">
                   <img
                     src="../../public/kyykkalogo120px.png"
@@ -17,8 +17,8 @@
               </v-app-bar>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col>
+            <v-row style="height:220px">
+              <v-col class="pt-0">
               <v-data-iterator
                 :items="stats"
                 :headers="header"
@@ -57,7 +57,7 @@
               </v-data-iterator>
               </v-col>
               <v-divider vertical></v-divider>
-              <v-col>
+              <v-col class="pt-0">
               <v-data-iterator :items="stats" hide-default-footer row wrap>
                 <template v-slot:item="props">
                       <v-list dense>
