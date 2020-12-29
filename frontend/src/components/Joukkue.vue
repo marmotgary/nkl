@@ -1,33 +1,32 @@
 <template>
   <v-card>
-    <v-layout>
-      <v-flex xs12>
-        <v-card>
-          <v-container grid-list-sm fluid>
-            <v-flex xs4 mb-4 d-flex offset-sm4>
-              <v-card text tile class="d-flex">
-                <img
-                  src="../../public/kyykkalogo120px.png"
-                ></v-img>
-              </v-card>
-            </v-flex>
-            <v-flex xs12 d-flex>
+        <v-card elevation=0>
+            <v-row>
+              <v-col align="center" justify="center">
+                  <img
+                    src="../../public/kyykkalogo120px.png"
+                  >
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+              <v-app-bar color="red darken-5" dark text>
+                <v-spacer></v-spacer>
+                <v-app-bar-title>{{header}}</v-app-bar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
               <v-data-iterator
                 :items="stats"
                 :headers="header"
-                content-tag="v-layout"
                 hide-default-footer
                 row
                 wrap
               >
-                <template v-slot:header>
-                  <v-app-bar class="mb-2" color="red darken-5" dark text>
-                    <v-app-bar-title>{{header}}</v-app-bar-title>
-                  </v-app-bar>
-                </template>
                 <template v-slot:item="props">
-                  <v-flex xs12>
-                    <v-card>
                       <v-list dense>
                         <v-list-item>
                           <v-list-item-content>Tehdyt pisteet:</v-list-item-content>
@@ -52,19 +51,12 @@
                           >{{ props.item.zero_first_throw_total }}</v-list-item-content>
                         </v-list-item>
                       </v-list>
-                    </v-card>
-                  </v-flex>
                 </template>
               </v-data-iterator>
-              <v-data-iterator :items="stats" content-tag="v-layout" hide-default-footer row wrap>
-                <template v-slot:header>
-                  <v-app-bar class="mb-2" color="red darken-5" dark text>
-                    <v-app-bar-title></v-app-bar-title>
-                  </v-app-bar>
-                </template>
+              </v-col>
+              <v-col>
+              <v-data-iterator :items="stats" hide-default-footer row wrap>
                 <template v-slot:item="props">
-                  <v-flex xs12>
-                    <v-card>
                       <v-list dense>
                         <v-list-item>
                           <v-list-item-content>Heitot:</v-list-item-content>
@@ -87,16 +79,13 @@
                           <v-list-item-content class="align-end">{{ props.item.gteSix_total }}</v-list-item-content>
                         </v-list-item>
                       </v-list>
-                    </v-card>
-                  </v-flex>
                 </template>
               </v-data-iterator>
-            </v-flex>
-          </v-container>
+              </v-col>
+            </v-row>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-data-table disable-pagination dense :headers="headers" :items="players" hide-default-footer>
+        <v-divider></v-divider>
+    <v-data-table class="mt-5" disable-pagination dense :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
