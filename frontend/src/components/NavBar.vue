@@ -33,7 +33,7 @@
         <v-btn text class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
       <v-spacer></v-spacer>
-      <v-app-bar-nav-icon class="hidden-lg-and-up" @click.stop="drawer = !drawer"/>
+      <v-app-bar-nav-icon class="hidden-lg-and-up mr-4" @click.stop="drawer = !drawer"/>
     </v-app-bar>
       <v-navigation-drawer
       v-model="drawer"
