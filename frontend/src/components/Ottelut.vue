@@ -1,12 +1,13 @@
 <template>
   <v-card>
     <v-card-title class="d-flex flex-wrap-reverse">
-      <div class="order-1">
+      <div>
         Ottelut
         <v-select v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
         </v-select>
       </div>
-      <div class="order-2">
+      <v-spacer></v-spacer>
+      <div>
         <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
       </div>
     </v-card-title>
