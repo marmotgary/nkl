@@ -13,7 +13,7 @@
       <v-btn text class="hidden-md-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-btn
-        v-if="loggedIn && team_id"
+        v-if="loggedIn && team_id != 'null'"
         text
         class="hidden-md-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -74,7 +74,7 @@
               <v-list-item-title>Pelaajat</v-list-item-title>
             </v-list-item>
 
-            <v-list-item v-if="loggedIn && team_id" :to="'/joukkue/'+this.team_id">
+            <v-list-item v-if="loggedIn && team_id != 'null'" :to="'/joukkue/'+this.team_id">
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
               </v-list-item-icon>
