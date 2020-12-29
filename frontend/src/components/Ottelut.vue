@@ -20,14 +20,12 @@
           <router-link :to="'ottelu/'+props.item.id">
             <td class="time"><a>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</a></td>
           </router-link>
-          <td class="text-xs-left">{{ props.item.field }}</td>
-          <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
-          <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
-          <td
-            class="text-xs-left"
-            v-if="props.item.home_score_total && props.item.away_score_total"
-          >{{ props.item.home_score_total + '-' + props.item.away_score_total }}</td>
-          <td v-else class="text-xs-center">-</td>
+          <td>{{ props.item.field }}</td>
+          <td>{{ props.item.home_team.abbreviation }}</td>
+          <td>{{ props.item.away_team.abbreviation }}</td>
+          <td v-if="props.item.home_score_total">{{ props.item.home_score_total}}</td><td v-else>X</td>
+          <td> {{props.item.dash}} </td>
+          <td v-if="props.item.away_score_total">{{props.item.away_score_total}}</td><td v-else>X</td>
         </template>
         <v-alert
           slot="no-results"
@@ -54,7 +52,9 @@ export default {
                 { text: 'Kenttä', value: 'field'},
                 { text: 'Koti', value: 'home_team.abbreviation' },
                 { text: 'Vieras', value: 'away_team.abbreviation' },
-                { text: 'Tulos', sortable: false }
+                { text: '', value: 'home_score_total', width:'3%', align: 'right'},
+                { text: 'Tulos', value: 'dash', width:'1%', sortable: false, align: 'center'},
+                { text: '', value: 'away_score_total', width:'3%', align: 'left'}
             ],
             data: [],
             matches: [],
@@ -82,7 +82,11 @@ export default {
               function(data) {
                   this.data = data.body;
                   this.matches = data.body;
+
                   for (let object in data.body) {
+                    // This is spaghetti to add a - to the column
+                    data.body[i].dash = '-';
+
                     if (data.body[i].post_season) {
                       this.post_season.push(data.body[i]);
                     } else {
