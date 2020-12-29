@@ -37,7 +37,7 @@
     </v-layout>
     <v-data-table disable-pagination dense
       v-if="!show_input"
-      disable-initial-sort
+      sort-by
       :headers="headers"
       :items="data"
       hide-default-footer
