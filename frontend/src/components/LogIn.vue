@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent width="600px">
     <template v-slot:activator="{on}">
-      <v-btn class="hidden-md-and-up mb-5 ml-1" width="100%" v-on="on">Log In</v-btn>
-      <v-btn class="hidden-sm-and-down" v-on="on">Log in</v-btn>
+      <v-btn class="hidden-lg-and-up mb-5 ml-1" width="100%" v-on="on">Log In</v-btn>
+      <v-btn class="hidden-md-and-down" v-on="on">Log in</v-btn>
     </template>
     <v-card>
       <v-card-title>

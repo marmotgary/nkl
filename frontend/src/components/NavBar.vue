@@ -8,32 +8,32 @@
       >
         <img src="../../public/kyykkalogo120px.png">
       </router-link>
-      <v-btn text class="hidden-sm-and-down" to="/ottelut">Ottelut</v-btn>
-      <v-btn text class="hidden-sm-and-down" to="/joukkueet">Joukkueet</v-btn>
-      <v-btn text class="hidden-sm-and-down" to="/pelaajat">Pelaajat</v-btn>
-      <v-btn text class="hidden-sm-and-down" to="/info">Info</v-btn>
+      <v-btn text class="hidden-md-and-down" to="/ottelut">Ottelut</v-btn>
+      <v-btn text class="hidden-md-and-down" to="/joukkueet">Joukkueet</v-btn>
+      <v-btn text class="hidden-md-and-down" to="/pelaajat">Pelaajat</v-btn>
+      <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-btn
         v-if="loggedIn && team_id"
         text
-        class="hidden-sm-and-down"
+        class="hidden-md-and-down"
         :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
-      <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <v-spacer class="hidden-sm-and-down"></v-spacer>
-      <div class="hidden-sm-and-down pa-4" v-if="!loggedIn">
+      <v-spacer class="hidden-md-and-down"></v-spacer>
+      <v-spacer class="hidden-md-and-down"></v-spacer>
+      <v-spacer class="hidden-md-and-down"></v-spacer>
+      <v-spacer class="hidden-md-and-down"></v-spacer>
+      <div class="hidden-md-and-down pa-4" v-if="!loggedIn">
         <log-in></log-in>
       </div>
-      <div class="hidden-sm-and-down" v-if="!loggedIn">
+      <div class="hidden-md-and-down" v-if="!loggedIn">
         <register></register>
       </div>
       <div v-if="loggedIn">
         {{ name }}
-        <v-btn text class="hidden-sm-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
+        <v-btn text class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
       <v-spacer></v-spacer>
-      <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"/>
+      <v-app-bar-nav-icon class="hidden-lg-and-up" @click.stop="drawer = !drawer"/>
     </v-app-bar>
       <v-navigation-drawer
       v-model="drawer"

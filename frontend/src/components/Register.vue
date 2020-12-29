@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{on}">
-      <v-btn class="hidden-md-and-up ml-1" width="100%" v-on="on">Register</v-btn>
-      <v-btn class="hidden-sm-and-down" v-on="on">Register</v-btn>
+      <v-btn class="hidden-lg-and-up ml-1" width="100%" v-on="on">Register</v-btn>
+      <v-btn class="hidden-md-and-down" v-on="on">Register</v-btn>
     </template>
     <v-card>
       <v-card-title>
