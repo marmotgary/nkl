@@ -23,8 +23,6 @@
                 :items="stats"
                 :headers="header"
                 hide-default-footer
-                row
-                wrap
               >
                 <template v-slot:item="props">
                       <v-list dense>
@@ -32,18 +30,22 @@
                           <v-list-item-content>Tehdyt pisteet:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.score_total }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Ottelut:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.match_count }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Hauet:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.pikes_total }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Nolla heitot:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.zeros_total }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Nolla aloitukset:</v-list-item-content>
                           <v-list-item-content
@@ -54,6 +56,7 @@
                 </template>
               </v-data-iterator>
               </v-col>
+              <v-divider vertical></v-divider>
               <v-col>
               <v-data-iterator :items="stats" hide-default-footer row wrap>
                 <template v-slot:item="props">
@@ -62,18 +65,22 @@
                           <v-list-item-content>Heitot:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.throws_total }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Pistettä per heitto:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.score_per_throw }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Haukiprosentti:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.pike_percentage }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Nollaprosentti:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.zero_percentage }}</v-list-item-content>
                         </v-list-item>
+                        <v-divider></v-divider>
                         <v-list-item>
                           <v-list-item-content>Joulukuuset:</v-list-item-content>
                           <v-list-item-content class="align-end">{{ props.item.gteSix_total }}</v-list-item-content>
@@ -85,7 +92,7 @@
             </v-row>
         </v-card>
         <v-divider></v-divider>
-    <v-data-table class="mt-5" disable-pagination dense :headers="headers" :items="players" hide-default-footer>
+    <v-data-table class="mt-5" disable-pagination :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -162,11 +169,11 @@ export default {
                 { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
-                { text: '#', value: 'id' },
+                { text: '#', value: 'id', width:"1%" },
                 {
                     text: 'Nimi',
                     value: 'player_name',
-                    width: '1%',
+                    width: '20%',
                     align: 'left'
                 },
                 {
