@@ -32,7 +32,6 @@
         slot="no-results"
         :value="true"
         color="error"
-        icon="warning"
       >Your search for "{{ search }}" found no results.</v-alert>
     </v-data-table>
   </v-card>
