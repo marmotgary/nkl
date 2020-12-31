@@ -12,7 +12,7 @@
               <v-col>
               <v-app-bar color="red darken-5" dark text>
                 <v-spacer></v-spacer>
-                <v-app-bar-title>{{header}}</v-app-bar-title>
+                <v-toolbar-title>{{header}}</v-toolbar-title>
                 <v-spacer></v-spacer>
               </v-app-bar>
               </v-col>
