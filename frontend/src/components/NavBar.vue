@@ -11,13 +11,13 @@
       <v-btn text class="hidden-md-and-down" to="/ottelut">Ottelut</v-btn>
       <v-btn text class="hidden-md-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn text class="hidden-md-and-down" to="/pelaajat">Pelaajat</v-btn>
-      <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-btn
         v-if="loggedIn && team_id != 'null'"
         text
         class="hidden-md-and-down"
         :to="'/joukkue/'+this.team_id"
       >oma joukkue</v-btn>
+      <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
