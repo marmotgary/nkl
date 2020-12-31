@@ -112,39 +112,37 @@
       </template>
     </v-data-table>
     <v-spacer></v-spacer>
-    <v-card>
-      <v-expansion-panel v-if="isCaptain">
-        <v-expansion-panel-content>
-          <template v-slot:header>
-            <div>Varaa pelaajia</div>
-          </template>
-          <v-card>
-          <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
-            <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
-              <template slot="no-data">
-                <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
-              </template>
-              <template slot="items" slot-scope="props">
-                <div class="row">
-                  <td v-if="props.item.team == null">
-                    <v-btn v-on:click="reserveButton(props.item)" text icon color="green">
-                      <v-icon>fas fa-plus</v-icon>
-                    </v-btn>
-                  </td>
-                  <td v-else>
-                    <v-btn text disabled icon color="gray">
-                      <v-icon>fas fa-lock</v-icon>
-                    </v-btn>
-                  </td>
-                </div>
-                <td>{{ props.item.player_number }}</td>
-                <td>{{ props.item.player_name }}</td>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-card>
+      <v-expansion-panels>
+        <v-expansion-panel v-if="isCaptain">
+          <v-expansion-panel-header>
+            Varaa pelaajia
+          </v-expansion-panel-header>
+            <v-expansion-panel-content>
+            <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
+              <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
+                <template slot="no-data">
+                  <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
+                </template>
+                <template slot="items" slot-scope="props">
+                  <div class="row">
+                    <td v-if="props.item.team == null">
+                      <v-btn v-on:click="reserveButton(props.item)" text icon color="green">
+                        <v-icon>fas fa-plus</v-icon>
+                      </v-btn>
+                    </td>
+                    <td v-else>
+                      <v-btn text disabled icon color="gray">
+                        <v-icon>fas fa-lock</v-icon>
+                      </v-btn>
+                    </td>
+                  </div>
+                  <td>{{ props.item.player_number }}</td>
+                  <td>{{ props.item.player_name }}</td>
+                </template>
+              </v-data-table>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
   </v-card>
 </template>
 
@@ -307,3 +305,11 @@ export default {
     }
 };
 </script>
+
+<style>
+
+tbody tr :hover {
+    cursor: unset;
+}
+
+</style>
