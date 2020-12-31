@@ -28,7 +28,7 @@
       <div class="hidden-md-and-down" v-if="!loggedIn">
         <register></register>
       </div>
-      <div v-if="loggedIn">
+      <div class="hidden-md-and-down" v-if="loggedIn">
         {{ name }}
         <v-btn text class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
