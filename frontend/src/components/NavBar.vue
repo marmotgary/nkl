@@ -29,7 +29,7 @@
         <register></register>
       </div>
       <div class="hidden-md-and-down" v-if="loggedIn">
-        {{ name }}
+        <span class="mr-5">{{ name }}</span>
         <v-btn text class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
       <v-spacer></v-spacer>
