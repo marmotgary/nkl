@@ -123,17 +123,20 @@
                 <template slot="no-data">
                   <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
                 </template>
-                  <!-- FixDis -->
-                    <template v-slot:item.actions="{ item }">
-                      <v-btn v-if="props.item.team == null" v-on:click="reserveButton(props.item)" icon color="green">
-                        <v-icon>fas fa-plus</v-icon>
-                      </v-btn>
-                      <v-btn v-else disabled icon color="gray">
-                        <v-icon>fas fa-lock</v-icon>
-                      </v-btn>
-                    </template>
+                <!-- something like this -->
+                <!-- eslint-disable-next-line -->
+                <template v-slot:item.action="{ item }">
+                  <v-btn v-if="props.item.team == null" v-on:click="reserveButton(props.item)" icon color="green">
+                    <v-icon>fas fa-plus</v-icon>
+                  </v-btn>
+                  <v-btn v-else disabled icon color="gray">
+                    <v-icon>fas fa-lock</v-icon>
+                  </v-btn>
+                </template>
+                <template v-slot:item="props">
                   <td>{{ props.item.player_number }}</td>
                   <td>{{ props.item.player_name }}</td>
+                </template>
               </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
