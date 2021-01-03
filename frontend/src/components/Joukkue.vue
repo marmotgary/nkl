@@ -118,27 +118,22 @@
             Varaa pelaajia
           </v-expansion-panel-header>
             <v-expansion-panel-content>
-            <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
+            <v-text-field class="mb-10 mt-0" style="width: 50%;" color="red" v-model="search" label="Search" single-line hide-details/>
               <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
                 <template slot="no-data">
                   <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
                 </template>
-                <template slot="items" slot-scope="props">
-                  <div class="row">
-                    <td v-if="props.item.team == null">
-                      <v-btn v-on:click="reserveButton(props.item)" text icon color="green">
+                  <!-- FixDis -->
+                    <template v-slot:item.actions="{ item }">
+                      <v-btn v-if="props.item.team == null" v-on:click="reserveButton(props.item)" icon color="green">
                         <v-icon>fas fa-plus</v-icon>
                       </v-btn>
-                    </td>
-                    <td v-else>
-                      <v-btn text disabled icon color="gray">
+                      <v-btn v-else disabled icon color="gray">
                         <v-icon>fas fa-lock</v-icon>
                       </v-btn>
-                    </td>
-                  </div>
+                    </template>
                   <td>{{ props.item.player_number }}</td>
                   <td>{{ props.item.player_name }}</td>
-                </template>
               </v-data-table>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -159,8 +154,7 @@ export default {
             reserveHeaders: [
                 {
                     text: 'Varaa',
-                    value: 'reserve',
-                    width: '1%',
+                    value: 'action',
                     align: 'left'
                 },
                 { text: '#', value: 'id'},
