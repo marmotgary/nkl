@@ -30,7 +30,7 @@
       </div>
       <div class="hidden-md-and-down" v-if="loggedIn">
         <span class="mr-5">{{ name }}</span>
-        <v-btn text class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
+        <v-btn class="hidden-md-and-down" v-on:click.native="logout()" :to="'/'">Kirjaudu ulos</v-btn>
       </div>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon class="hidden-lg-and-up mr-4" @click.stop="drawer = !drawer"/>
