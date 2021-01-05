@@ -89,29 +89,28 @@ export default {
                     localStorage.role_id = response.body.role;
                     localStorage.user_id = response.body.user.id;
                     localStorage.player_name = response.body.user.player_name;
-
-                    this.changeLogin();
                 })
                 .catch(function(response) {
                     this.response_errors = response.body;
                     this.checkForm();
-                    if (response.status == 403) {
-                      this.$http
-                        .get('api/csrf', {'withCredentials': true})
-                        .then(function(response) {
-                            if (response.status === 200) {
-                                this.$http.patch(post_url, post_data, {
-                                headers: {
-                                  'X-CSRFToken': this.getCookie('csrftoken')
-                                },
-                                  'withCredentials': true,
-                                }).then(function(response) {
-                                  localStorage.role_id = response.body.role;
-                                  localStorage.user_id = response.body.user.id;
-                                  localStorage.player_name = response.body.user.player_name;
-                                })
-                            }
-                        });
+                    switch(response.status) {
+                      case 403:
+                        this.$http
+                          .get('api/csrf', {'withCredentials': true})
+                          .then(function(response) {
+                              if (response.status === 200) {
+                                  this.$http.patch(post_url, post_data, {
+                                  headers: {
+                                    'X-CSRFToken': this.getCookie('csrftoken')
+                                  },
+                                    'withCredentials': true,
+                                  }).then(function(response) {
+                                    localStorage.role_id = response.body.role;
+                                    localStorage.user_id = response.body.user.id;
+                                    localStorage.player_name = response.body.user.player_name;
+                                  })
+                              }
+                          });
                     }
                 });
         },
@@ -149,8 +148,8 @@ export default {
             }
 
             if (this.errors.length == 0) {
-                this.changeLogin();
                 this.register();
+                this.changeLogin();
             }
         },
         changeLogin: function(username) {
