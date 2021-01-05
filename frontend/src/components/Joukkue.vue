@@ -120,22 +120,22 @@
             <v-expansion-panel-content>
             <v-text-field class="mb-10 mt-0" style="width: 50%;" color="red" v-model="search" label="Search" single-line hide-details/>
               <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
-                <template slot="no-data">
-                  <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
-                </template>
-                <!-- something like this -->
-                <!-- eslint-disable-next-line -->
-                <template v-slot:item.action="{ item }">
-                  <v-btn v-if="props.item.team == null" v-on:click="reserveButton(props.item)" icon color="green">
-                    <v-icon>fas fa-plus</v-icon>
-                  </v-btn>
-                  <v-btn v-else disabled icon color="gray">
-                    <v-icon>fas fa-lock</v-icon>
-                  </v-btn>
-                </template>
-                <template v-slot:item="props">
-                  <td>{{ props.item.player_number }}</td>
-                  <td>{{ props.item.player_name }}</td>
+                <!-- [``] needed to prevent eslint error -->
+                <template v-slot:[`item.actions`]="{ item }">
+                  <v-icon
+                    v-if="!item.team"
+                    color=green
+                    @click="reserveButton(item)"
+                  >
+                    mdi-plus
+                  </v-icon>
+                  <v-icon
+                    v-else  
+                    color=gray
+                    @click="deleteItem(item)"
+                  >
+                    mdi-lock
+                  </v-icon>
                 </template>
               </v-data-table>
           </v-expansion-panel-content>
@@ -155,13 +155,14 @@ export default {
                 this.$route.fullPath.lastIndexOf('/') + 1
             ),
             reserveHeaders: [
+                { text: '#', value: 'player_number'},
+                { text: 'Pelaajan nimi', value: 'player_name' },
                 {
                     text: 'Varaa',
-                    value: 'action',
-                    align: 'left'
+                    value: 'actions',
+                    align: 'left',
+                    sortable: false,
                 },
-                { text: '#', value: 'id'},
-                { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
                 { text: '#', value: 'player_number', width:"1%" },
