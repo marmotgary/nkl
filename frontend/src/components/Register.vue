@@ -135,7 +135,7 @@ export default {
             if (!this.credentials.username) {
                 this.errors.push('Email puuttuu.');
             } else if (!this.validEmail(this.credentials.username)) {
-                this.errors.push('Anna salasana mallia foo@bar.xyz.');
+                this.errors.push('Anna sähköposti mallia foo@bar.xyz.');
             }
             if (!this.credentials.password) {
                 this.errors.push('Salasana puuttuu.');
