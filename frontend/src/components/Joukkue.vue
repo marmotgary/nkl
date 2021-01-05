@@ -164,7 +164,7 @@ export default {
                 { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
-                { text: '#', value: 'id', width:"1%" },
+                { text: '#', value: 'player_number', width:"1%" },
                 {
                     text: 'Nimi',
                     value: 'player_name',
