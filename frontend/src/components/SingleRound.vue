@@ -367,8 +367,6 @@ export default {
           this.home_players = arr_home;
           this.away_players = arr_away;
           this.loaded = true
-
-          console.log(this.data)
           
           if(!this.is_validated) {
             if (localStorage.team_id == this.plain_data.body.home_team.id) {
