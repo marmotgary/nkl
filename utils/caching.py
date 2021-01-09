@@ -1,31 +1,37 @@
 from django.core.cache import cache
+# TODO: Figure out why this causes a import loop?
+# from kyykka.models import Season, CurrentSeason
 
-
-def getFromCache(key):
+def getFromCache(key, season_year = None):
     # print("Get cache", key)
     # print(cache.get(key))
+    if season_year:
+        key = key + "_" + str(season_year)
     return cache.get(key)
 
 
-def setToCache(key, value, timeout=3600):
+def setToCache(key, value, timeout=60 * 60 * 12, season_year=""):
     # print("Set cache", key)
     if value is None:
         value = 0
+    if season_year:
+        key = key + "_" + str(season_year)
     cache.set(key, value, timeout)
 
 
-def reset_player_cache(player):
+def reset_player_cache(player, season_year):
+    # Called after a throw is saved, can only be current season
     caches = [
-        'player_' + str(player.id) + '_score_total',
-        'player_' + str(player.id) + '_match_count',
-        'player_' + str(player.id) + '_rounds_total',
-        'player_' + str(player.id) + '_pikes_total',
-        'player_' + str(player.id) + '_zeros_total',
-        'player_' + str(player.id) + '_gteSix_total',
-        'player_' + str(player.id) + '_throws_total',
-        'player_' + str(player.id) + '_pike_percentage'
-        'player_' + str(player.id) + '_score_per_throw'
-        'player_' + str(player.id) + '_avg_throw_turn'
+        'player_' + str(player.id) + '_score_total' + season_year,
+        'player_' + str(player.id) + '_match_count' + season_year,
+        'player_' + str(player.id) + '_rounds_total' + season_year,
+        'player_' + str(player.id) + '_pikes_total' + season_year,
+        'player_' + str(player.id) + '_zeros_total' + season_year,
+        'player_' + str(player.id) + '_gteSix_total' + season_year,
+        'player_' + str(player.id) + '_throws_total' + season_year,
+        'player_' + str(player.id) + '_pike_percentage' + season_year,
+        'player_' + str(player.id) + '_score_per_throw' + season_year,
+        'player_' + str(player.id) + '_avg_throw_turn' + season_year,
     ]
     cache.delete_many(caches)
 

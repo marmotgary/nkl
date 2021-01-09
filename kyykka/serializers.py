@@ -62,9 +62,9 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         # return int(Throw.objects.filter(player=obj).annotate(score = F('score_first') + F('score_second')+ F('score_third')+ F('score_fourth')).aggregate(Sum('score'))['score__sum'])
         try:
             key = 'player_' + str(obj.id) + '_score_total'
-            score_total = getFromCache(key)
+            score_total = getFromCache(key, self.context.get('season').year)
             if score_total is None:
-                score_total = Throw.objects.filter(player=obj, match__is_validated=True).annotate(
+                score_total = Throw.objects.filter(season=self.context.get('season'), player=obj, match__is_validated=True).annotate(
                     score=Case(
                         When(score_first__gt=0, then='score_first'),
                         default=Value('0'),
@@ -85,10 +85,10 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                 ).aggregate(Sum('score'))['score__sum']
                 if score_total is None:
                     score_total = 0
-                setToCache(key, score_total)
+                setToCache(key, score_total, season_year=self.context.get('season').year)
             # return int(Throw.objects.filter(season=self.context.get('season'), player=obj, score__gt=0).aggregate(Sum('score'))['score__sum'])
         except TypeError:
-            setToCache(key, 0)
+            setToCache(key, 0, season_year=self.context.get('season').year)
             return 0
         self.score_total = score_total
         return score_total
@@ -96,21 +96,21 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
     def get_match_count(self, obj):
 
         key = 'player_' + str(obj.id) + '_match_count'
-        match_count = getFromCache(key)
+        match_count = getFromCache(key, self.context.get('season').year)
         if match_count is None:
             match_count = Match.objects.filter(season=self.context.get('season'), throw__player=obj).distinct().count()
             if match_count is None:
                 match_count = 0
-            setToCache(key, match_count)
+            setToCache(key, match_count, season_year=self.context.get('season').year)
         return match_count
 
     def get_rounds_total(self, obj):
 
         key = 'player_' + str(obj.id) + '_rounds_total'
-        rounds_total = getFromCache(key)
+        rounds_total = getFromCache(key, self.context.get('season').year)
         if rounds_total is None:
-            rounds_total = obj.throw_set.filter(match__is_validated=True).count()
-            setToCache(key, rounds_total)
+            rounds_total = obj.throw_set.filter(season=self.context.get('season'), match__is_validated=True).count()
+            setToCache(key, rounds_total, season_year=self.context.get('season').year)
         return rounds_total
         # return obj.throw_set.count() // 4
 
@@ -124,7 +124,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
     def get_pikes_total(self, obj):
 
         key = 'player_' + str(obj.id) + '_pikes_total'
-        pikes_total = getFromCache(key)
+        pikes_total = getFromCache(key, self.context.get('season').year)
         if pikes_total is None:
             pikes_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
                 count=Count('pk', filter=Q(score_first='h')) + Count('pk', filter=Q(score_second='h')) + Count('pk',
@@ -133,7 +133,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                     'pk', filter=Q(score_fourth='h'))).aggregate(Sum('count'))['count__sum']
             if pikes_total is None:
                 pikes_total = 0
-            setToCache(key, pikes_total)
+            setToCache(key, pikes_total, season_year=self.context.get('season').year)
         # pikes = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=-1)),second=Count('pk',filter=Q(score_second=-1)),third=Count('pk',filter=Q(score_third=-1)),fourth=Count('pk',filter=Q(score_fourth=-1)))
         # self.pikes = pikes['first'] + pikes['second'] + pikes['third'] + pikes['fourth']
         self.pikes = pikes_total
@@ -141,7 +141,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
 
     def get_zeros_total(self, obj):
         key = 'player_' + str(obj.id) + '_zeros_total'
-        zeros_total = getFromCache(key)
+        zeros_total = getFromCache(key, self.context.get('season').year)
         if zeros_total is None:
             zeros_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
                 count=Count('pk', filter=Q(score_first=0)) + Count('pk', filter=Q(score_second=0)) + Count('pk',
@@ -150,7 +150,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                     'pk', filter=Q(score_fourth=0))).aggregate(Sum('count'))['count__sum']
             if zeros_total is None:
                 zeros_total = 0
-            setToCache(key, zeros_total)
+            setToCache(key, zeros_total, season_year=self.context.get('season').year)
         # zeros = Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score_first=0)),second=Count('pk',filter=Q(score_second=0)),third=Count('pk',filter=Q(score_third=0)),fourth=Count('pk',filter=Q(score_fourth=0)))
         # self.zeros = zeros['first'] + zeros['second'] + zeros['third'] + zeros['fourth']
         self.zeros = zeros_total
@@ -159,7 +159,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
     def get_gteSix_total(self, obj):
 
         key = 'player_' + str(obj.id) + '_gteSix_total'
-        gteSix_total = getFromCache(key)
+        gteSix_total = getFromCache(key, self.context.get('season').year)
         if gteSix_total is None:
             gteSix_total = Throw.objects.exclude(Q(score_first='h')|Q(score_second='h')|Q(score_third='h')|Q(score_fourth='h')).filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
                 count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count(
@@ -167,25 +167,25 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                 Sum('count'))['count__sum']
             if gteSix_total is None:
                 gteSix_total = 0
-            setToCache(key, gteSix_total)
+            setToCache(key, gteSix_total, season_year=self.context.get('season').year)
         return gteSix_total
 
     def get_throws_total(self, obj):
 
         key = 'player_' + str(obj.id) + '_throws_total'
-        throws_total = getFromCache(key)
+        throws_total = getFromCache(key, self.context.get('season').year)
         if throws_total is None:
             throws_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).count() * 4
             if throws_total is None:
                 throws_total = 0
-            setToCache(key, throws_total)
+            setToCache(key, throws_total, season_year=self.context.get('season').year)
         self.throws = throws_total
         return self.throws
 
     def get_pike_percentage(self, obj):
 
         key = 'player_' + str(obj.id) + '_pike_percentage'
-        pike_percentage = getFromCache(key)
+        pike_percentage = getFromCache(key, self.context.get('season').year)
         if pike_percentage is None:
             pike_count = self.pikes
             total_count = self.throws
@@ -195,23 +195,23 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
                 pike_percentage = 0
             if pike_percentage is None:
                 pike_percentage = 0
-            setToCache(key, pike_percentage)
+            setToCache(key, pike_percentage, season_year=self.context.get('season').year)
         return pike_percentage
 
     def get_score_per_throw(self, obj):
         key = 'player_' + str(obj.id) + '_score_per_throw'
-        score_per_throw = getFromCache(key)
+        score_per_throw = getFromCache(key, self.context.get('season').year)
         if score_per_throw is None:
             try:
                 score_per_throw = round(self.score_total / self.throws, 2)
             except (ZeroDivisionError, TypeError):
                 score_per_throw = 0
-            setToCache(key, score_per_throw)
+            setToCache(key, score_per_throw, season_year=self.context.get('season').year)
         return score_per_throw
 
     def get_avg_throw_turn(self, obj):
         key = 'player_' + str(obj.id) + '_avg_throw_turn'
-        avg_throw_turn = getFromCache(key)
+        avg_throw_turn = getFromCache(key, self.context.get('season').year)
         if avg_throw_turn is None:
             try:
                 avg_throw_turn_sum = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).aggregate(Sum('throw_turn'))['throw_turn__sum']
@@ -635,24 +635,24 @@ class TeamDetailSerializer(serializers.ModelSerializer):
 class SharedMatchSerializer(serializers.ModelSerializer):
     def get_home_score_total(self, obj):
         key = 'match_' + str(obj.id) + '_home_score_total'
-        home_score_total = getFromCache(key)
+        home_score_total = getFromCache(key, self.context.get('season').year)
         if home_score_total is None:
             try:
                 home_score_total = obj.home_first_round_score + obj.home_second_round_score
             except TypeError:
                 home_score_total = None
-            setToCache(key, home_score_total)
+            setToCache(key, home_score_total, season_year=self.context.get('season').year)
         return home_score_total
 
     def get_away_score_total(self, obj):
         key = 'match_' + str(obj.id) + '_away_score_total'
-        away_score_total = getFromCache(key)
+        away_score_total = getFromCache(key, self.context.get('season').year)
         if away_score_total is None:
             try:
                 away_score_total = obj.away_first_round_score + obj.away_second_round_score
             except TypeError:
                 away_score_total = None
-            setToCache(key, away_score_total)
+            setToCache(key, away_score_total, season_year=self.context.get('season').year)
         return away_score_total
 
 
