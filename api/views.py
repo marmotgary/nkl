@@ -38,7 +38,6 @@ def getSeason(request):
             raise Season.DoesNotExist
     except Season.DoesNotExist:
         season = CurrentSeason.objects.first().season
-    print(season)
     return season
 
 
@@ -165,7 +164,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 
     def get(self, request):
         season = getSeason(request)
-        queryset = User.objects.filter(is_superuser=False)
+        queryset = User.objects.filter(is_superuser=False).order_by("first_name")
         serializer = ReserveListSerializer(queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
@@ -288,12 +287,13 @@ class MatchDetail(APIView):
         return Response(serializer.data)
 
     def patch(self, request, pk ,format=None):
+        season = getSeason(request)
         match = get_object_or_404(self.queryset, pk=pk)
         self.check_object_permissions(request, match)
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            reset_match_cache(match)
+            reset_match_cache(match, season_year=str(season.year))
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

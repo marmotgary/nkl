@@ -318,23 +318,23 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
     team = serializers.SerializerMethodField()
     player_name = serializers.SerializerMethodField()
     player_number = serializers.SerializerMethodField()
-    score_total = serializers.SerializerMethodField()
-    match_count = serializers.SerializerMethodField()
-    rounds_total = serializers.SerializerMethodField()
-    pikes_total = serializers.SerializerMethodField()
-    zeros_total = serializers.SerializerMethodField()
-    ones_total = serializers.SerializerMethodField()
-    twos_total = serializers.SerializerMethodField()
-    threes_total = serializers.SerializerMethodField()
-    fours_total = serializers.SerializerMethodField()
-    fives_total = serializers.SerializerMethodField()
-    throws_total = serializers.SerializerMethodField()
-    gteSix_total = serializers.SerializerMethodField()
-    pike_percentage = serializers.SerializerMethodField()
-    zero_percentage = serializers.SerializerMethodField()
-    score_per_throw = serializers.SerializerMethodField()
-    avg_throw_turn = serializers.SerializerMethodField()
-    matches = serializers.SerializerMethodField()
+    # score_total = serializers.SerializerMethodField()
+    # match_count = serializers.SerializerMethodField()
+    # rounds_total = serializers.SerializerMethodField()
+    # pikes_total = serializers.SerializerMethodField()
+    # zeros_total = serializers.SerializerMethodField()
+    # ones_total = serializers.SerializerMethodField()
+    # twos_total = serializers.SerializerMethodField()
+    # threes_total = serializers.SerializerMethodField()
+    # fours_total = serializers.SerializerMethodField()
+    # fives_total = serializers.SerializerMethodField()
+    # throws_total = serializers.SerializerMethodField()
+    # gteSix_total = serializers.SerializerMethodField()
+    # pike_percentage = serializers.SerializerMethodField()
+    # zero_percentage = serializers.SerializerMethodField()
+    # score_per_throw = serializers.SerializerMethodField()
+    # avg_throw_turn = serializers.SerializerMethodField()
+    # matches = serializers.SerializerMethodField()
 
     def get_ones_total(self, obj):
         # return Throw.objects.filter(season=self.context.get('season'), player=obj).aggregate(first=Count('pk',filter=Q(score==1)),second=Count('pk',filter=Q(score==1)),third=Count('pk',filter=Q(score==1)),fourth=Count('pk',filter=Q(score==1)))
@@ -387,10 +387,7 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'player_name', 'player_number', 'team', 'score_total', 'match_count',
-            'rounds_total', 'zeros_total', 'ones_total', 'twos_total', 'threes_total',
-            'fours_total', 'fives_total', 'gteSix_total', 'pikes_total', 'throws_total', 'pike_percentage',
-            'zero_percentage', 'score_per_throw', 'avg_throw_turn', 'matches',
+            'id', 'player_name', 'player_number', 'team' 
         )
 
 
@@ -621,7 +618,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         return None
 
     def get_players(self, obj):
-        users = obj.players
+        users = obj.players.filter(playersinteam__season=self.context.get('season'))
         return PlayerListSerializer(users, many=True, context={'season': self.context.get('season')}).data
 
     class Meta:
