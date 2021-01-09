@@ -1,22 +1,30 @@
 import datetime
-
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse, HttpResponse
-from django.middleware.csrf import get_token
-from django.db.models import Q
-from rest_framework import status, viewsets, generics, permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework_swagger.views import get_swagger_view
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.throttling import AnonRateThrottle
-from kyykka.models import User, Team
-from kyykka.serializers import *
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.contrib.auth import authenticate, login, logout
 import json
-from utils.caching import getFromCache, setToCache, cache_reset_key, reset_match_cache
+
+from django.contrib.auth import authenticate, login, logout
+from django.db.models import Count, Q, Sum
+from django.http import Http404, HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from kyykka.models import (CurrentSeason, Match, PlayersInTeam, Season, Team,
+                           Throw, User)
+from kyykka.serializers import (CreateUserSerializer, LoginUserSerializer,
+                                MatchDetailSerializer, MatchListSerializer,
+                                MatchScoreSerializer, PlayerDetailSerializer,
+                                PlayerListSerializer, ReserveCreateSerializer,
+                                ReserveListSerializer, TeamDetailSerializer,
+                                TeamListSerializer, ThrowSerializer,
+                                UserSerializer)
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.views import APIView
+from rest_framework_swagger.views import get_swagger_view
+from utils.caching import (cache_reset_key, getFromCache, reset_match_cache,
+                           setToCache)
 
 schema_view = get_swagger_view(title='NKL API')
 
@@ -30,6 +38,7 @@ def getSeason(request):
             raise Season.DoesNotExist
     except Season.DoesNotExist:
         season = CurrentSeason.objects.first().season
+    print(season)
     return season
 
 
@@ -68,7 +77,7 @@ class IsCaptain(permissions.BasePermission):
 
 class IsCaptainForThrow(permissions.BasePermission):
     """
-    Permission check to verify if user is captain in the right team for a throw
+    Permission check to verify if user is captain in the right team for updaing throws
     """
     def has_object_permission(self, request, view, obj):
         try:
@@ -178,7 +187,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    List all players that are in a team for the season beingh queried. 
     """
     queryset = User.objects.all()
 

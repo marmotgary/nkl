@@ -11,7 +11,7 @@ def import_matches():
     Import matches from matches.csv
     """
     with open('matches.csv') as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=';')
+        readCSV = csv.reader(csvfile, delimiter=',')
         with transaction.atomic():
             for row in readCSV:
                 date_time_str = row[0].replace("'", "")
