@@ -249,8 +249,12 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('api/reserve/').then(
+            console.log("testi");
+            this.$http.get('api/reserve/', {
+                 'withCredentials': true,
+            }).then(
                 function(data) {
+                    console.log("testi2");
                     var i = 0;
                     for (var player in data.body) {
                         if (data.body[i].team == null) {
@@ -311,3 +315,4 @@ export default {
     }
 };
 </script>
+
