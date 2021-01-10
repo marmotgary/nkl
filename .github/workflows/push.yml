@@ -3,7 +3,7 @@ name: NKL CI
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, master]
 
 jobs:
   # npmaudit:
