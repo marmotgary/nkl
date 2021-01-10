@@ -206,13 +206,13 @@ class PikeCountInStats(APITestCase):
         self.assertEqual(User.objects.filter(is_superuser=False).count(), len(response.data))
         self.assertEqual(response.data[2]["pikes_total"], 2)
 
-    @override_settings(CACHES=TEST_CACHES)
-    def test_pikes_from_player_detail(self):
-        player = User.objects.get(email="test@user.1")
-        url = "/api/players/"+str(player.id)+"/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["pikes_total"], 2)
+    # @override_settings(CACHES=TEST_CACHES)
+    # def test_pikes_from_player_detail(self):
+        # player = User.objects.get(email="test@user.1")
+        # url = "/api/players/"+str(player.id)+"/"
+        # response = self.client.get(url)
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.data["pikes_total"], 2)
 
     @override_settings(CACHES=TEST_CACHES)
     def test_pikes_from_team_page(self):
@@ -298,13 +298,13 @@ class SixCountInStats(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["gteSix_total"], 8)
 
-    @override_settings(CACHES=TEST_CACHES)
-    def test_sixes_from_player_detail(self):
-        player = User.objects.get(email="test@captain.1")
-        url = "/api/players/"+str(player.id)+"/"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["gteSix_total"], 8)
+    # @override_settings(CACHES=TEST_CACHES)
+    # def test_sixes_from_player_detail(self):
+        # player = User.objects.get(email="test@captain.1")
+        # url = "/api/players/"+str(player.id)+"/"
+        # response = self.client.get(url)
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.data["gteSix_total"], 8)
 
     @override_settings(CACHES=TEST_CACHES)
     def test_sixes_from_team_page(self):
