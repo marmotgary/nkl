@@ -6,7 +6,8 @@ from django.db.models import Count, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, render
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 from kyykka.models import (CurrentSeason, Match, PlayersInTeam, Season, Team,
                            Throw, User)
 from kyykka.serializers import (CreateUserSerializer, LoginUserSerializer,
@@ -105,6 +106,10 @@ class MatchDetailPermission(permissions.BasePermission):
         if 'is_validated' not in request.data:
             return request.user == obj.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
                                                                           is_captain=True).first().player
+
+
+# @method_decorator(ensure_csrf_cookie, name='dispatch')
+# @method_decorator(csrf_protect, name='dispatch')
 class LoginAPI(generics.GenericAPIView):
     # TODO: Verify what happens if eg. two browsers are used, and session ends in other one. 
     """
