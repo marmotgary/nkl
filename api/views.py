@@ -105,7 +105,6 @@ class MatchDetailPermission(permissions.BasePermission):
         if 'is_validated' not in request.data:
             return request.user == obj.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
                                                                           is_captain=True).first().player
-
 class LoginAPI(generics.GenericAPIView):
     # TODO: Verify what happens if eg. two browsers are used, and session ends in other one. 
     """
@@ -290,6 +289,8 @@ class MatchDetail(APIView):
         season = getSeason(request)
         match = get_object_or_404(self.queryset, pk=pk)
         self.check_object_permissions(request, match)
+        # Update user session (so that it wont expire..)
+        request.session.modified = True
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
