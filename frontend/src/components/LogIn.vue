@@ -58,6 +58,9 @@ export default {
             this.$session.start();
             this.$http
                 .post('api/login/', this.credentials, {
+                    headers: {
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    },
                   'withCredentials': true,
                 })
                 .then(function(response) {
@@ -77,32 +80,47 @@ export default {
                     },
                     response => {
                         this.alert = !this.alert;
-                    }).catch(function(response) {
-                      if (response.status == 403) {
-                        // TODO: Should not happen, maybe change this for a notification. 
-                        this.$http
-                          .get('api/csrf', {'withCredentials': true})
-                          .then(function(response) {
-                              if (response.status === 200) {
-                                  this.$http.patch(post_url, post_data, {
-                                  headers: {
-                                    'X-CSRFToken': this.getCookie('csrftoken')
-                                  },
-                                  'withCredentials': true,
-                                  }).then(function(response) {
-                                    this.dialog = !this.dialog;
-                                    this.alert = false;
+                          if (response.status == 403) {
+                            this.$http
+                              .get('api/csrf/', {'withCredentials': true})
+                              .then(function(response) {
+                                  if (response.status === 200) {
+                                    this.$http
+                                        .post('api/login/', this.credentials, {
+                                            headers: {
+                                                'X-CSRFToken': this.getCookie('csrftoken')
+                                            },
+                                          'withCredentials': true,
+                                        })
+                                        .then(function(response) {
+                                            if (response.status === 200) {
+                                                this.dialog = !this.dialog;
+                                                this.alert = false;
 
-                                    localStorage.role_id = response.body.role;
-                                    localStorage.user_id = response.body.user.id;
-                                    localStorage.team_id = response.body.team_id
-                                    localStorage.player_name = response.body.user.player_name;
-                                  })
-                              }
-                          });
-                      }
+                                                localStorage.role_id = response.body.role;
+                                                localStorage.user_id = response.body.user.id;
+                                                localStorage.team_id = response.body.team_id
+                                                localStorage.player_name = response.body.user.player_name;
+
+                                                this.$session.set('role_id', response.body.role);
+                                                this.$session.set('user_id', response.body.user.id);
+                                                this.changeLogin(response.body.user.player_name);
+                                            }
+                                            },
+                                            response => {
+                                                this.alert = !this.alert;
+                                            }).catch(function(response) {
+                                                console.log(response);
+                                          });
+                                  }
+                              });
+  
+                        }
+
+                    }).catch(function(response) {
+                        console.log(response);
                   });
-        }
+            }
     },
     mounted() {
       if (localStorage.role_id && localStorage.user_id) {
