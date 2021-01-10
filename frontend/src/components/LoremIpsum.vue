@@ -11,7 +11,6 @@
           Ottelutuloksen syöttämisen jälkeen vierasjoukkueen kapteenin tulee vielä vahvistaa tulos ottelusivulta, jonka jälkeen pisteet päivittyvät statseihin.
         </p>
 
-        <p>Havaittuja ongelmakohtia voi lähettää esim. sähköpostilla nkl@powi.fi</p>
 
         <h2>Kasiennakko 2020</h2>
 
