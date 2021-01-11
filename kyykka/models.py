@@ -115,5 +115,6 @@ def match_post_save_handler(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Throw)
 def throw_post_save_handler(sender, instance, created, **kwargs):
-    if instance and instance.match.is_validated and instance.player:
-        reset_player_cache(instance.player)
+    if instance and instance.player:
+        season_year = str(CurrentSeason.objects.first().season.year)
+        reset_player_cache(instance.player, season_year)
