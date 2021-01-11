@@ -135,7 +135,7 @@ export default {
             name: '',
             team_id: '',
             selectedSeason: {
-              season_id: '2',
+              name: 'Kausi 2021', value: '2', id: 2
             },
             items: [
                 { title: 'Ottelut' },
@@ -171,12 +171,6 @@ export default {
         }
     },
     created() {
-        if (sessionStorage.season_id) {
-          this.selectedSeason = sessionStorage.season_id
-        } else {
-          sessionStorage.season_id = this.season_id;
-        }
-        
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
