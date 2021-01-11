@@ -241,7 +241,9 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('api/reserve/').then(
+            this.$http.get('api/reserve/', {
+                  'withCredentials': true,
+                }).then(
                 function(data) {
                     var i = 0;
                     for (var player in data.body) {
