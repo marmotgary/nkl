@@ -245,7 +245,6 @@ export default {
                   'withCredentials': true,
                 }).then(
                 function(data) {
-                    console.log("testi2");
                     var i = 0;
                     for (var player in data.body) {
                         if (data.body[i].team == null) {
