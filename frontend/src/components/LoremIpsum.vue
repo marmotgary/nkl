@@ -2,30 +2,17 @@
   <v-container class="lorem-ipsum">
     <v-layout column>
       <v-flex>
-         <h2>Huom, kapteenit!</h2>
 
-        <p>
-          Systeemi tallensi virheellisesti syötetyt hauet nollina. Virhe on nyt korjattu, suosittelemme tarkistamaan ottelunne ylimääräisten nollien ja puuttuvien haukien varalta!
-        </p>
-
-        <h3>Uusi sivusto</h3>
-
-        <p>
-          Sivusto on nyt julkaistu, mutta talvi yllätti koodarin eikä se ole vielä valmis. Perustoiminnallisuuksien pitäisi nyt jotakuinkin toimia,
-          lisää tehdään ja vanhaa parannetaan pitkin kautta. Suosittelemme kapteeneja näin alkuun jatkamaan kuten ennenkin,
-          eli ottakaa ottelutulokset pöytäkirjoille ylös!
-        </p>
+        <h2>Uusi sivusto</h2>
 
         <p>
           Ohjeita kapteeneille: Voitte varata joukkueeseen pelaajia "Oma joukkue" sivun alalaidasta löytyvällä "Varaa pelaajia" toiminnolla.
-          Ottelutulos tallentuu syötettäessä reaaliaikaisesti, ja kun kaikki ottelun tiedot ovat syötetty, täytyy vierasjoukkueen kapteenin käydä ottelusivulla
-        vahvistamasa tulos "Vahvista" napilla.
+          Ottelutulos tallentuu syötettäessä reaaliaikaisesti. Suosittelemme ottelutuloksen syöttämisen jälkeen vielä päivittämään ottelusivun, ja varmistamaan että syöttö on onnistunut.
+          Ottelutuloksen syöttämisen jälkeen vierasjoukkueen kapteenin tulee vielä vahvistaa tulos ottelusivulta, jonka jälkeen pisteet päivittyvät statseihin.
         </p>
 
-        </p>
-        <p>Havaittuja ongelmakohtia voi raportoida esimerkiksi #nkl @ircnet</p>
 
-        <h3>Kausiennakko 2020</h3>
+        <h2>Kasiennakko 2020</h2>
 
         <p>Tsaijai jai!!! Uusi vuosikymmen ja vanhat kujeet. Nationaali Kyykkä Liigaan on jälleen ollut hurjasti tunkua ja kasassa onkin muhkeat kolmekymmentä joukkuetta. Lisäksi näyttäisi siltä, että Kyykkäjumalat ovat tästä suurenmoisesta kyykkäkiimasta johtuen päättäneet palkita tulevan kauden kerrassaan maailmanluokan sääolosuhteilla! Luvassa nimittäin sekoitus titaanisen kovaa, jäistä hiekkakenttää sekä ajoittaista juoksuhiekkamaista-pelikokemusta höystettynä äärettömän märällä vesisateella. Kyykkäasian tuntijoidenjoukko on palannut korkeanpaikanleiriltään Myllymäestä, mukanaan kivitaulu, johon kaiverrettuna runkosarjan PowerRänking top 8.</p>
         <p>1. nega (Ei)</p>

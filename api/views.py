@@ -1,22 +1,31 @@
 import datetime
-
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse, HttpResponse
-from django.middleware.csrf import get_token
-from django.db.models import Q
-from rest_framework import status, viewsets, generics, permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework_swagger.views import get_swagger_view
-from rest_framework.mixins import UpdateModelMixin
-from rest_framework.throttling import AnonRateThrottle
-from kyykka.models import User, Team
-from kyykka.serializers import *
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.contrib.auth import authenticate, login, logout
 import json
-from utils.caching import getFromCache, setToCache, cache_reset_key, reset_match_cache
+
+from django.contrib.auth import authenticate, login, logout
+from django.db.models import Count, Q, Sum
+from django.http import Http404, HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
+from kyykka.models import (CurrentSeason, Match, PlayersInTeam, Season, Team,
+                           Throw, User)
+from kyykka.serializers import (CreateUserSerializer, LoginUserSerializer,
+                                MatchDetailSerializer, MatchListSerializer,
+                                MatchScoreSerializer, PlayerDetailSerializer,
+                                PlayerListSerializer, ReserveCreateSerializer,
+                                ReserveListSerializer, TeamDetailSerializer,
+                                TeamListSerializer, ThrowSerializer,
+                                UserSerializer)
+from rest_framework import generics, permissions, status, viewsets
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.views import APIView
+from rest_framework_swagger.views import get_swagger_view
+from utils.caching import (cache_reset_key, getFromCache, reset_match_cache,
+                           setToCache)
 
 schema_view = get_swagger_view(title='NKL API')
 
@@ -68,7 +77,7 @@ class IsCaptain(permissions.BasePermission):
 
 class IsCaptainForThrow(permissions.BasePermission):
     """
-    Permission check to verify if user is captain in the right team for a throw
+    Permission check to verify if user is captain in the right team for updaing throws
     """
     def has_object_permission(self, request, view, obj):
         try:
@@ -98,6 +107,9 @@ class MatchDetailPermission(permissions.BasePermission):
             return request.user == obj.home_team.playersinteam_set.filter(season=CurrentSeason.objects.first().season,
                                                                           is_captain=True).first().player
 
+
+# @method_decorator(ensure_csrf_cookie, name='dispatch')
+# @method_decorator(csrf_protect, name='dispatch')
 class LoginAPI(generics.GenericAPIView):
     # TODO: Verify what happens if eg. two browsers are used, and session ends in other one. 
     """
@@ -156,7 +168,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 
     def get(self, request):
         season = getSeason(request)
-        queryset = User.objects.filter(is_superuser=False)
+        queryset = User.objects.filter(is_superuser=False).order_by("first_name")
         serializer = ReserveListSerializer(queryset, many=True, context={'season': season})
         return Response(serializer.data)
 
@@ -178,7 +190,7 @@ class ReservePlayerAPI(generics.GenericAPIView):
 
 class PlayerViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    List all players that are in a team for the season beingh queried. 
     """
     queryset = User.objects.all()
 
@@ -279,12 +291,15 @@ class MatchDetail(APIView):
         return Response(serializer.data)
 
     def patch(self, request, pk ,format=None):
+        season = getSeason(request)
         match = get_object_or_404(self.queryset, pk=pk)
         self.check_object_permissions(request, match)
+        # Update user session (so that it wont expire..)
+        request.session.modified = True
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            reset_match_cache(match)
+            reset_match_cache(match, season_year=str(season.year))
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
