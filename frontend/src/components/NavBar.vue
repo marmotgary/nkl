@@ -135,8 +135,7 @@ export default {
             name: '',
             team_id: '',
             selectedSeason: {
-              name: 'Kausi 2021',
-              value: '2',
+              season_id: '2',
             },
             items: [
                 { title: 'Ottelut' },
@@ -145,8 +144,8 @@ export default {
                 { title: 'Info' }
             ],
             seasons: [
-              { name: 'Kausi 2020', value: '1'},
-              { name: 'Kausi 2021', value: '2'},
+              { name: 'Kausi 2020', value: '1', id: 1},
+              { name: 'Kausi 2021', value: '2', id: 2},
             ]
         };
     },
@@ -165,11 +164,19 @@ export default {
             })
         },
         selectSeason () {
-          localStorage.season_id = this.selectedSeason;
+          sessionStorage.season_id = this.selectedSeason;
+          this.$router.push('/').catch(()=>{
+            window.location.reload();
+          });;
         }
     },
     created() {
-        localStorage.season_id = this.selectedSeason.value;
+        if (sessionStorage.season_id) {
+          this.selectedSeason = sessionStorage.season_id
+        } else {
+          sessionStorage.season_id = this.season_id;
+        }
+        
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
@@ -180,7 +187,7 @@ export default {
                 this.$http
                     .get(
                         'api/players/' +
-                            localStorage.user_id
+                            localStorage.user_id+'/?season='+sessionStorage.season_id
                     )
                     .then(function(response) {
                       if (response.body.team) {
