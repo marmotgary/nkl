@@ -92,7 +92,7 @@
             </v-row>
         </v-card>
         <v-divider></v-divider>
-    <v-data-table class="mt-5" disable-pagination :headers="headers" :items="players" hide-default-footer>
+    <v-data-table mobile-breakpoint="0" class="mt-5" disable-pagination :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -119,7 +119,7 @@
           </v-expansion-panel-header>
             <v-expansion-panel-content>
             <v-text-field class="mb-10 mt-0" style="width: 50%;" color="red" v-model="search" label="Search" single-line hide-details/>
-              <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
+              <v-data-table mobile-breakpoint="0" disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
                 <!-- [``] needed to prevent eslint error -->
                 <template v-slot:[`item.actions`]="{ item }">
                   <v-icon
@@ -245,7 +245,6 @@ export default {
                   'withCredentials': true,
                 }).then(
                 function(data) {
-                    console.log("testi2");
                     var i = 0;
                     for (var player in data.body) {
                         if (data.body[i].team == null) {
