@@ -1,40 +1,30 @@
 <template>
   <v-card>
     <v-card-title class="d-flex flex-wrap-reverse">
-      <div class="order-1">
+      <div>
         Ottelut
-        <v-select  v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
+        <v-select v-on:input="selectChange()" v-model="defaultSelected" style="width: 50%" color="red" :items="options">
         </v-select>
       </div>
-      <div class="order-2">
+      <v-spacer></v-spacer>
+      <div>
         <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
       </div>
     </v-card-title>
-    <v-data-table :headers="headers" :items="data" :search="search" hide-actions>
+    <v-data-table disable-pagination @click:row="handleRedirect" dense :headers="headers" :items="data" :search="search" hide-default-footer>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
         <template slot="headers" class="text-xs-center"></template>
-        <template slot="items" slot-scope="props">
-          <router-link :to="'ottelu/'+props.item.id">
-            <td class="time"><a>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</a></td>
-          </router-link>
-          <td class="text-xs-left">{{ props.item.field }}</td>
-          <td class="text-xs-left">{{ props.item.home_team.abbreviation }}</td>
-          <td class="text-xs-left">{{ props.item.away_team.abbreviation }}</td>
-          <td
-            class="text-xs-left"
-            v-if="props.item.home_score_total && props.item.away_score_total"
-          >{{ props.item.home_score_total + '-' + props.item.away_score_total }}</td>
-          <td v-else class="text-xs-center">-</td>
+        <!-- [``] needed to prevent eslint error -->
+        <template v-slot:[`item.match_time`]="{ item }">
+          <span>{{ item.match_time | moment('YYYY-MM-DD HH:mm') }}</span>
         </template>
         <v-alert
           slot="no-results"
           :value="true"
           color="error"
-          icon="warning"
         >Your search for "{{ search }}" found no results.</v-alert>
-      </div>
     </v-data-table>
   </v-card>
 </template>
@@ -54,7 +44,9 @@ export default {
                 { text: 'Kenttä', value: 'field'},
                 { text: 'Koti', value: 'home_team.abbreviation' },
                 { text: 'Vieras', value: 'away_team.abbreviation' },
-                { text: 'Tulos', sortable: false }
+                { text: '', value: 'home_score_total', width:'3%', align: 'right'},
+                { text: 'Tulos', value: 'dash', width:'1%', sortable: false, align: 'center'},
+                { text: '', value: 'away_score_total', width:'3%', align: 'left'}
             ],
             data: [],
             matches: [],
@@ -75,14 +67,18 @@ export default {
           }
         },
         getMatches: function() {
-          let url = 'api/matches/';
+          let url = 'api/matches/?season='+sessionStorage.season_id;
           let i = 0;
 
           this.$http.get(url).then(
               function(data) {
                   this.data = data.body;
                   this.matches = data.body;
+
                   for (let object in data.body) {
+                    // This is spaghetti to add a - to the column between scores.
+                    data.body[i].dash = '-';
+
                     if (data.body[i].post_season) {
                       this.post_season.push(data.body[i]);
                     } else {
@@ -93,6 +89,9 @@ export default {
               }
           );
         },
+        handleRedirect: function(value) {
+          location.href = '/ottelu/'+value.id
+        }
     },
     mounted: function() {
         this.getMatches();

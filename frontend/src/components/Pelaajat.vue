@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table :headers="headers" :items="players" :search="search" hide-actions>
+    <v-data-table disable-pagination dense :headers="headers" :items="players" :search="search" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -15,7 +15,7 @@
         slot-scope="props"
       >
         <td>{{ props.item.player_name }}</td>
-        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.name }}</td>
+        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.abbreviation }}</td>
         <td v-else>Ei varausta</td>
         <td class="text-xs-left">{{ props.item.rounds_total }}</td>
         <td class="text-xs-left">{{ props.item.score_total }}</td>
@@ -32,7 +32,6 @@
         slot="no-results"
         :value="true"
         color="error"
-        icon="warning"
       >Your search for "{{ search }}" found no results.</v-alert>
     </v-data-table>
   </v-card>
@@ -48,12 +47,12 @@ export default {
                 {
                     text: 'Nimi',
                     value: 'player_name',
-                    width: '1%',
+                    width: '10%',
                     align: 'left'
                 },
                 {
                     text: 'Joukkue',
-                    value: 'team.name',
+                    value: 'team.abbreviation',
                     width: '1%',
                     align: 'left'
                 },
@@ -114,7 +113,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('api/players/').then(
+            this.$http.get('api/players/'+'?season='+sessionStorage.season_id).then(
                 function(data) {
                     this.players = data.body;
                 }
@@ -124,13 +123,16 @@ export default {
     mounted: function() {
         this.getPlayers();
         if (localStorage.user_id) {
-            this.$http.get('api/players/' +localStorage.user_id)
+            this.$http.get('api/players/' +localStorage.user_id +'/?season='+sessionStorage.season_id)
         }
     }
 };
 </script>
-<style>
-.v-table tbody td:not(:last-child) {
-    border-right: solid #c5c5c5 1px;
+<style scoped>
+
+tbody tr :hover {
+    cursor: unset;
 }
+
 </style>
+
