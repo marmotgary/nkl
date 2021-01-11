@@ -10,7 +10,9 @@
 <script>
 import NavBar from '@/components/NavBar';
 
-sessionStorage.season_id = '2';
+if (!sessionStorage.season_id) {
+  sessionStorage.season_id = '2';
+}
 
 export default {
     name: 'App',
