@@ -17,7 +17,7 @@
         </template>
         <template slot="headers" class="text-xs-center"></template>
         <template slot="items" slot-scope="props">
-          <td class="time"><a>{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</a></td>
+          <td class="time">{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</td>
           <td>{{ props.item.field }}</td>
           <td>{{ props.item.home_team.abbreviation }}</td>
           <td>{{ props.item.away_team.abbreviation }}</td>
