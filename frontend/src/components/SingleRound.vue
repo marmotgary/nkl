@@ -30,15 +30,15 @@
       <v-card-text v-if="loaded">
         <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
-          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" label="total" maxlength="3"/>
         </p>
         <p :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
-          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" label="total" maxlength="3"/>
         </p>
       </v-card-text>
     </v-row>
-    <v-data-table disable-pagination dense
+    <v-data-table mobile-breakpoint="0" disable-pagination dense
       v-if="!show_input"
       :headers="headers"
       :items="data"
@@ -58,7 +58,7 @@
         <td>{{props.item.score_total}}</td>
       </template>
     </v-data-table>
-    <v-data-table disable-pagination dense
+    <v-data-table mobile-breakpoint="0" disable-pagination dense
       v-if="show_input"
       disable-initial-sort
       v-model="select"
@@ -71,17 +71,19 @@
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props">
-        <td :ref="'id_'+props.index">{{selected[props.index].player.id}}</td>
-        <td>
-          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
-          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
-        </td>
-        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
+      <template slot="item" slot-scope="props">
+        <tr>
+          <td :ref="'id_'+props.index">{{selected[props.index].player.id}}</td>
+          <td>
+            <v-select item-color="red" color="red" v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
+            <v-select item-color="red" color="red" v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
+          </td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
+        </tr>
       </template>
     </v-data-table>
   </v-card>
