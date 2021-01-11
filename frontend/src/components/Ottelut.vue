@@ -72,7 +72,7 @@ export default {
           }
         },
         getMatches: function() {
-          let url = 'api/matches/';
+          let url = 'api/matches/?season='+localStorage.season_id;
           let i = 0;
 
           this.$http.get(url).then(
@@ -95,7 +95,7 @@ export default {
           );
         },
         handleRedirect: function(value) {
-          location.href = '/ottelu/'+value.id
+          location.href = '/ottelu/'+value.id+'/?season='+localStorage.season_id;
         }
     },
     mounted: function() {
