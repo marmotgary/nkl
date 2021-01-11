@@ -45,7 +45,7 @@ export default {
             );
         },
         handleRedirect: function(value) {
-          location.href = '/joukkue/'+value.id+'/?season='+sessionStorage.season_id;
+          location.href = '/joukkue/'+value.id;
         }
     },
     mounted: function() {
