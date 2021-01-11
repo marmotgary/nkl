@@ -186,7 +186,7 @@ export default {
                 this.$http
                     .get(
                         'api/players/' +
-                            localStorage.user_id+'/?season='+sessionStorage.season_id
+                            localStorage.user_id
                     )
                     .then(function(response) {
                       if (response.body.team) {
