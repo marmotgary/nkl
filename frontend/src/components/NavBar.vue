@@ -20,6 +20,7 @@
       <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
+      <v-select item-color=red v-model="defaultSelect" class="mt-4" align:center item-text="name" :items="seasons"></v-select>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <div class="hidden-md-and-down pa-4" v-if="!loggedIn">
@@ -133,11 +134,19 @@ export default {
             loggedIn: false,
             name: '',
             team_id: '',
+            defaultSelect: {
+              name: 'Kausi 2021',
+              value: '2',
+            },
             items: [
                 { title: 'Ottelut' },
                 { title: 'Joukkueet' },
                 { title: 'Pelaajat' },
                 { title: 'Info' }
+            ],
+            seasons: [
+              { name: 'Kausi 2020', value: '1'},
+              { name: 'Kausi 2021', value: '2'},
             ]
         };
     },
@@ -188,12 +197,15 @@ a {
   text-decoration: none;
   font-size: 130%;
 }
-
 </style>
 
 
 <style scoped>
 .v-app-bar--fixed {
     position: inherit;
+}
+
+.v-select {
+  width: 7%;
 }
 </style>
