@@ -29,7 +29,7 @@ urlpatterns = [
     path('docs/', views.schema_view),
     path('csrf/', views.csrf),
     path('ping/', views.ping),
-    path('login/', views.LoginAPI.as_view()),
+    path('login/', views.LoginAPI.as_view(), name="login"),
     path('logout/', views.LogoutAPI.as_view()),
     path('register/', views.RegistrationAPI.as_view(), name="register"),
     path('reserve/', views.ReservePlayerAPI.as_view(), name="reserve"),

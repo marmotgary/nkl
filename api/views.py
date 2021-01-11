@@ -129,10 +129,12 @@ class LoginAPI(generics.GenericAPIView):
             team_id = user.playersinteam_set.filter(season=CurrentSeason.objects.first().season).first().team.id
         except (PlayersInTeam.DoesNotExist, AttributeError) as e:
             team_id = None
-        response = HttpResponse(json.dumps({'success': True,
-                                            'user': UserSerializer(user).data,
-                                            'role': role,
-                                            'team_id': team_id}))
+        response = Response({
+            'success': True,
+            'user': UserSerializer(user).data,
+            'role': role,
+            'team_id': team_id
+            })
         return response
 
 
