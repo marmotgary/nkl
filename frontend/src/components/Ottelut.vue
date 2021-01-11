@@ -90,7 +90,7 @@ export default {
           );
         },
         handleRedirect: function(value) {
-          location.href = '/ottelu/'+value.id+'/?season='+localStorage.season_id;
+          location.href = '/ottelu/'+value.id
         }
     },
     mounted: function() {
