@@ -12,7 +12,7 @@
       <v-btn text class="hidden-md-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn text class="hidden-md-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn
-        v-if="loggedIn && team_id"
+        v-if="loggedIn && team_id != 'null' && team_id"
         text
         class="hidden-md-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -135,7 +135,7 @@ export default {
             name: '',
             team_id: '',
             selectedSeason: {
-              season_id: '2',
+              value: '2'
             },
             items: [
                 { title: 'Ottelut' },
@@ -172,22 +172,21 @@ export default {
     },
     created() {
         if (sessionStorage.season_id) {
-          this.selectedSeason = sessionStorage.season_id
-        } else {
-          sessionStorage.season_id = this.season_id;
+          this.selectedSeason = sessionStorage.season_id;
         }
-        
+
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
-            if (localStorage.team_id) {
+
+            if (localStorage.team_id != 'null' && localStorage.team_id) {
               this.team_id = localStorage.team_id
             }
             else {
                 this.$http
                     .get(
                         'api/players/' +
-                            localStorage.user_id+'/?season='+sessionStorage.season_id
+                            localStorage.user_id
                     )
                     .then(function(response) {
                       if (response.body.team) {

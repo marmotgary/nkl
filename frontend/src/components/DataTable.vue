@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table disable-pagination @click:row="handleRedirect" dense color='alert' :headers="headers" :search="search" :items="teams" disable-pagination hide-default-footer>
+    <v-data-table mobile-breakpoint="0" disable-pagination @click:row="handleRedirect" dense color='alert' :headers="headers" :search="search" :items="teams" disable-pagination hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
