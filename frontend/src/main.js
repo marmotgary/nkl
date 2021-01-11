@@ -1,20 +1,21 @@
 import '@babel/polyfill';
+import "vuetify/dist/vuetify.min.css";
 import Vue from 'vue';
-import './plugins/vuetify';
+import Vuetify from 'vuetify';
 import App from './App.vue';
 import router from './router';
+import VueResource from 'vue-resource';
+import VueSession from 'vue-session';
+import VueMoment from 'vue-moment';
 
 Vue.config.productionTip = false;
 
 export const eventBus = new Vue();
 
-import VueResource from 'vue-resource';
-import VueSession from 'vue-session';
-import VueMoment from 'vue-moment';
-
 Vue.use(VueResource);
 Vue.use(VueSession);
 Vue.use(VueMoment);
+Vue.use(Vuetify);
 
 // Vue.http.options.root = 'https://kyykka.com'
 Vue.http.options.root = 'http://localhost:8000'
@@ -39,6 +40,7 @@ Vue.mixin({
 })
 
 new Vue({
+    vuetify: new Vuetify(),
     router,
     render: function (h) {
         return h(App);

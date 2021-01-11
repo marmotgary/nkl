@@ -1,102 +1,98 @@
 <template>
   <v-card>
-    <v-layout>
-      <v-flex xs12>
-        <v-card>
-          <v-container grid-list-sm fluid>
-            <v-flex xs4 mb-4 d-flex offset-sm4>
-              <v-card flat tile class="d-flex">
-                <img
-                  src="../../public/kyykkalogo120px.png"
-                ></v-img>
-              </v-card>
-            </v-flex>
-            <v-flex xs12 d-flex>
+        <v-card elevation=0>
+            <v-row style="height:130px">
+              <v-col align="center" justify="center">
+                  <img
+                    src="../../public/kyykkalogo120px.png"
+                  >
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+              <v-app-bar color="red darken-5" dark text>
+                <v-spacer></v-spacer>
+                <v-toolbar-title>{{header}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
+              </v-col>
+            </v-row>
+            <v-row style="height:220px">
+              <v-col class="pt-0">
               <v-data-iterator
                 :items="stats"
                 :headers="header"
-                content-tag="v-layout"
-                hide-actions
-                row
-                wrap
+                hide-default-footer
               >
-                <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
-                    <v-toolbar-title>{{header}}</v-toolbar-title>
-                  </v-toolbar>
-                </template>
                 <template v-slot:item="props">
-                  <v-flex xs12>
-                    <v-card>
                       <v-list dense>
-                        <v-list-tile>
-                          <v-list-tile-content>Tehdyt pisteet:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.score_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Ottelut:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.match_count }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Hauet:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.pikes_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nolla heitot:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.zeros_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nolla aloitukset:</v-list-tile-content>
-                          <v-list-tile-content
+                        <v-list-item>
+                          <v-list-item-content>Tehdyt pisteet:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.score_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Ottelut:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.match_count }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Hauet:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.pikes_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Nolla heitot:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.zeros_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Nolla aloitukset:</v-list-item-content>
+                          <v-list-item-content
                             class="align-end"
-                          >{{ props.item.zero_first_throw_total }}</v-list-tile-content>
-                        </v-list-tile>
+                          >{{ props.item.zero_first_throw_total }}</v-list-item-content>
+                        </v-list-item>
                       </v-list>
-                    </v-card>
-                  </v-flex>
                 </template>
               </v-data-iterator>
-              <v-data-iterator :items="stats" content-tag="v-layout" hide-actions row wrap>
-                <template v-slot:header>
-                  <v-toolbar class="mb-2" color="red darken-5" dark flat>
-                    <v-toolbar-title></v-toolbar-title>
-                  </v-toolbar>
-                </template>
+              </v-col>
+              <v-divider vertical></v-divider>
+              <v-col class="pt-0">
+              <v-data-iterator :items="stats" hide-default-footer row wrap>
                 <template v-slot:item="props">
-                  <v-flex xs12>
-                    <v-card>
                       <v-list dense>
-                        <v-list-tile>
-                          <v-list-tile-content>Heitot:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.throws_total }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Pistettä per heitto:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.score_per_throw }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Haukiprosentti:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.pike_percentage }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Nollaprosentti:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.zero_percentage }}</v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-content>Joulukuuset:</v-list-tile-content>
-                          <v-list-tile-content class="align-end">{{ props.item.gteSix_total }}</v-list-tile-content>
-                        </v-list-tile>
+                        <v-list-item>
+                          <v-list-item-content>Heitot:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.throws_total }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Pistettä per heitto:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.score_per_throw }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Haukiprosentti:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.pike_percentage }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Nollaprosentti:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.zero_percentage }}</v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <v-list-item>
+                          <v-list-item-content>Joulukuuset:</v-list-item-content>
+                          <v-list-item-content class="align-end">{{ props.item.gteSix_total }}</v-list-item-content>
+                        </v-list-item>
                       </v-list>
-                    </v-card>
-                  </v-flex>
                 </template>
               </v-data-iterator>
-            </v-flex>
-          </v-container>
+              </v-col>
+            </v-row>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-data-table :headers="headers" :items="players" hide-actions>
+        <v-divider></v-divider>
+    <v-data-table class="mt-5" disable-pagination :headers="headers" :items="players" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -116,39 +112,35 @@
       </template>
     </v-data-table>
     <v-spacer></v-spacer>
-    <v-card>
-      <v-expansion-panel v-if="isCaptain">
-        <v-expansion-panel-content>
-          <template v-slot:header>
-            <div>Varaa pelaajia</div>
-          </template>
-          <v-card>
-          <v-text-field style="width: 50%; margin-left: 20px;" color="red" v-model="search" label="Search" single-line hide-details/>
-            <v-data-table :search="search" :items="reserve" :headers="reserveHeaders" hide-actions>
-              <template slot="no-data">
-                <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
-              </template>
-              <template slot="items" slot-scope="props">
-                <div class="row">
-                  <td v-if="props.item.team == null">
-                    <v-btn v-on:click="reserveButton(props.item)" flat icon color="green">
-                      <v-icon>fas fa-plus</v-icon>
-                    </v-btn>
-                  </td>
-                  <td v-else>
-                    <v-btn flat disabled icon color="gray">
-                      <v-icon>fas fa-lock</v-icon>
-                    </v-btn>
-                  </td>
-                </div>
-                <td>{{ props.item.player_number }}</td>
-                <td>{{ props.item.player_name }}</td>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-card>
+      <v-expansion-panels>
+        <v-expansion-panel v-if="isCaptain">
+          <v-expansion-panel-header>
+            Varaa pelaajia
+          </v-expansion-panel-header>
+            <v-expansion-panel-content>
+            <v-text-field class="mb-10 mt-0" style="width: 50%;" color="red" v-model="search" label="Search" single-line hide-details/>
+              <v-data-table disable-pagination dense :search="search" :items="reserve" :headers="reserveHeaders" hide-default-footer>
+                <!-- [``] needed to prevent eslint error -->
+                <template v-slot:[`item.actions`]="{ item }">
+                  <v-icon
+                    v-if="!item.team"
+                    color=green
+                    @click="reserveButton(item)"
+                  >
+                    mdi-plus
+                  </v-icon>
+                  <v-icon
+                    v-else  
+                    color=gray
+                    @click="deleteItem(item)"
+                  >
+                    mdi-lock
+                  </v-icon>
+                </template>
+              </v-data-table>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
   </v-card>
 </template>
 
@@ -163,21 +155,21 @@ export default {
                 this.$route.fullPath.lastIndexOf('/') + 1
             ),
             reserveHeaders: [
+                { text: '#', value: 'player_number'},
+                { text: 'Pelaajan nimi', value: 'player_name' },
                 {
                     text: 'Varaa',
-                    value: 'reserve',
-                    width: '1%',
-                    align: 'left'
+                    value: 'actions',
+                    align: 'left',
+                    sortable: false,
                 },
-                { text: '#', value: 'id'},
-                { text: 'Pelaajan nimi', value: 'player_name' }
             ],
             headers: [
-                { text: '#', value: 'id' },
+                { text: '#', value: 'player_number', width:"1%" },
                 {
                     text: 'Nimi',
                     value: 'player_name',
-                    width: '1%',
+                    width: '20%',
                     align: 'left'
                 },
                 {
@@ -311,3 +303,11 @@ export default {
     }
 };
 </script>
+
+<style>
+
+tbody tr :hover {
+    cursor: unset;
+}
+
+</style>
