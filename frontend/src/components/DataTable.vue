@@ -43,14 +43,14 @@ export default {
     },
     methods: {
         getTeams: function() {
-            this.$http.get('api/teams/').then(
+            this.$http.get('api/teams/'+'?season='+sessionStorage.season_id).then(
                 function(data) {
                     this.teams = data.body;
                 }
             );
         },
         handleRedirect: function(value) {
-          location.href = '/joukkue/'+value.id
+          location.href = '/joukkue/'+value.id+'/?season='+sessionStorage.season_id;
         }
     },
     mounted: function() {

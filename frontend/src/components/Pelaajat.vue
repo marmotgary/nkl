@@ -113,7 +113,7 @@ export default {
     },
     methods: {
         getPlayers: function() {
-            this.$http.get('api/players/').then(
+            this.$http.get('api/players/'+'?season='+sessionStorage.season_id).then(
                 function(data) {
                     this.players = data.body;
                 }
@@ -123,7 +123,7 @@ export default {
     mounted: function() {
         this.getPlayers();
         if (localStorage.user_id) {
-            this.$http.get('api/players/' +localStorage.user_id)
+            this.$http.get('api/players/' +localStorage.user_id +'/?season='+sessionStorage.season_id)
         }
     }
 };

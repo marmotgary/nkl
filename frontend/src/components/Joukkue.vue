@@ -231,7 +231,7 @@ export default {
     methods: {
         getPlayers: function() {
             this.$http
-                .get('api/teams/' + this.team_id)
+                .get('api/teams/' + this.team_id +'/?season='+sessionStorage.season_id)
                 .then(
                     function(data) {
                         this.stats = [data.body];
@@ -241,7 +241,7 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('api/reserve/', {
+            this.$http.get('api/reserve/'+'?season='+sessionStorage.season_id, {
                   'withCredentials': true,
                 }).then(
                 function(data) {
@@ -260,7 +260,7 @@ export default {
         },
         reserveButton: function(item) {
             let post_data = {'player': item.id}
-            let post_url = 'api/reserve/'
+            let post_url = 'api/reserve/'+'?season='+sessionStorage.season_id;
             var index = this.reserve.findIndex(player => player.id === item.id);
 
             if (confirm('Haluatko varmasti varata pelaajan "'+item.player_name+'"?')) {
