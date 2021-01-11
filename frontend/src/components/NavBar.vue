@@ -12,7 +12,7 @@
       <v-btn text class="hidden-md-and-down" to="/joukkueet">Joukkueet</v-btn>
       <v-btn text class="hidden-md-and-down" to="/pelaajat">Pelaajat</v-btn>
       <v-btn
-        v-if="loggedIn && team_id"
+        v-if="loggedIn && team_id != 'null' && team_id"
         text
         class="hidden-md-and-down"
         :to="'/joukkue/'+this.team_id"
@@ -178,7 +178,8 @@ export default {
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
-            if (localStorage.team_id) {
+
+            if (localStorage.team_id != 'null' && localStorage.team_id) {
               this.team_id = localStorage.team_id
             }
             else {
