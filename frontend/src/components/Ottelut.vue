@@ -67,7 +67,7 @@ export default {
           }
         },
         getMatches: function() {
-          let url = 'api/matches/?season='+localStorage.season_id;
+          let url = 'api/matches/?season='+sessionStorage.season_id;
           let i = 0;
 
           this.$http.get(url).then(
