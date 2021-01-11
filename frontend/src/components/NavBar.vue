@@ -20,7 +20,7 @@
       <v-btn text class="hidden-md-and-down" to="/info">Info</v-btn>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
-      <v-select item-color=red v-model="defaultSelect" class="mt-4" align:center item-text="name" :items="seasons"></v-select>
+      <v-select v-on:input="selectSeason(items.name)" item-color=red v-model="selectedSeason" class="mt-4" align:center item-text="name" :items="seasons"></v-select>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <v-spacer class="hidden-md-and-down"></v-spacer>
       <div class="hidden-md-and-down pa-4" v-if="!loggedIn">
@@ -134,7 +134,7 @@ export default {
             loggedIn: false,
             name: '',
             team_id: '',
-            defaultSelect: {
+            selectedSeason: {
               name: 'Kausi 2021',
               value: '2',
             },
@@ -163,9 +163,13 @@ export default {
               },
               'withCredentials': true,
             })
+        },
+        selectSeason () {
+          localStorage.season_id = this.selectedSeason;
         }
     },
     created() {
+        localStorage.season_id = this.selectedSeason.value;
         eventBus.$on('loginChanged', data => {
             this.loggedIn = true;
             this.name = data;
