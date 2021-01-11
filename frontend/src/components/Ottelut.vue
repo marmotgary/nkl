@@ -16,6 +16,7 @@
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
         <template slot="headers" class="text-xs-center"></template>
+        <!-- [``] needed to prevent eslint error -->
         <template v-slot:[`item.match_time`]="{ item }">
           <span>{{ item.match_time | moment('YYYY-MM-DD HH:mm') }}</span>
         </template>
