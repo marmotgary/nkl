@@ -16,14 +16,8 @@
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
         <template slot="headers" class="text-xs-center"></template>
-        <template slot="items" slot-scope="props">
-          <td class="time">{{ props.item.match_time | moment('YYYY-MM-DD HH:mm') }}</td>
-          <td>{{ props.item.field }}</td>
-          <td>{{ props.item.home_team.abbreviation }}</td>
-          <td>{{ props.item.away_team.abbreviation }}</td>
-          <td v-if="props.item.home_score_total">{{ props.item.home_score_total}}</td><td v-else>X</td>
-          <td> {{props.item.dash}} </td>
-          <td v-if="props.item.away_score_total">{{props.item.away_score_total}}</td><td v-else>X</td>
+        <template v-slot:[`item.match_time`]="{ item }">
+          <span>{{ item.match_time | moment('YYYY-MM-DD HH:mm') }}</span>
         </template>
         <v-alert
           slot="no-results"
