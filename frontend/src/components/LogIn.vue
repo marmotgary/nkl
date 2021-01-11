@@ -1,6 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
-    <v-btn slot="activator">Log In</v-btn>
+  <v-dialog v-model="dialog" persistent width="600px">
+    <template v-slot:activator="{on}">
+      <v-btn class="hidden-lg-and-up mb-5 ml-1" width="100%" v-on="on">Log In</v-btn>
+      <v-btn class="hidden-md-and-down" v-on="on">Log in</v-btn>
+    </template>
     <v-card>
       <v-card-title>
         <span class="headline">Log In</span>
@@ -10,18 +13,19 @@
           :value="alert"
           type="info"
           transition="scale-transition"
-          outline
+          outlined
         >Invalid user credentials.</v-alert>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field v-model="credentials.username" label="Email*" required></v-text-field>
+              <v-text-field v-model="credentials.username" color="red darken-1" label="Email*" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
                 v-model="credentials.password"
                 label="Password*"
                 type="password"
+                color="red darken-1"
                 required
               ></v-text-field>
             </v-flex>
@@ -29,10 +33,9 @@
         </v-container>
         <small>*indicates required field</small>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="dialog = false, alert=false">Close</v-btn>
-        <v-btn color="blue darken-1" v-on:keyup.enter="login" flat @click="login">Log in</v-btn>
+      <v-card-actions class=justify-center>
+        <v-btn color="red darken-1" text @click="login">Log in</v-btn>
+        <v-btn color="red darken-1" text @click="dialog = false, alert=false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -117,6 +120,3 @@ export default {
     }
 };
 </script>
-
-<style>
-</style>
