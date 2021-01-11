@@ -73,6 +73,54 @@ class UserRegistration(APITestCase):
         self.assertEqual(User.objects.count(), 0)
         
 
+class UserLogin(APITestCase):
+    """ Test user login"""
+
+    def setUp(self):
+        season = Season.objects.create(year=2021)
+        CurrentSeason.objects.create(season = season)
+        team1 = Team.objects.create(name="Team 1", abbreviation="T1")
+        team2 = Team.objects.create(name="Team 2", abbreviation="T2")
+        user1 = User.objects.create_user("email1", "email1", "password")
+        user2 = User.objects.create_user("email2", "email2", "password")
+        user3 = User.objects.create_user("email3", "email3", "password")
+        user4 = User.objects.create_user("email4", "email4", "password")
+
+        user1.first_name = "Mr."
+        user1.last_name = "Captain"
+        Player.objects.create(user=user1, number=1)
+
+        PlayersInTeam.objects.create(season=CurrentSeason.objects.first().season,
+                                    team=team1, player=user1, is_captain=True)
+        PlayersInTeam.objects.create(season=CurrentSeason.objects.first().season,
+                                    team=team1, player=user2, is_captain=False)
+
+    def test_login_captain(self):
+        CAPTAIN_ROLE = "1"
+        user = User.objects.get(username="email1")
+        
+        team = Team.objects.get(name="Team 1")
+        url = reverse("login")
+        data = {"username": "email1",
+                "password": "password"}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(CAPTAIN_ROLE, response.data["role"])
+        self.assertEqual(team.id, response.data["team_id"])
+        self.assertEqual(user.player.number, response.data["user"]["player_number"])
+        
+    def test_login_user(self):
+        USER_ROLE = "0"
+        user = User.objects.get(username="email2")
+        
+        team = Team.objects.get(name="Team 1")
+        url = reverse("login")
+        data = {"username": "email2",
+                "password": "password"}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(USER_ROLE, response.data["role"])
+        self.assertEqual(team.id, response.data["team_id"])
 
 class PlayerReservation(APITestCase):
     """ Test player reservation API """
