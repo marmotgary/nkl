@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
-    <v-data-table mobile-breakpoint="0" disable-pagination dense :headers="headers" :items="players" :search="search" hide-default-footer>
+    <v-data-table mobile-breakpoint="0" disable-pagination dense :headers="headers" :sortDesc="true" :sortBy="sortBy" :items="players" :search="search" hide-default-footer>
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
@@ -42,68 +42,60 @@ export default {
     data: function() {
         return {
             search: '',
+            sortBy: 'rounds_total',
+            sortDesc: false,
             isCaptain: false,
             headers: [
                 {
                     text: 'Nimi',
                     value: 'player_name',
-                    width: '10%',
                     align: 'left'
                 },
                 {
                     text: 'Joukkue',
                     value: 'team.abbreviation',
-                    width: '1%',
                     align: 'left'
                 },
                 {
                     text: 'E',
                     value: 'rounds_total',
-                    width: '1%',
                     align: 'left'
                 },
                 { text: 'P', value: 'score_total', width: '1%', align: 'left' },
                 {
                     text: 'PPH',
                     value: 'score_per_throw',
-                    width: '1%',
                     align: 'left'
                 },
                 {
                     text: 'SP',
                     value: 'scaled_points',
-                    width: '1%',
                     alignt: 'left'
                 },
                 {
                     text: 'SPe',
                     value: 'scaled_points_per_round',
-                    width: '1%',
                     alignt: 'left'
                 },
                 {
                     text: 'kHP',
                     value: 'avg_throw_turn',
-                    width: '1%',
                     align: 'left'
                 },
-                { text: 'H', value: 'pikes_total', width: '1%', align: 'left' },
+                { text: 'H', value: 'pikes_total', align: 'left' },
                 {
                     text: 'H%',
                     value: 'pike_percentage',
-                    width: '1%',
                     align: 'left'
                 },
                 {
                     text: 'VM',
                     value: 'zeros_total',
-                    width: '1%',
                     align: 'left'
                 },
                 {
                     text: 'JK',
                     value: 'gteSix_total',
-                    width: '1%',
                     alignt: 'left'
                 }
             ],
