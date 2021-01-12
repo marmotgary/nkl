@@ -25,7 +25,7 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_swagger.views import get_swagger_view
 from utils.caching import (cache_reset_key, getFromCache, reset_match_cache,
-                           setToCache)
+                           setToCache, reset_player_cache)
 
 schema_view = get_swagger_view(title='NKL API')
 
@@ -301,6 +301,9 @@ class MatchDetail(APIView):
         serializer = MatchScoreSerializer(match, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            player_ids = match.throw_set.all().values_list("player__id", flat=True).distinct()
+            for id in player_ids:
+                reset_player_cache(id, str(season.year))
             reset_match_cache(match, season_year=str(season.year))
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

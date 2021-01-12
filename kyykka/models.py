@@ -112,9 +112,9 @@ def match_post_save_handler(sender, instance, created, **kwargs):
                         throw_round=r
                     )
 
-
-@receiver(post_save, sender=Throw)
-def throw_post_save_handler(sender, instance, created, **kwargs):
-    if instance and instance.player:
-        season_year = str(CurrentSeason.objects.first().season.year)
-        reset_player_cache(instance.player, season_year)
+# DEPRECATED? Validating match should now take care of all cache resetting.
+# @receiver(post_save, sender=Throw)
+# def throw_post_save_handler(sender, instance, created, **kwargs):
+    # if instance and instance.player:
+        # season_year = str(CurrentSeason.objects.first().season.year)
+        # reset_player_cache(instance.player.id, season_year)
