@@ -207,6 +207,10 @@ a {
   text-decoration: none;
   font-size: 130%;
 }
+
+.v-data-table-header th {
+  white-space: nowrap;
+}
 </style>
 
 
