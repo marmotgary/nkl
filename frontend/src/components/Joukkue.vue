@@ -241,7 +241,7 @@ export default {
                 );
         },
         getReserve: function() {
-            this.$http.get('api/reserve/'+'?season='+sessionStorage.season_id, {
+            this.$http.get('api/reserve/', {
                   'withCredentials': true,
                 }).then(
                 function(data) {
