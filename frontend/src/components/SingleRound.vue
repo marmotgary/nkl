@@ -1,51 +1,53 @@
 <template>
   <v-card>
-    <v-card-title>Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
-    <v-layout v-if="!show_input" row wrap>
-      <v-card-text v-if="this.round_score">
-        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+    <v-card-title class="pa-0 pl-3 pt-3">Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
+    <v-row v-if="!show_input" row wrap>
+      <v-card-text v-if="this.round_score || this.round_score == '0'">
+        <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-chip
             style="float:right;"
             :color="`${this.color} lighten-2`"
             label
             small
+            class="mr-2"
           >{{this.round_score}}</v-chip>
         </p>
-        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+        <p :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
           <v-chip
             style="float:right;"
             :color="`${this.color} lighten-2`"
             label
             small
+            class="mr-2"
           >{{this.round_score}}</v-chip>
         </p>
       </v-card-text>
-    </v-layout>
-    <v-layout v-if="show_input" row wrap>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row v-if="show_input" row wrap>
       <v-card-text v-if="loaded">
-        <p class="text-xs-left" v-if="this.teamSide == 'home'">
+        <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
-          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" label="total" maxlength="3"/>
         </p>
-        <p class="text-xs-left" :color="this.color" v-if="this.teamSide == 'away'">
+        <p :color="this.color" v-if="this.teamSide == 'away'">
           {{this.away_team}}
-          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" maxlength="3"/>
+          <v-text-field @input="roundScore()" style="width:10%; float:right;" v-model="round_score" class="centered-input" label="total" maxlength="3"/>
         </p>
       </v-card-text>
-    </v-layout>
-    <v-data-table
+    </v-row>
+    <v-data-table mobile-breakpoint="0" disable-pagination dense
       v-if="!show_input"
-      disable-initial-sort
       :headers="headers"
       :items="data"
-      hide-actions
+      hide-default-footer
     >
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
-      <template slot="headers" class="text-xs-center"></template>
+
       <template slot="items" slot-scope="props">
         <td>{{props.item.player.player_number}}</td>
         <td>{{props.item.player.player_name}}</td>
@@ -56,35 +58,43 @@
         <td>{{props.item.score_total}}</td>
       </template>
     </v-data-table>
-    <v-data-table
+    <v-data-table mobile-breakpoint="0" disable-pagination dense
       v-if="show_input"
       disable-initial-sort
       v-model="select"
       :headers="headers"
       :items="data"
-      hide-actions
-      :pagination.sync="pagination"
+      hide-default-footer
+      :items-per-page="4"
       >
       <template slot="no-data">
         <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
       </template>
       <template slot="headers" class="text-xs-center"></template>
-      <template slot="items" slot-scope="props">
-        <td :ref="'id_'+props.index">{{selected[props.index].player.id}}</td>
-        <td>
-          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
-          <v-select v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
-        </td>
-        <td><v-text-field v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td><v-text-field v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
-        <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
+      <template slot="item" slot-scope="props">
+        <tr>
+          <td :ref="'id_'+props.index">{{selected[props.index].player.id}}</td>
+          <td>
+            <v-select item-color="red" color="red" v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-if="teamSide == 'home'" class="text-center pr-1" placeholder="Select player" :items="home_players" single-line></v-select>
+            <v-select item-color="red" color="red" v-model="selected[props.index].player.player_name" @change="loadPlayer($event, props.index)" v-else-if="teamSide == 'away'" class="text-center pr-1" placeholder="Select player" :items="away_players" single-line></v-select>
+          </td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_first']" :ref="'first_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_second']" :ref="'second_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_third']" :ref="'third_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td><v-text-field color="red" v-model="selected[props.index]['score_fourth']" :ref="'fourth_throw_'+props.index" class="centered-input" maxlength="2" @input="sumTotal(props.index)" v-on:keypress="isNumber($event)"/></td>
+          <td class="centered-input" style="font-size:18px" :ref="'throw_sum_'+props.index">{{selected[props.index]['score_total']}}</td>
+        </tr>
       </template>
     </v-data-table>
   </v-card>
 </template>
 <style scoped>
+
+  p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    margin-left: .7em;
+  }
 
   td {
     padding: 0 !important;
@@ -112,9 +122,6 @@ export default {
     },
     data: function() {
         return {
-            pagination: {
-              rowsPerPage: 4
-            },
             select: [],
             selected: [],
             show_input: false,
@@ -132,13 +139,13 @@ export default {
             headers: [
                 {
                     text: this.teamSide,
-                    value: 'player_id',
+                    value: 'player.player_number',
                     sortable: false,
                     width: '5%'
                 },
                 {
                     text: 'player',
-                    value: 'player',
+                    value: 'player.player_name',
                     sortable: false,
                     width: '35%'
                 },

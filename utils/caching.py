@@ -5,8 +5,7 @@ from django.core.cache import cache
 def getFromCache(key, season_year = None):
     if season_year:
         key = key + "_" + str(season_year)
-    # print("Get cache", key)
-    # print(cache.get(key))
+    # print("Get cache", key, cache.get(key))
     return cache.get(key)
 
 
@@ -15,27 +14,27 @@ def setToCache(key, value, timeout=60 * 60 * 12, season_year=""):
         value = 0
     if season_year:
         key = key + "_" + str(season_year)
-    # print("Set cache", key)
+    # print("Set cache", key, value)
     cache.set(key, value, timeout)
 
 
-def reset_player_cache(player, season_year):
+def reset_player_cache(player_id, season_year):
     """
     Resets all player_ caches for specified season
     """
     caches = [
-        'player_' + str(player.id) + '_score_total_' + season_year,
-        'player_' + str(player.id) + '_match_count_' + season_year,
-        'player_' + str(player.id) + '_rounds_total_' + season_year,
-        'player_' + str(player.id) + '_pikes_total_' + season_year,
-        'player_' + str(player.id) + '_zeros_total_' + season_year,
-        'player_' + str(player.id) + '_gteSix_total_' + season_year,
-        'player_' + str(player.id) + '_throws_total_' + season_year,
-        'player_' + str(player.id) + '_pike_percentage_' + season_year,
-        'player_' + str(player.id) + '_score_per_throw_' + season_year,
-        'player_' + str(player.id) + '_avg_throw_turn_' + season_year,
+        'player_' + str(player_id) + '_score_total_' + season_year,
+        'player_' + str(player_id) + '_match_count_' + season_year,
+        'player_' + str(player_id) + '_rounds_total_' + season_year,
+        'player_' + str(player_id) + '_pikes_total_' + season_year,
+        'player_' + str(player_id) + '_zeros_total_' + season_year,
+        'player_' + str(player_id) + '_gteSix_total_' + season_year,
+        'player_' + str(player_id) + '_throws_total_' + season_year,
+        'player_' + str(player_id) + '_pike_percentage_' + season_year,
+        'player_' + str(player_id) + '_score_per_throw_' + season_year,
+        'player_' + str(player_id) + '_avg_throw_turn_' + season_year,
     ]
-    # print(caches)
+    # print("Removing player caches", caches)
     cache.delete_many(caches)
 
 
