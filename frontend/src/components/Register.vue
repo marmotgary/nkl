@@ -1,12 +1,15 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
-    <v-btn slot="activator">Register</v-btn>
+    <template v-slot:activator="{on}">
+      <v-btn class="hidden-lg-and-up ml-1" width="100%" v-on="on">Register</v-btn>
+      <v-btn class="hidden-md-and-down" v-on="on">Register</v-btn>
+    </template>
     <v-card>
       <v-card-title>
         <span class="headline">Rekisteröityminen</span>
       </v-card-title>
       <v-card-text>
-        <v-alert :value="alert" type="info" transition="scale-transition" outline>
+        <v-alert :value="alert" type="error" transition="scale-transition" outlined>
           <b>Korjaa seuraava(t):</b>
           <ul>
             <li v-bind:key="error.id" v-for="error in errors">{{ error }}</li>
@@ -16,28 +19,28 @@
           <v-layout wrap>
             <v-layout row>
               <v-flex xs5 sm6 md4>
-                <v-text-field info v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
+                <v-text-field color="red darken-1" v-model="credentials.first_name" label="Etunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs5 sm6 md4 mr-5>
-                <v-text-field info v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
+                <v-text-field color="red darken-1" v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select info v-model="credentials.number" required :items="numbers"></v-select>
+                <v-select item-color="red" color="red darken-1" v-model="credentials.number" required :items="numbers"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
-              <v-text-field info v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
+              <v-text-field color="red darken-1" v-model="credentials.username" label="sähköposti*" type="email" required></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                info
+                color="red darken-1"
                 v-model="credentials.password"
                 label="salasana*"
                 type="password"
                 required
               ></v-text-field>
               <v-text-field
-                info
+                color="red darken-1"
                 v-model="credentials.password_check"
                 label="salasana varmistus*"
                 type="password"
@@ -48,10 +51,9 @@
         </v-container>
         <small>*pakollinen kenttä</small>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="info darken-1" flat @click="dialog = false">Sulje</v-btn>
-        <v-btn color="info darken-1" flat @click="checkForm">Valmis</v-btn>
+      <v-card-actions class=justify-center>
+        <v-btn color="red darken-1" text @click="checkForm">Register</v-btn>
+        <v-btn color="red darken-1" text @click="dialog = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -87,29 +89,29 @@ export default {
                     localStorage.role_id = response.body.role;
                     localStorage.user_id = response.body.user.id;
                     localStorage.player_name = response.body.user.player_name;
-
                     this.changeLogin();
                 })
                 .catch(function(response) {
                     this.response_errors = response.body;
                     this.checkForm();
-                    if (response.status == 403) {
-                      this.$http
-                        .get('api/csrf', {'withCredentials': true})
-                        .then(function(response) {
-                            if (response.status === 200) {
-                                this.$http.patch(post_url, post_data, {
-                                headers: {
-                                  'X-CSRFToken': this.getCookie('csrftoken')
-                                },
-                                  'withCredentials': true,
-                                }).then(function(response) {
-                                  localStorage.role_id = response.body.role;
-                                  localStorage.user_id = response.body.user.id;
-                                  localStorage.player_name = response.body.user.player_name;
-                                })
-                            }
-                        });
+                    switch(response.status) {
+                      case 403:
+                        this.$http
+                          .get('api/csrf', {'withCredentials': true})
+                          .then(function(response) {
+                              if (response.status === 200) {
+                                  this.$http.patch(post_url, post_data, {
+                                  headers: {
+                                    'X-CSRFToken': this.getCookie('csrftoken')
+                                  },
+                                    'withCredentials': true,
+                                  }).then(function(response) {
+                                    localStorage.role_id = response.body.role;
+                                    localStorage.user_id = response.body.user.id;
+                                    localStorage.player_name = response.body.user.player_name;
+                                  })
+                              }
+                          });
                     }
                 });
         },
@@ -133,7 +135,7 @@ export default {
             if (!this.credentials.username) {
                 this.errors.push('Email puuttuu.');
             } else if (!this.validEmail(this.credentials.username)) {
-                this.errors.push('Anna salasana mallia foo@bar.xyz.');
+                this.errors.push('Anna sähköposti mallia foo@bar.xyz.');
             }
             if (!this.credentials.password) {
                 this.errors.push('Salasana puuttuu.');
@@ -147,7 +149,6 @@ export default {
             }
 
             if (this.errors.length == 0) {
-                this.changeLogin();
                 this.register();
             }
         },

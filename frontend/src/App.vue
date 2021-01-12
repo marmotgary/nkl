@@ -1,14 +1,18 @@
 <template>
   <v-app class="app">
     <nav-bar class="mb-5"></nav-bar>
-    <v-content transition="slide-x-transition" class="content pa-0 mx-auto">
+    <v-main transition="slide-x-transition" class="content pa-0 mx-auto">
       <router-view></router-view>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar';
+
+if (!sessionStorage.season_id) {
+  sessionStorage.season_id = '2';
+}
 
 export default {
     name: 'App',
@@ -20,7 +24,7 @@ export default {
 
 <style scoped>
 .content {
-    width: 80%;
+    width: 90%;
 }
 
 .app {
