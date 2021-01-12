@@ -25,7 +25,7 @@
                 <v-text-field color="red darken-1" v-model="credentials.last_name" label="Sukunimi*" required></v-text-field>
               </v-flex>
               <v-flex xs2 sm2 ml-5>
-                <v-select color="red darken-1" v-model="credentials.number" required :items="numbers"></v-select>
+                <v-select item-color="red" color="red darken-1" v-model="credentials.number" required :items="numbers"></v-select>
               </v-flex>
             </v-layout>
             <v-flex xs12>
@@ -89,6 +89,7 @@ export default {
                     localStorage.role_id = response.body.role;
                     localStorage.user_id = response.body.user.id;
                     localStorage.player_name = response.body.user.player_name;
+                    this.changeLogin();
                 })
                 .catch(function(response) {
                     this.response_errors = response.body;
@@ -149,7 +150,6 @@ export default {
 
             if (this.errors.length == 0) {
                 this.register();
-                this.changeLogin();
             }
         },
         changeLogin: function(username) {
