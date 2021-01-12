@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title class="pa-0 pl-3 pt-3">Erä {{this.roundNumber}}<v-spacer/><v-progress-circular :size="20" :width="2" indeterminate color="red" v-if="loading"/></v-card-title>
     <v-row v-if="!show_input" row wrap>
-      <v-card-text v-if="this.round_score">
+      <v-card-text v-if="this.round_score || this.round_score == '0'">
         <p v-if="this.teamSide == 'home'">
           {{this.home_team}}
           <v-chip
