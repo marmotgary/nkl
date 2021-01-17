@@ -215,7 +215,7 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         if avg_throw_turn is None:
             try:
                 avg_throw_turn_sum = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).aggregate(Sum('throw_turn'))['throw_turn__sum']
-                avg_throw_turn = round(self.throws / avg_throw_turn_sum, 2)
+                avg_throw_turn = round(avg_throw_turn_sum/ self.throws, 2)
             except (TypeError, ZeroDivisionError):
                 avg_throw_turn = 0
         return avg_throw_turn
@@ -587,9 +587,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         throw_set = self.context.get('throw_set')
         gteSix_total = throw_set.exclude(Q(score_first='h')|Q(score_second='h')|Q(score_third='h')|Q(score_fourth='h')).annotate(
             count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count('pk',
-                                                                                                                 filter=Q(
-                                                                                                                     score_third__gte=6)) + Count(
-                'pk', filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
+                filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
         if gteSix_total is None:
             return 0
         return gteSix_total
