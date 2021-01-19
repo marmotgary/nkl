@@ -162,24 +162,6 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         gteSix_total = getFromCache(key, self.context.get('season').year)
         if gteSix_total is None:
             gteSix_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
-                # count=Case(
-                    # When(score_first__gte="6", score_first__lt="10", then=Value(1)),
-                    # default=Value(0),
-                    # output_field=IntegerField(),
-                # ) + Case(
-                    # When(score_second__gte="6", score_second__lt="10", then=Value(1)),
-                    # default=Value(0),
-                    # output_field=IntegerField(),
-                # ) + Case(
-                    # When(score_third="6", score_third="10", then=Value(1)),
-                    # default=Value(0),
-                    # output_field=IntegerField(),
-                # ) + Case(
-                    # When(score_fourth__gte="6", score_fourth__lt="10", then=Value(1)),
-                    # default=Value(0),
-                    # output_field=IntegerField(),
-                # )
-            # ).aggregate(Sum('count'))['count__sum']
             count=
                 Count('pk', filter=Q(score_first="6")|Q(score_first="7")|Q(score_first="8")|Q(score_first="9")) + 
                 Count('pk', filter=Q(score_second="6")|Q(score_second="7")|Q(score_second="8")|Q(score_second="9")) + 
