@@ -158,18 +158,36 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
 
     def get_gteSix_total(self, obj):
 
-        # TODO: Maybe do something better. Now pikes are counted as gteSixes in the query below, so we need to reduce pikes from gteSix_total.
         key = 'player_' + str(obj.id) + '_gteSix_total'
         gteSix_total = getFromCache(key, self.context.get('season').year)
         if gteSix_total is None:
             gteSix_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
-                count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count(
-                    'pk', filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(
-                Sum('count'))['count__sum']
+                # count=Case(
+                    # When(score_first__gte="6", score_first__lt="10", then=Value(1)),
+                    # default=Value(0),
+                    # output_field=IntegerField(),
+                # ) + Case(
+                    # When(score_second__gte="6", score_second__lt="10", then=Value(1)),
+                    # default=Value(0),
+                    # output_field=IntegerField(),
+                # ) + Case(
+                    # When(score_third="6", score_third="10", then=Value(1)),
+                    # default=Value(0),
+                    # output_field=IntegerField(),
+                # ) + Case(
+                    # When(score_fourth__gte="6", score_fourth__lt="10", then=Value(1)),
+                    # default=Value(0),
+                    # output_field=IntegerField(),
+                # )
+            # ).aggregate(Sum('count'))['count__sum']
+            count=
+                Count('pk', filter=Q(score_first="6")|Q(score_first="7")|Q(score_first="8")|Q(score_first="9")) + 
+                Count('pk', filter=Q(score_second="6")|Q(score_second="7")|Q(score_second="8")|Q(score_second="9")) + 
+                Count('pk', filter=Q(score_third="6")|Q(score_third="7")|Q(score_third="8")|Q(score_third="9")) + 
+                Count('pk', filter=Q(score_fourth="6")|Q(score_fourth="7")|Q(score_fourth="8")|Q(score_fourth="9"))).aggregate(
+                    Sum('count'))['count__sum']
             if gteSix_total is None:
                 gteSix_total = 0
-            else:
-                gteSix_total = gteSix_total - self.pikes
             setToCache(key, gteSix_total, season_year=self.context.get('season').year)
         return gteSix_total
 
@@ -390,7 +408,7 @@ class PlayerDetailSerializer(SharedPlayerSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'player_name', 'player_number', 'team' 
+            'id', 'player_name', 'player_number', 'team'
         )
 
 
@@ -587,15 +605,18 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         return throw_set.filter(score_first='h', throw_turn=1).count()
 
     def get_gteSix_total(self, obj):
-        # TODO: Maybe do something better. Now pikes are counted as gteSixes in the query below, so we need to reduce pikes from gteSix_total.
         throw_set = self.context.get('throw_set')
         gteSix_total = throw_set.annotate(
-            count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count('pk',
-                filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
+            count=
+                Count('pk', filter=Q(score_first="6")|Q(score_first="7")|Q(score_first="8")|Q(score_first="9")) + 
+                Count('pk', filter=Q(score_second="6")|Q(score_second="7")|Q(score_second="8")|Q(score_second="9")) + 
+                Count('pk', filter=Q(score_third="6")|Q(score_third="7")|Q(score_third="8")|Q(score_third="9")) + 
+                Count('pk', filter=Q(score_fourth="6")|Q(score_fourth="7")|Q(score_fourth="8")|Q(score_fourth="9"))).aggregate(
+                    Sum('count'))['count__sum']
+            # count=Count('pk', filter=Q(score_first__gte=6)) + Count('pk', filter=Q(score_second__gte=6)) + Count('pk',
+                # filter=Q(score_third__gte=6)) + Count('pk', filter=Q(score_fourth__gte=6))).aggregate(Sum('count'))['count__sum']
         if gteSix_total is None:
             return 0
-        else:
-            gteSix_total = gteSix_total - self.context.get('pikes_total')
         return gteSix_total
 
     def get_pike_percentage(self, obj):

@@ -243,7 +243,7 @@ class PikeCountInStats(APITestCase):
                     score_first="h",
                     score_second=0,
                     score_third=1,
-                    score_fourth=2
+                    score_fourth="e"
                 )
 
     @override_settings(CACHES=TEST_CACHES)
@@ -321,7 +321,7 @@ class SixCountInStats(APITestCase):
         # Generate exactly 8 legal sixes.
         Throw.objects.create(
                     match=match1, player=user1, team=team1, season=currentSeason, throw_round=1,
-                    throw_turn=1, score_first=6, score_second=7, score_third='h'
+                    throw_turn=1, score_first=6, score_second=7, score_third='h', score_fourth='e'
         )
         Throw.objects.create(
                     match=match1, player=user1, team=team1, season=currentSeason, throw_round=2,
@@ -334,7 +334,7 @@ class SixCountInStats(APITestCase):
         # Match not validated, these sixes should not show up in stats
         Throw.objects.create(
                     match=match3, player=user1, team=team1, season=currentSeason, throw_round=1,
-                    throw_turn=1, score_first=6, score_second=7
+                    throw_turn=1, score_first=6, score_second=7, score_third="e"
         )
            
 
