@@ -163,9 +163,10 @@ export default {
     methods: {
         isNumber: function(evt) {
           // Checks that the value is an H or a numeric value from the ASCII table.
+          // not verified atm?
           evt = (evt) ? evt : window.event;
           var charCode = (evt.which) ? evt.which : evt.keyCode;
-          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72 && charcode !== 104) {
+          if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 72 && charCode !== 104 && charCode !== 69 && charCode !== 101) {
             evt.preventDefault();
           } else {
             return true;
@@ -235,11 +236,14 @@ export default {
           }
 
           array.forEach(function (item) {
-            const element = this.$refs[item+'_throw_'+index].$refs.input.value
+            const element = this.$refs[item+'_throw_'+index].$refs.input.value;
             if(element.toLowerCase() == "h") {
-              total += 0
+              total += 0;
               var score = "h";
-            }else{
+            } else if (element.toLowerCase() == "e") {
+              total += 0;
+              var score = "e";
+            } else {
               var score = (!isNaN(parseInt(element))) ? parseInt(element) : 0;
               total += score
             }
