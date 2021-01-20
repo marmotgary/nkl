@@ -178,7 +178,25 @@ class SharedPlayerSerializer(serializers.ModelSerializer):
         key = 'player_' + str(obj.id) + '_throws_total'
         throws_total = getFromCache(key, self.context.get('season').year)
         if throws_total is None:
-            throws_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).count() * 4
+            # throws_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).count() * 4
+            throws_total = Throw.objects.filter(match__is_validated=True, season=self.context.get('season'), player=obj).annotate(
+                count=Case(
+                    When(score_first="e", then=Value(0)),
+                    default=Value(1),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_second="e", then=Value(0)),
+                    default=Value(1),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_third="e", then=Value(0)),
+                    default=Value(1),
+                    output_field=IntegerField(),
+                ) + Case(
+                    When(score_fourth="e", then=Value(0)),
+                    default=Value(1),
+                    output_field=IntegerField(),
+                )).aggregate(Sum('count'))['count__sum']
             if throws_total is None:
                 throws_total = 0
             setToCache(key, throws_total, season_year=self.context.get('season').year)
