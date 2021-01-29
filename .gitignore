@@ -6,6 +6,7 @@
 venv*
 *.log
 *.json
+*.sql
 static_files
 mysql
 
