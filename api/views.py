@@ -37,7 +37,7 @@ def getSeason(request):
             season = Season.objects.get(id=season_id)
         else:
             raise Season.DoesNotExist
-    except Season.DoesNotExist:
+    except (Season.DoesNotExist, ValueError):
         season = CurrentSeason.objects.first().season
     return season
 
