@@ -25,7 +25,7 @@ six==1.13.0
 sqlparse==0.3.0
 text-unidecode==1.2
 uritemplate==3.0.0
-urllib3==1.26.1
+urllib3==1.26.3
 
 
 tdqm
