@@ -11,7 +11,7 @@
 import NavBar from '@/components/NavBar';
 
 if (!sessionStorage.season_id) {
-  sessionStorage.season_id = '2';
+  sessionStorage.season_id = '3';
 }
 
 export default {
