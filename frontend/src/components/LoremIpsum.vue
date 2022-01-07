@@ -3,6 +3,17 @@
     <v-layout column>
       <v-flex>
 
+        <h2>Ilmoittautuminen uudelle kaudelle on avoinna!</h2>
+
+        <p>Ilmoittautuminen on nyt auki ja menee kiinni ennen vuoden loppua. Ilmoittautua voit <a href="https://www.facebook.com/280724095335724/posts/6092542910820451/">NKL:n facebook sivuilta</a>!</p>
+
+        <h2>HOX!</h2>
+
+        <p>
+            LTKY:n kanssa käydyn keskustelun jälkeen PoWi on päättänyt, että NKL ottelut pelataan tästä eteenpäin yhdellä kentällä kerrallaan iltaisin klo 17-21. NKL otteluiden aikana Gardenilla ei saa olla muuta toimintaa. 
+            NKL loppukauden aikataulua muutetaan NKLN myöhemmän päätöksen mukaisesti. PoWi suosittelee päivätreenien varaamista Gardenin kalenterin kautta, ilmoittamalla Elmolle +358452322829 wa tai tg.
+        </p>
+
         <h2>Uusi sivusto</h2>
 
         <p>
@@ -10,7 +21,6 @@
           Ottelutulos tallentuu syötettäessä reaaliaikaisesti. Suosittelemme ottelutuloksen syöttämisen jälkeen vielä päivittämään ottelusivun, ja varmistamaan että syöttö on onnistunut.
           Ottelutuloksen syöttämisen jälkeen vierasjoukkueen kapteenin tulee vielä vahvistaa tulos ottelusivulta, jonka jälkeen pisteet päivittyvät statseihin.
         </p>
-
 
         <h2>Kasiennakko 2021</h2>
 
