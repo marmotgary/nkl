@@ -34,3 +34,6 @@ yarn-error.log*
 *.sw*
 local_settings.py
 .idea
+
+# Django production files
+/static
