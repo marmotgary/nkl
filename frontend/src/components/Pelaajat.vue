@@ -12,21 +12,7 @@
       <template
         bind:key="props.item.id"
         slot="items"
-        slot-scope="props"
       >
-        <td>{{ props.item.player_name }}</td>
-        <td class="text-xs-left" v-if="props.item.team !== null">{{ props.item.team.abbreviation }}</td>
-        <td v-else>Ei varausta</td>
-        <td class="text-xs-left">{{ props.item.rounds_total }}</td>
-        <td class="text-xs-left">{{ props.item.score_total }}</td>
-        <td class="text-xs-left">{{ props.item.score_per_throw }}</td>
-        <td class="text-xs-left">{{ props.item.scaled_points }}</td>
-        <td class="text-xs-left">{{ props.item.scaled_points_per_round }}</td>
-        <td class="text-xs-left">{{ props.item.avg_throw_turn }}</td>
-        <td class="text-xs-left">{{ props.item.pikes_total }}</td>
-        <td class="text-xs-left">{{ props.item.pike_percentage }}</td>
-        <td class="text-xs-left">{{ props.item.zeros_total }}</td>
-        <td class="text-xs-left">{{ props.item.gteSix_total }}</td>
       </template>
       <v-alert
         slot="no-results"
@@ -61,21 +47,11 @@ export default {
                     value: 'rounds_total',
                     align: 'left'
                 },
-                { text: 'P', value: 'score_total', width: '1%', align: 'left' },
+                { text: 'PPO', value: 'score_total', align: 'left' },
                 {
                     text: 'PPH',
                     value: 'score_per_throw',
                     align: 'left'
-                },
-                {
-                    text: 'SP',
-                    value: 'scaled_points',
-                    alignt: 'left'
-                },
-                {
-                    text: 'SPe',
-                    value: 'scaled_points_per_round',
-                    alignt: 'left'
                 },
                 {
                     text: 'kHP',
@@ -91,12 +67,14 @@ export default {
                 {
                     text: 'VM',
                     value: 'zeros_total',
-                    align: 'left'
+                    align: 'left',
+                    width: '1%'
                 },
                 {
                     text: 'JK',
                     value: 'gteSix_total',
-                    alignt: 'left'
+                    alignt: 'left',
+                    width: '1%'
                 }
             ],
             players: [],
@@ -107,7 +85,15 @@ export default {
         getPlayers: function() {
             this.$http.get('api/players/'+'?season='+sessionStorage.season_id).then(
                 function(data) {
-                    this.players = data.body;
+                    if (data) {
+                        // TODO: This should prolly be done in django and not in frontend.
+                        let new_data = data.body.map(function(obj) {
+                            obj['score_total'] = parseFloat(obj['score_total'] / obj['rounds_total']).toFixed(2);
+                            return obj;
+                        })
+
+                        this.players = new_data;
+                    }
                 }
             );
         },
