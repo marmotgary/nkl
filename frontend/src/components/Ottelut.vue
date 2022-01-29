@@ -11,13 +11,21 @@
         <v-text-field color="red" v-model="search" label="Search" single-line hide-details></v-text-field>             
       </div>
     </v-card-title>
-    <v-data-table mobile-breakpoint="0" disable-pagination @click:row="handleRedirect" dense :headers="headers" :items="data" :search="search" hide-default-footer>
+    <v-data-table mobile-breakpoint="0" disable-pagination @click:row="handleRedirect" dense 
+    :headers="headers" :items="data" :search="search" :item-class="itemRowBackground" hide-default-footer>
         <template slot="no-data">
           <v-progress-linear color="red" slot="progress" indeterminate></v-progress-linear>
         </template>
         <template slot="headers" class="text-xs-center"></template>
         <!-- [``] needed to prevent eslint error -->
         <template v-slot:[`item.match_time`]="{ item }">
+          <!--  if (item.is_validated & matchDate < currentTime & item.id !== localStorage.team_id) -->
+          <v-tooltip v-if="!item.is_validated & team_id == item.id" bottom>
+            <template #activator="{ on }">
+              <v-icon color="gray" class="mr-3" v-on="on">info</v-icon>
+            </template>
+            <span>Ottelu on validoimatta</span>
+          </v-tooltip>
           <span>{{ item.match_time | moment('YYYY-MM-DD HH:mm') }}</span>
         </template>
         <v-alert
@@ -30,8 +38,10 @@
 </template>
 
 <script>
+import moment from 'moment';
 
 export default {
+
     data: function() {
         return {
             search: '',
@@ -52,6 +62,7 @@ export default {
             matches: [],
             post_season: [],
             regular_season: [],
+            team_id: '',
             defaultSelected: 'Kaikki ottelut',
             options: ['Kaikki ottelut','Runkosarja','Jatkosarja'],
         };
@@ -91,11 +102,38 @@ export default {
         },
         handleRedirect: function(value) {
           location.href = '/ottelu/'+value.id
+        },
+        itemRowBackground: function(item) {
+          // Handles the backround color of row items
+          var matchDate = moment(item.match_time).format("YYYY-MM-DD HH:MM")
+          var currentTime = moment(Date.now()).format("YYYY-MM-DD HH:MM")
+
+          if (!this.team_id) return
+
+          if (item.is_validated & matchDate < currentTime & item.id !== this.team_id) return 'style-2'
+
+          return 'style-1'
         }
     },
     mounted: function() {
+        if (localStorage.team_id) {
+          this.team_id = localStorage.team_id;
+        } else {
+          this.team_id = '';
+        }
+        
         this.getMatches();
     }
 };
 </script>
+<style>
+.style-1 {
+  background-color: rgba(195, 20, 20, 0.781) !important;
+}
+
+.style-2 {
+  background-color: white;
+}
+
+</style>
 
