@@ -7,6 +7,7 @@ import router from './router';
 import VueResource from 'vue-resource';
 import VueSession from 'vue-session';
 import VueMoment from 'vue-moment';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 Vue.config.productionTip = false;
 
