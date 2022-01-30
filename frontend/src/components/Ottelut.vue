@@ -20,7 +20,7 @@
         <!-- [``] needed to prevent eslint error -->
         <template v-slot:[`item.match_time`]="{ item }">
           <!--  if (item.is_validated & matchDate < currentTime & item.id !== localStorage.team_id) -->
-          <v-tooltip v-if="!item.is_validated & team_id == item.id" bottom>
+          <v-tooltip v-if="!item.is_validated & (parseInt(item.home_team.id) === parseInt(team_id) || parseInt(item.away_team.id) === parseInt(team_id))" bottom>
             <template #activator="{ on }">
               <v-icon color="gray" class="mr-3" v-on="on">info</v-icon>
             </template>
@@ -110,9 +110,9 @@ export default {
 
           if (!this.team_id) return
 
-          if (item.is_validated & matchDate < currentTime & item.id !== this.team_id) return 'style-2'
+          if (!item.is_validated & matchDate < currentTime & (parseInt(item.home_team.id) === parseInt(this.team_id) || parseInt(item.away_team.id) === parseInt(this.team_id))) return 'style-1'
 
-          return 'style-1'
+          return 'style-2'
         }
     },
     mounted: function() {
