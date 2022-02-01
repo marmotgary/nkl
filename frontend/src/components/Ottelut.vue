@@ -110,9 +110,9 @@ export default {
 
           if (!this.team_id) return
 
-          if (!item.is_validated & matchDate < currentTime & (parseInt(item.home_team.id) === parseInt(this.team_id) || parseInt(item.away_team.id) === parseInt(this.team_id))) return 'style-1'
+          if (!item.is_validated & matchDate < currentTime & (parseInt(item.home_team.id) === parseInt(this.team_id) || parseInt(item.away_team.id) === parseInt(this.team_id))) return 'row__background__style_1'
 
-          return 'style-2'
+          return 'row__background__style_2'
         }
     },
     mounted: function() {
@@ -127,11 +127,11 @@ export default {
 };
 </script>
 <style>
-.style-1 {
+.row__background__style_1 {
   background-color: rgba(195, 20, 20, 0.781) !important;
 }
 
-.style-2 {
+.row__background__style_2 {
   background-color: white;
 }
 
